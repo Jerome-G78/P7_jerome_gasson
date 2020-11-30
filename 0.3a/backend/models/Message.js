@@ -1,5 +1,5 @@
 // import des packages
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 // const uniqueValidator = require('mongoose-unique-validator');
 
 // nous créons un schéma de données qui contient les champs souhaités pour chaque Utilisateur, E-mail et mot de passe Oblogatoire.
