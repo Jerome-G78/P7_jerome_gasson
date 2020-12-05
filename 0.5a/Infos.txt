@@ -1,0 +1,411 @@
+1/ Package utilisés :
+	sequelize-cli (ORM : Object Relational Mapping) (v6.2) / il faut l'initialiser via sequelize init
+	mysql
+
+2/ Mettre un mot de passe pour securiser la base de données !
+	config > config.json
+	remplacer toutes les lignes "password":null, par un MDP.
+
+3/ Créer les classes / Models
+	sequelize model:create --attributes ""
+	(vous devez mentionner tout les attributs crées dans MySQL Workbench)
+
+sequelize model:create --attributes "email:string username:string password:string bio:string isAdmin:boolean" --name User
+sequelize model:create --attributes "idUSERS:integer title:string content:string attachment:string likes:integer" --name Message
+
+
+4/ Dans migration > 0000000-create-user.js
+	Ajoutez la ligne : allowNull: false,
+	Aux différents champs comme on les as configurer dans la table SQL
+	email / username / password / isAdmin
+
+	Ajoutez la ligne : allowNull: true,
+	au champ : bio
+
+	Dans migration > 0000000-create-message.js
+	Ajoutez la ligne : allowNull: false,
+	idUSERS / title / content / likes
+	
+	Ajoutez la ligne : allowNull: true,
+	au champ : attachment
+
+5/ Pour l'association des deux tables 
+	Dans migration > 0000000-create-message.js
+	Vous devez rajouter sous idUSERS:{...type: Sequelize.INTEGER,
+	references: {
+		model: 'Users',		// corresponds au model Users qu'on a créer
+		key: 'id'		// Identifiant de l'utilisateur
+		} ...
+
+	Dans models>message.js, 
+	Il nous reste a associer le model après la ligne 
+		static associate(models) {
+		models.Message.belongsTo(models.User,{	// Le model actuel.type de relation (models.référence
+				foreignKey :{					// il est précisé que la clé étrangère ne doit pas être égal à Null.
+				  allowNull : flase
+				}
+			  })
+
+6/ Créer les bases de données définit dans config>config.json
+	CREATE DATABASE database_development;
+	CREATE DATABASE database_test;
+	CREATE DATABASE database_production;
+
+7/ Intégrer les modèles précédemment créer avec Sequelize dans la base de données via la commande sequelize :
+	sequelize db:migrate
+
+	Loaded configuration file "config\config.json".
+	Using environment "development".
+	== 20201205163326-create-user: migrating =======
+	== 20201205163326-create-user: migrated (0.354s)
+
+	== 20201205163609-create-message: migrating =======
+	== 20201205163609-create-message: migrated (0.280s)
+	
+	i- Ces message confirme la bonne intégration.
+
+8/ Système d'authentification par TOKEN (avec JWT)
+	Installez les modules suivants :
+		npm install jsonwebtoken --save
+		npm install bcrypt --save
+		npm install body-parser --save
+		
+9/ Mettre en place et configurer body-parser.js
+
+Dans server.js il faut intégrer le module body-parser dans les //Imports
+	
+	const bodyParser = require('body-parser');
+	
+Puis procéder a son initialisation après l'instantiation du serveur :
+
+	// Body Parser Configuration
+	/* 
+		Initialisation de bodyParser; 
+		celui-ci permet de récupérer les arguments & paramètres fournis dans le BODY d'une requête HTTP  
+		On lui indique que l'on souhaite "parser" du JSON 
+	*/
+	server.use(bodyParser.urlencoded({extended:true}));
+	server.use(bodyParser.json());
+
+10 / Créer le routeur pour l'API
+
+Créer un fichier apiRouter.js a la racine avec server.js.
+Et un dossier routes.
+
+Dans ce dernier, créer un fichier : usersCtrl.js
+
+Dans un premier temps, on importe les modules
+
+routes>usersCtrl.js
+
+	// Imports
+	const bcrypt = require('bcrypt');
+	const jwt = require('jsonwebtoken');
+
+Puis on définit nos routes
+	
+	// Routes
+	module.exports = {
+		register: function(req, res, next){
+			// TODO
+		},
+
+		login: function(req, res, next){
+			// TODO
+		}
+	}
+
+11 / Retournez sur le fichier précédemment créer apiRouter.js
+
+Nous allons y importer plusieurs choses
+
+	// Imports
+	const express = require('express');					// Exress
+	const usersCtrl = require('./routes/usersCtrl');	// le controller usersCtrl
+	
+Puis nous y importons le Router
+	// Router
+	exports.router = (function(){
+	let apiRouter = express.Router();
+	
+	});
+
+Ensuite il faut procéder a l'assignation des différentes routes :
+
+	// Router
+	exports.router = (function(){
+	let apiRouter = express.Router();
+		// Users routes
+		apiRouter.route('/users/register/').post(usersCtrl.register));
+		apiRouter.route('/users/login/').post(usersCtrl.login);
+		
+		return apiRouter;
+	})();
+
+12 / Suite a la création du routeur, il faut l'utiliser, 
+
+Dans server.js, commencez par importer le routeur API
+
+	//Imports
+	const apiRouter = require('./apiRouter').router;
+
+Assigner le routeur :
+	// Configure routes
+	server.use('/api/', apiRouter);
+
+13 / Maintenant que tout est importé, on va configurer le controller usersCtrl.js
+	 depuis routes>usersCtrl.js 
+	
+	dans register: function
+	
+	...
+	let email = req.body.email;
+    let username = req.body.username;
+    let password = req.body.password;
+    let bio = req.body.bio;
+	
+	// Vérification des données récupérés
+       if(email == null || username == null || password == null){
+           return res.status(400).json({'error':'missing parameters'});
+       }
+
+importer les modèles afin d'interagir avec sequelize.
+
+	// Imports
+	const models = require('../models');
+	
+verfifier que l'utilisateur n'existe pas déjà dans la base de données avec une promesse, et création de celui-ci
+	// L'utilisateur existe-t-il dans la base ? (promesse)
+		   models.User.findOne({
+			   attributes: ['email'],
+			   where: {email: email}
+		   })
+		   .then(function(userFound){
+			   // Si l'utilisateur n'existe pas
+			   if (!userFound){
+				   // hashage et Salage (5fois) du mot de passe
+				   bcrypt.hash(password, 5, function(err,bcryptedPassword){
+					   // Création de l'utilisateur dans la base de données
+					   let newUser = models.User.create({
+						   email: email,
+						   username: username,
+						   password: bcryptedPassword,
+						   bio: bio,
+						   isAdmin: 0
+					   })
+					   .then(function(newUser){
+						   return res.status(201).json({
+							   // Renvoie l'identifiant utilisateur
+							   'userId':newUser.id
+						   })
+					   })
+					   .catch(function(err){
+						   // Sinon, une erreur est retourné
+						   return res.status(500).json({'error':'cannot add user'});
+					   });
+				   })
+			   } else {
+				   // Si l'utilisateur existe
+				return res.status(409).json({'error':'user already exist'})
+			   }
+		   })
+		   .catch(function(err){
+			   // En cas d'erreur, retourner un message
+			   return res.status(500).json({'error':'unable to verify user'})
+		   });
+
+* : Les Waterfall seront utilisés par la suite
+
+i - il faut ajouter les packages suivants :
+	npm install -g npm-check-updates
+	npm install --save mysql2
+	
+	ncu , permet d'avoir l'état des modules installés
+	ncu -u , permet de les mettre a jour
+	npm install , lance les installations
+
+----------------------------------------------
+TEST de L'API partie Users SignIn via POSTMAN
+----------------------------------------------
+
+1/ Vérifier l'enregistrement
+
+POST http://localhost:8080/api/users/register/
+	
+> BODY - 
+> x-www-form-urlencoded
+
+Puis renseignez les propriétés (avec les valeurs) :
+
+email - poppy2@lol.com
+username - PooP
+password - azerty78
+bio (optionnel)
+
+Une fois que tout est renseigné, appuyez sur "SEND"
+
+Si tout vas bien, vous devez récupérer une réponse JSON :
+
+	{
+		"userId": 1
+	}
+
+Si vous tentez a nouveau l'inscription, vous aurez un message d'érreur :
+
+	{
+		"error": "user already exist"
+	}
+
+Verifiez que l'utilisateur est bien présent dans la base de données :
+	use database_development
+	select * from Users;
+
++----+---------------+----------+--------------------------------------------------------------+----------------------+---------+
+| id | email         | username | password                                                     | bio                  | isAdmin | 
++----+---------------+----------+--------------------------------------------------------------+----------------------+---------+
+|  1 | poppy@lol.com | PoppY    | $2b$05$vKNdLARnv309t8.7ZbBJy.bqow18Cjt8r2wIyeAXkwfjTFmB/7uC2 | Wola! c'est PoppY :D |       0 |
++----+---------------+----------+--------------------------------------------------------------+----------------------+---------+
+
+... tout à fonctionné!
+
+Travaillons sur la partie Loggin maintenant...
+
+14 / Depuis usersCtrl.js, modifions la fonction login :
+	// Récupération des paramètres de connexion
+	let email = req.body.email;
+    let password = req.body.password;
+
+	// L'utilisateur existe-t-il dans la base ? (promesse)
+
+        models.User.findOne({
+            where: {email: email}
+        })
+        .then(function(userFound){
+            if (uderFound){
+                // Verification de la correspondance du mot de passe avec les informations de la BDD
+                bcrypt.compare(password, userFound.password, function(errBcrypt, resBcrypt){
+                    if(resBcrypt){
+                        // Si le résultat est positif, envoyer le Token.
+                        return res.status(200).json({
+                            'userId':userFound.id,
+                            'token':'THE TOKEN'
+                        });
+                    } else {
+                        // Sinon, retourner une erreur, qui indique a l'utilisateur que son mot de passe est non valide
+                        return res.status(403).json({'error':'invalid password'});
+                    }
+                });
+            } else {
+                // Si l'utilisateur n'existe pas
+                return res.status(404).json({'error':'user not exist in DB'});
+            }
+        })
+        .catch(function(err){
+            // En cas d'erreur de verification, envoyer une erreur
+            return res.status(500).json({'error':'unable to verify user'});
+        })
+    }
+
+15 / Créer le dossier utils
+	 Dans celui-ci créer le fichier jwt.utils.js
+	 qui contiendra ces lignes :
+	 
+	// Imports
+	const jwt = require('jsonwebtoken');
+
+	// Exported function
+	module.exports = {
+		generateTokenForUser: function(userDate){
+			
+		}
+	}
+
+16 / Supprimez des imports jwt de usersCtrl, qui n'est plus utile; et remplacez le par : 
+		const jwtUtils = require('../utils/jwt.utils');
+
+que l'ont viens de créer!
+
+17 / Retournez a 'THE TOKEN', puis remplacez la ligne par :
+
+	// Verification de la correspondance du mot de passe avec les informations de la BDD
+                bcrypt.compare(password, userFound.password, function(errBcrypt, resBcrypt){
+                    if(resBcrypt){
+                        // Si le résultat est positif, envoyer le Token.
+                        return res.status(200).json({
+                            'userId':userFound.id,
+                            'token': jwtUtils.generateTokenForUser(userFound)
+                        });
+
+18 / Retounez sur jwt.utils.js
+	Nous allons générer puis signer notre token, complétons la fonction : generateTokenForUser
+	
+	module.exports = {
+		generateTokenForUser: function(userData){
+			// Signer le token
+			return jwt.sign({
+				// Dans ce 'Payload' on renseigne les éléments :
+				userId: userData.id,
+				isAdmin : userData.isAdmin, 
+			})
+		}
+	}
+
+Créez également une constante : contenant la clé JWT - https://www.motdepasse.xyz/ en début de code.
+	// Initialiser la clé de signature JWT (64)
+	const JWT_SIGN_SECRET = '3^3GWE6_!2jWD&kk?ad3-6Hp9=g6xsR/4)3+eFUk/Q/kUc/9Yh5E(xX4eD8]48W!';
+
+/!\ - la clé doit absolument rester sur le serveur!
+
+Enfin, finalisez la génération du token :
+
+	module.exports = {
+		generateTokenForUser: function(userData){
+			// Signer le token
+			return jwt.sign({
+				// Dans ce 'Payload' on renseigne les éléments :
+				userId: userData.id,
+				isAdmin : userData.isAdmin 
+			},
+			// génération & paramètrage du TOKEN
+			JWT_SIGN_SECRET,
+			{
+				// Durée de validité
+				expiresIn: '1h'
+			})
+		}
+	}
+
+----------------------------------------------
+TEST de L'API partie Users Loggin via POSTMAN
+----------------------------------------------
+
+1/ Tentez de vous authentifier
+
+POST http://localhost:8080/api/users/login/
+	
+> BODY - 
+> x-www-form-urlencoded
+
+Puis renseignez les propriétés (avec les valeurs) :
+
+email
+username
+password
+
+Une fois que tout est renseigné, appuyez sur "SEND"
+
+{
+    "error": "user not exist in DB"
+}
+
+{
+    "error": "invalid password"
+}
+
+{
+    "userId": 2,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MDcyMDA4MzMsImV4cCI6MTYwNzIwNDQzM30.NsRiRo5aHtyi8QZ8bRQxo21C20ti1yXUzYnMf6GpCgA"
+}
+
+... tout fonctionne!
+
