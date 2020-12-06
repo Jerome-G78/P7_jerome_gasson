@@ -48,43 +48,52 @@ module.exports = {
 
        // L'utilisateur existe-t-il dans la base ? (promesse)
        
-       models.User.findOne({
-           attributes: ['email'],
-           where: {email: email}
-       })
-       .then(function(userFound){
-           // Si l'utilisateur n'existe pas
-           if (!userFound){
-               // hashage et Salage (5fois) du mot de passe
-               bcrypt.hash(password, 5, function(err,bcryptedPassword){
-                   // Création de l'utilisateur dans la base de données
-                   let newUser = models.User.create({
-                       email: email,
-                       username: username,
-                       password: bcryptedPassword,
-                       bio: bio,
-                       isAdmin: 0
-                   })
-                   .then(function(newUser){
-                       return res.status(201).json({
-                           // Renvoie l'identifiant utilisateur
-                           'userId':newUser.id
-                       })
-                   })
-                   .catch(function(err){
-                       // Sinon, une erreur est retourné
-                       return res.status(500).json({'error':'cannot add user'});
-                   });
-               })
-           } else {
-               // Si l'utilisateur existe
-            return res.status(409).json({'error':'user already exist'})
-           }
-       })
-       .catch(function(err){
-           // En cas d'erreur, retourner un message
-           return res.status(500).json({'error':'unable to verify user'})
-       });
+       asyncLib.waterfall([
+        function(done) {
+          models.User.findOne({
+            attributes: ['email'],
+            where: { email: email }
+          })
+          .then(function(userFound) {
+            done(null, userFound);
+          })
+          .catch(function(err) {
+            return res.status(500).json({ 'error': 'unable to verify user' });
+          });
+        },
+        function(userFound, done) {
+          if (!userFound) {
+            bcrypt.hash(password, 5, function( err, bcryptedPassword ) {
+              done(null, userFound, bcryptedPassword);
+            });
+          } else {
+            return res.status(409).json({ 'error': 'user already exist' });
+          }
+        },
+        function(userFound, bcryptedPassword, done) {
+          var newUser = models.User.create({
+            email: email,
+            username: username,
+            password: bcryptedPassword,
+            bio: bio,
+            isAdmin: 0
+          })
+          .then(function(newUser) {
+            done(newUser);
+          })
+          .catch(function(err) {
+            return res.status(500).json({ 'error': 'cannot add user' });
+          });
+        }
+      ], function(newUser) {
+        if (newUser) {
+          return res.status(201).json({
+            'userId': newUser.id
+          });
+        } else {
+          return res.status(500).json({ 'error': 'cannot add user' });
+        }
+      });
     },
 
     login: function(req, res, next){
@@ -103,34 +112,44 @@ module.exports = {
 
         // L'utilisateur existe-t-il dans la base ? (promesse)
 
-        models.User.findOne({
-            where: {email: email}
-        })
-        .then(function(userFound){
-            if (userFound){
-                // Verification de la correspondance du mot de passe avec les informations de la BDD
-                bcrypt.compare(password, userFound.password, function(errBcrypt, resBcrypt){
-                    if(resBcrypt){
-                        // Si le résultat est positif, envoyer le Token.
-                        return res.status(200).json({
-                            'userId':userFound.id,
-                        //  'token':'THE TOKEN'
-                            'token': jwtUtils.generateTokenForUser(userFound)
-                        });
-                    } else {
-                        // Sinon, retourner une erreur, qui indique a l'utilisateur que son mot de passe est non valide
-                        return res.status(403).json({'error':'invalid password'});
-                    }
+        asyncLib.waterfall([
+            function(done) {
+              models.User.findOne({
+                where: { email: email }
+              })
+              .then(function(userFound) {
+                done(null, userFound);
+              })
+              .catch(function(err) {
+                return res.status(500).json({ 'error': 'unable to verify user' });
+              });
+            },
+            function(userFound, done) {
+              if (userFound) {
+                bcrypt.compare(password, userFound.password, function(errBycrypt, resBycrypt) {
+                  done(null, userFound, resBycrypt);
                 });
-            } else {
-                // Si l'utilisateur n'existe pas
-                return res.status(404).json({'error':'user not exist in DB'});
+              } else {
+                return res.status(404).json({ 'error': 'user not exist in DB' });
+              }
+            },
+            function(userFound, resBycrypt, done) {
+              if(resBycrypt) {
+                done(userFound);
+              } else {
+                return res.status(403).json({ 'error': 'invalid password' });
+              }
             }
-        })
-        .catch(function(err){
-            // En cas d'erreur de verification, envoyer une erreur
-            return res.status(500).json({'error':'unable to verify user'});
-        })
+          ], function(userFound) {
+            if (userFound) {
+              return res.status(201).json({
+                'userId': userFound.id,
+                'token': jwtUtils.generateTokenForUser(userFound)
+              });
+            } else {
+              return res.status(500).json({ 'error': 'cannot log on user' });
+            }
+        });
     },
 
     getUserProfile: function(req, res, next){
