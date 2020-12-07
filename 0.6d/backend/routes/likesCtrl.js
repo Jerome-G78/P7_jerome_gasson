@@ -91,7 +91,7 @@ module.exports = {
                         res.status(409).json({'error':'message already liked'});
                     }
             },
-            function (messageFound, userFound, done) {
+            function (messageFound, userFound, done) { //!\\ Relire la fonction... Bugs?! ('cannot message like counter')
                 // mise a jour de l'objet (le message), incrémente les likes de 1
                 messageFound.update({
                     likes: messageFound.likes + 1,
@@ -105,7 +105,7 @@ module.exports = {
             }
         ], function(messageFound){
             if(messageFound){
-                // Modification de la propriété like qui sera incrémenté
+                // Affichage de la propriété like qui sera incrémenté
                 return res.status(201).json(messageFound);
             } else {
                 return res.status(500).json({'error':'cannot update message'});

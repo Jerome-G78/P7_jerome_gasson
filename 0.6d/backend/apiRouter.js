@@ -28,8 +28,8 @@ exports.router = (function(){
     apiRouter.route('/messages/').get(messagesCtrl.listMessage);
 
     // Likes
-    apiRouter.route('/message/:messageId/vote/like').post(likesCtrl.likePost);
-    apiRouter.route('/message/:messageId/vote/dislike').post(likesCtrl.dislikePost);
+    apiRouter.route('/messages/:messageId/vote/like').post(likesCtrl.likePost);
+    apiRouter.route('/messages/:messageId/vote/dislike').post(likesCtrl.dislikePost);
 
     // Enfin, on retourne l'objet
     return apiRouter;
