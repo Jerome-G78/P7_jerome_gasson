@@ -91,7 +91,7 @@ module.exports = {
                         res.status(409).json({'error':'message already liked'});
                     }
             },
-            function (messageFound, userFound, done) { //!\\ Relire la fonction... Bugs?! ('cannot message like counter')
+            function (messageFound, userFound, done) {
                 // mise a jour de l'objet (le message), incrémente les likes de 1
                 messageFound.update({
                     likes: messageFound.likes + 1,
