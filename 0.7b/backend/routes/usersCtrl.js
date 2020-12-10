@@ -187,7 +187,7 @@ module.exports = {
         // Verifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
-        // 
+        // Params : Récupération des données du Frontend.
         let bio = req.body.bio;
 
         asyncLib.waterfall([
@@ -198,7 +198,7 @@ module.exports = {
                     where: {id: userId}
                 })
                 .then(function(userFound){
-                    // Si l'utilisateur est rouvé, le retourner
+                    // Si l'utilisateur est trouvé, le retourner
                     done(null,userFound);
                 })
                 .catch(function(err){
@@ -221,7 +221,7 @@ module.exports = {
                         res.status(500).json({'error':'cannot update user'});
                     });
                 } else {
-                    // si celui-ci n'existe pas, rtourner une erreur
+                    // si celui-ci n'existe pas, retourner une erreur
                     res.status(404).json({'error':'user not found'});
                 }
             },
@@ -246,20 +246,19 @@ module.exports = {
 
       asyncLib.waterfall([
         function(done){
-            // Récupérer l'utilisateur dans la base de données
-            models.User.findOne({
-                attributes: ['id'],
-                where: {id: userId}
-            })
-            .then(function(userFound){
-                // Si l'utilisateur est rouvé, le retourner
-                done(null,userFound);
-            })
-            .catch(function(err){
-                // Sinon envoyer une erreur
-                return res.status(500).json({'error':'unable to verify user'});
-            });
-        },
+          // Récupérer l'utilisateur dans la base de données
+          models.User.findOne({
+              where: {id: userId}
+          })
+          .then(function(userFound){
+              // Si l'utilisateur est rouvé, le retourner
+              done(null,userFound);
+          })
+          .catch(function(err){
+              // Sinon envoyer une erreur
+              return res.status(500).json({'error':'unable to verify user'});
+          });
+      },
         function(userFound, done){
             // Verifier si l'utilisateur est valide
             if(userFound) {
@@ -275,7 +274,7 @@ module.exports = {
                     res.status(500).json({'error':'cannot delete user'});
                 });
             } else {
-                // si celui-ci n'existe pas, rtourner une erreur
+                // si celui-ci n'existe pas, retourner une erreur
                 res.status(404).json({'error':'user not found'});
             }
         },

@@ -39,6 +39,7 @@ module.exports = {
 
         asyncLib.waterfall([
             // Récupérer l'utilisateur dans la base de données (correspondant au token)
+            // Function (callback)
             function(done){
                 models.User.findOne({
                     where: {id: userId}
@@ -64,6 +65,10 @@ module.exports = {
                     .then(function(newMessage){
                         // Si tout c'est bien passé, le message est envoyé.
                         done(newMessage);
+                    })
+                    .catch(function(err){
+                        // En d'erreur serveur, un message d'erreur est retourné.
+                        return res.status(500).json({'error':'unable to create message in DB'});
                     });
                 } else {
                     // En cas de problème, un message d'erreur est retourné.
@@ -89,17 +94,10 @@ module.exports = {
         // Verifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
-        // Params (recupération du title & du contenue)
+        // Params (recupération du title & du contenue) & de l'état Admin.
         let title = req.body.title;
         let content = req.body.content;
-
-        // Verfifier que l'utilisateur est bien Administrateur
         let isAdmin = req.body.isAdmin;
-
-        if(!isAdmin){
-            // Vous ne disposez pas des droits de moderation.
-            return res.status(403).json({'error':'you do not have sufficient privileges'});
-        }
 
         // Verification de données non null & cohérente
         if (title == null || content == null){
@@ -110,40 +108,87 @@ module.exports = {
             return res.status(400).json({'error':'invalid parameters'})
         }
 
+        // Verifier que l'utilisateur est bien Administrateur
+        console.log(isAdmin);
+
+        if(!isAdmin){
+            // Vous ne disposez pas des droits de moderation.
+            return res.status(403).json({'error':'you do not have sufficient privileges'});
+        }
+
         asyncLib.waterfall([
-            // Récupérer l'utilisateur dans la base de données (correspondant au token)
             function(done){
+                // Récupérer l'utilisateur dans la base de données
                 models.User.findOne({
-                    where: {id: userId}
+                    where: {id: userId} //isAdmin: true
                 })
                 .then(function(userFound){
-                    // Si l'utilisateur est trouvé, on continue (premier paramètre null)
-                    done(null, userFound);
+                    // Si l'utilisateur est rouvé, le retourner
+                    done(null,userFound);
                 })
                 .catch(function(err){
-                    // Sinon, on retourne une erreur
+                    // Sinon envoyer une erreur
                     return res.status(500).json({'error':'unable to verify user'});
                 });
             },
 
             function(userFound, done){
-                if(userFound){
+                // Récupérer l'id du message concerné
+                let messageId = parseInt(req.params.messageId);
+
+                models.Message.findOne({
+                    attributes: ['id', 'title', 'content'],
+                    where : {id: messageId}
+                })
+                .then(function(messageId){
+                    // Si le message est trouvé, procéder a la modification
+
                     models.Message.update({
                         title : title,
                         content : content,
-                        // attachment : mediaUrl,
-                        // like : like,
-                        // UserId : UserId // L'UserId de liaison ne doit pas changer ?
+                        // attachment : attachment,
+                        // like : messageId.like,
+                        // UserId : messageId.UserId
                     })
                     .then(function(moderateMessage){
                         // Si tout c'est bien passé, le message est envoyé.
                         done(moderateMessage);
+                    })
+                    .catch(function(err){
+                        console.log(messageId);
+                        // En cas d'erreur serveur, un message d'erreur est retourné.
+                        return res.status(500).json({'error':'unable to modify message in DB'});
                     });
-                    } else {
-                        // En cas de problème, un message d'erreur est retourné.
-                        res.status(404).json({'error':'user not found'});
-                    }
-                },
+                })
+                .catch(function(err){
+                    // En d'erreur serveur, un message d'erreur est retourné.
+                    return res.status(404).json({'error':'message not found'});
+                });
+
+                /*
+
+                if(messageId){
+                    models.Message.update({
+                        title : (title? title : userFound.title),
+                        content : (content? content : userFound.content)
+                    //    attachment : attachment,
+                    //    like : like,
+                    //    UserId : UserId
+                    })
+                    .then(function(moderateMessage){
+                        // Si tout c'est bien passé, le message est envoyé.
+                        done(moderateMessage);
+                    })
+                    .catch(function(err){
+                        // En d'erreur serveur, un message d'erreur est retourné.
+                        return res.status(500).json({'error':'unable to modify message in DB'});
+                    });
+                } else {
+                    // En cas de problème, un message d'erreur est retourné.
+                    res.status(404).json({'error':'message not found'});
+                }
+                */
+            },
 
         ], function(moderateMessage){
             if(moderateMessage){
@@ -152,66 +197,6 @@ module.exports = {
             } else {
                 // Le message n'est pas passé.
                 return res.status(500).json({'error':'cannot put message'});
-            }
-        });
-    },
-
-    deleteMessage: function(req, res, next){
-        // Récupération de l'en-tête d'authorisation
-        let headerAuth = req.headers['authorization'];
-
-        // Verifier que ce token est valide pour faire une requête en BDD
-        let userId = jwtUtils.getUserId(headerAuth);
-
-        // Verfifier que l'utilisateur est bien Administrateur
-        let isAdmin = req.body.isAdmin;
-
-        if(!isAdmin){
-            // Vous ne disposez pas des droits de moderation.
-            return res.status(403).json({'error':'you do not have sufficient privileges'});
-        }
-
-        asyncLib.waterfall([
-            // Récupérer l'utilisateur dans la base de données (correspondant au token)
-            function(done){
-                models.User.findOne({
-                    where: {id: userId}
-                })
-                .then(function(userFound){
-                    // Si l'utilisateur est trouvé, on continue (premier paramètre null)
-                    done(null, userFound);
-                })
-                .catch(function(err){
-                    // Sinon, on retourne une erreur
-                    return res.status(500).json({'error':'unable to verify user'});
-                });
-            },
-
-            function(userFound, done){
-                // Récupérer l'id du message concerné
-                let messageId = req.body.messageId;
-
-                if(userFound){
-                    models.Message.destroy({
-                        where : {id: messageId}
-                    })
-                    .then(function(deleteMessage){
-                        // Si tout c'est bien passé, un information de réussite est envoyée.
-                        done(deleteMessage);
-                    });
-                    } else {
-                        // En cas de problème, un message d'erreur est retourné.
-                        res.status(404).json({'error':'user not found'});
-                    }
-                },
-
-        ], function(deleteMessage){
-            if(deleteMessage){
-                // delete du message OK
-                return res.status(201).json(deleteMessage);
-            } else {
-                // Le message n'est pas passé.
-                return res.status(500).json({'error':'cannot delete message'});
             }
         });
     },
@@ -253,5 +238,140 @@ module.exports = {
             console.log(err);
             res.status(500).json({'error':'invalid fields'});
         });
+    },
+
+    deleteMessage: function(req, res, next){
+        // Récupération de l'en-tête d'authorisation
+        let headerAuth = req.headers['authorization'];
+
+        // Verifier que ce token est valide pour faire une requête en BDD
+        let userId = jwtUtils.getUserId(headerAuth);
+        let isAdmin = req.body.isAdmin;
+
+        // Verfifier que l'utilisateur est bien Administrateur
+        if(!isAdmin){
+            // Vous ne disposez pas des droits de moderation.
+            return res.status(403).json({'error':'you do not have sufficient privileges'});
+        }
+
+        asyncLib.waterfall([
+            // Récupérer l'utilisateur dans la base de données (correspondant au token)
+            function(done){
+                models.User.findOne({
+                    where: {id: userId}
+                })
+                .then(function(userFound){
+                    // Si l'utilisateur est trouvé, on continue (premier paramètre null)
+                    done(null, userFound);
+                })
+                .catch(function(err){
+                    // Sinon, on retourne une erreur
+                    return res.status(500).json({'error':'unable to verify user'});
+                });
+            },
+
+            function(userFound, done){
+                // Récupérer l'id du message concerné
+                let messageId = parseInt(req.params.messageId);
+                console.log(messageId);
+
+                if(messageId){
+                    models.Message.destroy({
+                        where : {id: messageId}
+                    })
+                    .then(function(deleteMessage){
+                        // Si tout c'est bien passé, un information de réussite est envoyée.
+                        done(deleteMessage);
+                    })
+                    .catch(function(err){
+                        // En cas de problème, un message d'erreur est retourné.
+                        res.status(500).json({'error':'unable to delete message in DB'});
+                    });
+                } else {
+                    // En cas de problème, un message d'erreur est retourné.
+                    res.status(404).json({'error':'message not found'});
+                }
+            },
+
+        ], function(deleteMessage){
+            if(deleteMessage){
+                // delete du message OK
+                return res.status(201).json({'message':'message deleted successfully!'});
+            } else {
+                // Le message n'est pas présent.
+                return res.status(500).json({'error':'message not found'});
+            }
+        });
+    },
+
+    deleteMyMessage: function(req, res, next){
+        // Récupération de l'en-tête d'authorisation
+        let headerAuth = req.headers['authorization'];
+
+        // Verifier que ce token est valide pour faire une requête en BDD
+        let userId = jwtUtils.getUserId(headerAuth);
+
+        asyncLib.waterfall([
+            // Récupérer l'utilisateur dans la base de données (correspondant au token)
+            function(done){
+                models.User.findOne({
+                    where: {id: userId}
+                })
+                .then(function(userFound){
+                    // Si l'utilisateur est trouvé, on continue (premier paramètre null)
+                    done(null, userFound);
+                })
+                .catch(function(err){
+                    // Sinon, on retourne une erreur
+                    return res.status(500).json({'error':'unable to verify user'});
+                });
+            },
+
+            function(userFound, done){
+                // Récupérer l'id du message concerné
+                let messageId = parseInt(req.params.messageId);
+
+                if(messageId){
+                    models.Message.findOne({
+                        where : {userId: userFound}
+                    })
+                    .then(function(messageFound){
+                        // Si tout c'est bien passé, un information de réussite est envoyée.
+                        done(null, messageFound);
+                    })
+                    .catch(function(err){
+                        res.status(500).json({'error':'unable to delete message in DB'});
+                    });
+
+                } else {
+                    // En cas de problème, un message d'erreur est retourné.
+                    res.status(404).json({'error':'message not found'});
+                } 
+            },
+
+            function(messageFound, done){
+                models.Message.destroy({
+                    where : {id: messageFound}
+                })
+                .then(function(deleteMessage){
+                // Si tout c'est bien passé, un information de réussite est envoyée.
+                done(deleteMessage);
+                })
+                .catch(function(err){
+                    // En cas de problème, un message d'erreur est retourné.
+                    res.status(500).json({'error':'unable to delete message in DB'});
+                });
+            }
+
+        ], function(deleteMessage){
+            if(deleteMessage){
+                // delete du message OK
+                return res.status(201).json({'message':'message deleted successfully!'});
+            } else {
+                // Le message n'est pas présent.
+                return res.status(500).json({'error':'message not found'});
+            }
+        });
+
     }
 }

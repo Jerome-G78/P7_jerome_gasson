@@ -25,8 +25,9 @@ exports.router = (function(){
     apiRouter.delete('/users/unsubscription/', usersCtrl.deleteProfile);
     
     // Messages routes
-    apiRouter.post('/messages/new/', multer, messagesCtrl.createMessage);
     apiRouter.get('/messages/', messagesCtrl.listMessage);
+    apiRouter.post('/messages/new/', multer, messagesCtrl.createMessage);
+    apiRouter.delete('/messages/:messageId/', messagesCtrl.deleteMyMessage);
 
     // Moderation Messages
     apiRouter.put('/messages/:messageId/moderate/', messagesCtrl.moderateMessage);

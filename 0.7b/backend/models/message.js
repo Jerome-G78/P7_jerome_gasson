@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // Le model actuel.typeDeRelation(models.référence
+      // Le model actuel.typeDeRelation(models.référence)
       models.Message.belongsTo(models.User,{
         // La clé étrangère ne doit pas être égal a Null.
         foreignKey :{
