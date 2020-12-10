@@ -235,5 +235,60 @@ module.exports = {
                 return res.status(500).json({'error':'cannot update user profile'});
             }
         });
+    },
+
+    deleteProfile: function(req, res, next){
+      // Récupération de l'en-tête d'authorisation
+      let headerAuth = req.headers['authorization'];
+
+      // Verifier que ce token est valide pour faire une requête en BDD
+      let userId = jwtUtils.getUserId(headerAuth);
+
+      asyncLib.waterfall([
+        function(done){
+            // Récupérer l'utilisateur dans la base de données
+            models.User.findOne({
+                attributes: ['id'],
+                where: {id: userId}
+            })
+            .then(function(userFound){
+                // Si l'utilisateur est rouvé, le retourner
+                done(null,userFound);
+            })
+            .catch(function(err){
+                // Sinon envoyer une erreur
+                return res.status(500).json({'error':'unable to verify user'});
+            });
+        },
+        function(userFound, done){
+            // Verifier si l'utilisateur est valide
+            if(userFound) {
+                // Après verification, mise à jour des données concernés
+                userFound.delete({
+                  where: { id: userId }
+                })
+                .then(function(){
+                    // Opération reussi
+                    done(userFound);
+                })
+                .catch(function(err){
+                    res.status(500).json({'error':'cannot delete user'});
+                });
+            } else {
+                // si celui-ci n'existe pas, rtourner une erreur
+                res.status(404).json({'error':'user not found'});
+            }
+        },
+    ],
+    function(userFound){
+        if(userFound){
+            // Suppression effectuée
+            return res.status(201).json(userFound);
+        } else {
+            // Une erreur est survenue
+            return res.status(500).json({'error':'cannot delete user profile'});
+        }
+    });
+
     }
 }

@@ -13,9 +13,8 @@ exports.router = (function(){
 
     // Assignation des différentes routes
     /*
-    Appeler la methode route de apiRouter
-    1er Argument la route, Suivi du verbe HTTP
-    Depuis le controller concerné, exectuer la fonction voulu [Ex. usersCtrl.register]
+    Appeler la methode route de apiRouter.suivi du verbe HTTP,
+    Renseigner la route, Depuis le controller concerné, exectuer la fonction voulu [Ex. usersCtrl.register]
     */
 
     // Users routes
@@ -23,10 +22,15 @@ exports.router = (function(){
     apiRouter.post('/users/login/', usersCtrl.login);
     apiRouter.get('/users/me/', usersCtrl.getUserProfile);
     apiRouter.put('/users/me/', usersCtrl.updateUserProfile);
+    apiRouter.delete('/users/unsubscription/', usersCtrl.deleteProfile);
     
     // Messages routes
     apiRouter.post('/messages/new/', multer, messagesCtrl.createMessage);
     apiRouter.get('/messages/', messagesCtrl.listMessage);
+
+    // Moderation Messages
+    apiRouter.put('/messages/:messageId/moderate/', messagesCtrl.moderateMessage);
+    apiRouter.delete('/messages/:messageId/moderate/', messagesCtrl.deleteMessage);
 
     // Likes routes
     apiRouter.post('/messages/:messageId/vote/like', likesCtrl.likePost);
