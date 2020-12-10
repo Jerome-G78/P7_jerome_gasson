@@ -246,6 +246,9 @@ module.exports = {
 
         // Verifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
+
+        // Récupération des paramètres
+        let messageId = parseInt(req.params.messageId);
         let isAdmin = req.body.isAdmin;
 
         // Verfifier que l'utilisateur est bien Administrateur
@@ -270,10 +273,26 @@ module.exports = {
                 });
             },
 
+            function(userFound ,done){
+                // Si il y a des likes liée au messages, il seront supprimés.
+                if(messageId){
+                    models.Like.destroy({
+                        where: {messageId : messageId}
+                    })
+                    .then(function(userFound){
+                        done(null, userFound);
+                    })
+                    .catch(function(err){
+                        return res.status(500).json({'error':'unable to remove Likes in DB'});
+                    })
+                } else {
+                    console.log(userFound);
+                    done(null, userFound);
+                }
+            },
+
             function(userFound, done){
                 // Récupérer l'id du message concerné
-                let messageId = parseInt(req.params.messageId);
-                console.log(messageId);
 
                 if(messageId){
                     models.Message.destroy({
@@ -296,7 +315,7 @@ module.exports = {
         ], function(deleteMessage){
             if(deleteMessage){
                 // delete du message OK
-                return res.status(201).json({'message':'message deleted successfully!'});
+                return res.status(201).json({'message':'message deleted successfully'});
             } else {
                 // Le message n'est pas présent.
                 return res.status(500).json({'error':'message not found'});
