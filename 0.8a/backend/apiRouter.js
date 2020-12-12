@@ -22,17 +22,17 @@ exports.router = (function(){
     apiRouter.post('/users/login/', usersCtrl.login);
     apiRouter.get('/users/me/', usersCtrl.getUserProfile);
     apiRouter.put('/users/me/', usersCtrl.updateUserProfile);
-    apiRouter.delete('/users/unsubscription/', usersCtrl.deleteProfile);
+    apiRouter.delete('/users/unsubscribe/', usersCtrl.deleteProfile);
     
     // Messages routes
     apiRouter.get('/messages/', messagesCtrl.listMessage);
     apiRouter.post('/messages/new/', multer, messagesCtrl.createMessage);
     apiRouter.put('/messages/:messageId/', multer, messagesCtrl.putMyMessage);
-    apiRouter.delete('/messages/:messageId/', messagesCtrl.deleteMyMessage);
+    apiRouter.delete('/messages/:messageId/', multer, messagesCtrl.deleteMyMessage);
 
     // Moderation Messages
     apiRouter.put('/messages/:messageId/moderate/', messagesCtrl.moderateMessage);
-    apiRouter.delete('/messages/:messageId/moderate/', messagesCtrl.deleteMessage);
+    apiRouter.delete('/messages/:messageId/moderate/', multer, messagesCtrl.deleteMessage);
 
     // Likes routes
     apiRouter.post('/messages/:messageId/vote/like', likesCtrl.likePost);

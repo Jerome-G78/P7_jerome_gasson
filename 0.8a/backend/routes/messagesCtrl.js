@@ -2,6 +2,7 @@
 let models = require('../models');
 let asyncLib = require('async');
 let jwtUtils = require('../utils/jwt.utils');
+let fs = require('fs');
 
 // Constants
 const TITLE_LIMIT = 2;
@@ -276,7 +277,24 @@ module.exports = {
                     done(null, userFound);
                 }
             },
-
+/*            
+            // WIP
+            function(userFound, done){
+                // Suppression des images uploadés (si presentes)
+                models.Message.findOne({
+                    attributes : ['attachment'],
+                    where : {userId}
+                })
+                .then(function(userFound){
+                    let filename = Message.attachment.split('/images/')[1];
+                    fs.unlink(`images/${filename}`);
+                    done(null, userFound);
+                })
+                .catch(function(err){
+                    return res.status(500).json({'error':'unable to delete file! - ' + err});
+                })
+            },
+*/
             function(userFound, done){
                 // Récupérer l'id du message concerné
 
