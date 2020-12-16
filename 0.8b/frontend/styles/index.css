@@ -1,0 +1,46 @@
+/* Fichier de mise en page CSS */
+
+header
+{
+    position: -webkit-sticky;
+    z-index: 1;
+    position: sticky;
+    top: 0em;
+    text-align: center;
+}
+
+nav
+{
+    position: -webkit-sticky;
+    z-index: 2;
+    position: sticky;
+    top: -0.5em;
+}
+
+footer
+{
+    position: -webkit-sticky;
+    z-index: 1;
+    position: sticky;
+    top: -1em;
+    text-align: center;
+}
+
+.Menu ul
+{
+    list-style-type: none;
+}
+
+.Menu a
+{
+    text-decoration: none;
+}
+
+#Mur
+{
+    background-image: url("../images/icon-left-font.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border : 1px solid black;
+}

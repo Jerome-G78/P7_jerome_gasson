@@ -1,0 +1,279 @@
+<!DOCTYPE html> <!-- Doctype spécifique au HTML5 : https://www.alsacreations.com/article/lire/560-dtd-doctype-html-xhtml-comment-choisir.html -->
+<html lang="fr-FR"> <!-- Balise parente -->
+	<head>  <!-- Balise enfant -->
+	<!-- Balise d'entete Contiens le titre du site, le charset, le meta responsive, le fichier CSS etc -->
+		<title> Groupomania - Réseau Social d'entreprise </title>
+        <meta charset='utf-8'>													<!-- définit le type d'encodage / c'est une balise orpheline -->
+        <link rel="shortcut icon" type="image/png" href="favicon.png">          <!-- Icone -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 	<!-- Permet de gérer le responsive du site / definit la largeur relative periphérique sans Zoom -->
+		<meta name="description" content="Description du site"> 				<!-- Contiens une description courte du contenue du site [160Car. Max]-->
+        <link rel="stylesheet" href="styles/index.css"> 						<!-- Lien vers le fichier de style CSS externe -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+	</head>
+	
+	<body class="container">
+	
+    <header class="bg-light text-center">
+        <img class="col-md-6 container" src="images/Banner.png">
+        <!-- Navigation -->
+        <nav class="navbar navbar-light justify-content-end"> 				<!-- Menu de navigation -->
+            <ul class="nav">
+                <li class="nav-item"><a class="nav-link" href="#" title="Inscription au site" data-toggle="modal" data-target="#registrationModal"> <i class="far fa-address-card"></i> Inscription </a></li>
+                <li class="nav-item"><a class="nav-link" href="#" title="Connexion au site" data-toggle="modal" data-target="#logginModal"> <i class="fas fa-key"></i> Connexion </a></li>
+                <li class="nav-item"><a class="nav-link" href="#" title="Mon profil" data-toggle="modal" data-target="#profilModal"> <i class="far fa-user"></i> Mon Compte </a></li>
+            </ul>
+        </nav>
+
+        <div class="alert alert-success">
+            <strong>Success!</strong> Bienvenue [Nom Utilisateur]!
+        </div>
+    </header>
+
+    <!-- Modals Navigation START -->
+    <div class="modal" id="registrationModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+        
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title"> <i class="far fa-address-card"></i> Formulaire d'inscription</h4>
+                    <button type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
+                </div>
+        
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form action="/action_page.php">
+                        <div class="form-group">
+                            <label for="email">Email <span class ="text-danger"> * </span>:</label>
+                            <input type="email" class="form-control" id="email" placeholder="Tom@centuryFlop.com" name="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pwd">Mot de Passe <span class ="text-danger"> * </span>:</label>
+                            <input type="password" class="form-control" id="pwd" placeholder="Renseignez un mot de passe" name="pswd">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name">Nom d'utilisateur <span class ="text-danger"> * </span>:</label>
+                            <input type="text" class="form-control" id="name" placeholder="Ex. Lewis" name="name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bio">Ma biographie:</label>
+                            <textarea class="form-control" id="Bio" placeholder="Racontez-nous! Qui êtes vous? (facultatif)" rows="3"></textarea>
+                            <p class ="text-danger"><small><i>* : Champs obligatoires</i></small></p>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <strong><i class="fas fa-info-circle"></i><i class="fas fa-exclamation-triangle"></i></strong>...
+                        </div>
+
+                    </form>
+                </div>
+        
+                <!-- Modal footer -->
+                <div class="modal-footer">
+
+                    <button type="submit" title="M'inscrire" class="btn btn-primary">M'inscrire...</button>
+
+                </div>
+        
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="logginModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title"><i class="fas fa-key"></i> Connexion</h4>
+                    <button type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="/action_page.php">
+
+                        <div class="form-group">
+                            <label for="email">Email <span class ="text-danger"> * </span>:</label>
+                            <input type="email" class="form-control" id="email" placeholder="Entrez une adresse e-mail" name="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pwd">Mot de Passe <span class ="text-danger"> * </span>:</label>
+                            <input type="password" class="form-control" id="pwd" placeholder="Entrez un mot de passe" name="pswd">
+                            <p class ="text-danger"><small><i>* : Champs obligatoires</i></small></p>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <strong><i class="fas fa-info-circle"></i><i class="fas fa-exclamation-triangle"></i></strong> ...
+                        </div>
+
+                    </form>
+                </div>
+        
+                <div class="modal-footer">
+                    <button type="submit" title="M'identifier" class="btn btn-primary">M'identifer...</button>
+                </div>
+        
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="profilModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+        
+                <div class="modal-header">
+                    <h4 class="modal-title"><i class="far fa-user"></i> Mon Profil</h4>
+                    <button type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
+                </div>
+        
+                <div class="modal-body">
+                    <p> 
+                        <strong> Nom : </strong>[Recupérer le nom] ...<br/>
+                        <strong> E-mail : </strong>[Recupérer l'adresse Email] ...<br/>
+                        <strong> Biographie : </strong>[Recupérer la Biographie] ...<br/>
+                    </p>
+
+                    <div class="form-group">
+                        <label for="bio"><i class="fas fa-pen"></i> Modifier ma Biographie:</label>
+                        <textarea class="form-control" id="Bio" placeholder="Renseignez ce champ si vous souhiatez changer votre biographie." rows="3"></textarea>
+                        <button type="button" title="Mettre à jour" class="btn btn-primary">Mettre à jour</button>
+
+                        <div class="alert alert-success">
+                            <strong><i class="fas fa-check-circle"></i></strong> votre profil est à jour.
+                        </div>
+                        <hr/>
+                    </div>
+
+                    <div class="form-group">
+                        <h5>Options Modérateur</h5>
+                        <label for="Search"><i class="fas fa-search"></i> Rechercher</label>
+                        <input type="text" class="form-control" id="Search" placeholder="Tapez le nom d'un utilisateur" name="Search">
+                        <button type="button" title="Accorder les drois modérateur" class="btn btn-primary" >Accorder / Retirer</button>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong><i class="fas fa-info-circle"></i></strong> vous n'êtes pas modérateur.
+                    </div>
+                    
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" title="Deconnexion" class="btn btn-danger" data-dismiss="modal">Deconnexion</button>
+                </div>
+        
+            </div>
+        </div>
+    </div>
+    <!-- Modals Navigation END -->
+    
+	<!-- Wall START -->
+	<div class="spinner-border text-primary text-center" id="WallLoad">
+        <p>Chargement des messages... </p>
+    </div>
+    <!-- POST -->
+    <div class="row justify-content-center">
+        <div class="col-11 col-sm-9 col-md-6 bg-info text-white media border p-4 m-0" id="">
+            <div class="media-body">
+                <h4>[Utilisateur] <small><i>(Posté le [Date])</i></small></h4>
+                <hr>
+                <h5><i>[Title]</i></h5>
+                <img class="rounded img-fluid d-flex" src="images/ps3wave.jpg"/>
+                <p>[Content...]</p><br/>
+                <hr>
+                <div class="row justify-content-center">
+                    <button type="button" title="J'aime" class="btn btn-success text-center"><i class="far fa-thumbs-up"></i> 0</button>
+                    <button type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
+                    <button type="button" title="Modérer" class="btn btn-warning text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
+                    <button type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- POST END -->
+    <!-- Wall END -->
+
+    <!-- Modals EDIT/MOD START -->
+
+    <div class="modal" id="EditModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+        
+                <div class="modal-header">
+                    <h4 class="modal-title"><i class="fas fa-pen"></i> Edition de contenue</h4>
+                    <button type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
+                </div>
+        
+                <div class="modal-body">
+                    <p> Work In Progress ...</p>
+                    <div class="form-group">
+                        <label for="TitleEdit">Titre :</label>
+                        <input type="email" class="form-control" id="TitleEdit" placeholder="Champ d'édition" name="TitleEdit">
+                    </div>
+                    <div class="form-group">
+                        <label for="ContentEdit">Contenue :</label>
+                        <textarea class="form-control" id="ContentEdit" placeholder="Champ d'édition" rows="3"></textarea>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong><i class="fas fa-info-circle"></i></strong> ...
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" title="Editer" class="btn btn-primary">Editer</button>
+                    <button type="button" title="Annuler" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                </div>
+        
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="ModerateModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+        
+                <div class="modal-header">
+                    <h4 class="modal-title"><i class="fas fa-exclamation-circle"></i> Modération de contenue</h4>
+                    <button type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
+                </div>
+        
+                <div class="modal-body">
+                    <p> Work In Progress ...</p>
+                    <div class="form-group">
+                        <label for="TitleMod">Titre :</label>
+                        <input type="email" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod">
+                    </div>
+                    <div class="form-group">
+                        <label for="ContentMod">Contenue :</label>
+                        <textarea class="form-control" id="ContentMod" placeholder="Champ de modération" rows="3"></textarea>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong><i class="fas fa-info-circle"></i></strong> ...
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" title="Modérer" class="btn btn-warning">Modérer</button>
+                    <button type="button" title="Annuler" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                </div>
+        
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals EDIT/MOD END -->
+
+    <footer class="bg-light text-center"> 			<!-- Pied de page -->
+        <p class="col-sm-12"> Groupomania 2020 - Tout drois résérvés </p>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> <!-- Inclusion de Vue.js -->
+	</body>
+</html>
+
