@@ -7,8 +7,8 @@
         <link rel="shortcut icon" type="image/png" href="favicon.png">          <!-- Icone -->
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 	<!-- Permet de gérer le responsive du site / definit la largeur relative periphérique sans Zoom -->
 		<meta name="description" content="Description du site"> 				<!-- Contiens une description courte du contenue du site [160Car. Max]-->
-        <link rel="stylesheet" href="styles/index.css"> 						<!-- Lien vers le fichier de style CSS externe -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="styles/index.css"> 						<!-- Lien vers le fichier de style CSS externe -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 	</head>
 	
@@ -179,7 +179,7 @@
 	<div class="spinner-border text-primary text-center" id="WallLoad">
         <p>Chargement des messages... </p>
     </div>
-    <!-- POST -->
+    <!-- POST START-->
     <div class="row justify-content-center">
         <div class="col-11 col-sm-9 col-md-6 bg-info text-white media border p-4 m-0" id="">
             <div class="media-body">
@@ -190,10 +190,33 @@
                 <p>[Content...]</p><br/>
                 <hr>
                 <div class="row justify-content-center">
-                    <button type="button" title="J'aime" class="btn btn-success text-center"><i class="far fa-thumbs-up"></i> 0</button>
+                    <button type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> 0</button>
                     <button type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
-                    <button type="button" title="Modérer" class="btn btn-warning text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
+                    <button type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
                     <button type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                </div>
+                <hr>
+                <div class="row justify-content-start">
+                    <div class="col-9 form-group">
+                        <label for="comment">Commentaire</label>
+                        <input type="text" class="form-control" id="comment" placeholder="Commentez!" name="comment">
+                    </div>
+                    <div class="col-3 align-items-center">
+                        <button type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="row justify-content-end">
+                    <div class="col-9">
+                        <p>
+                            <i>[Username - [Date]]</i><br/>
+                            [Comment... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...]
+                        </p>
+                    </div>
+                    <div class="col-3">
+                        <button type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                    </div>
                 </div>
             </div>
         </div>

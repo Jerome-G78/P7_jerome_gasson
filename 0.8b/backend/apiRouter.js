@@ -1,8 +1,9 @@
 // Imports
 const express = require('express');
-const usersCtrl = require('./routes/usersCtrl');
-const messagesCtrl = require('./routes/messagesCtrl');
-const likesCtrl = require('./routes/likesCtrl');
+const usersCtrl = require('./controllers/usersCtrl');
+const messagesCtrl = require('./controllers/messagesCtrl');
+const likesCtrl = require('./controllers/likesCtrl');
+const commentCtrl = require('./controllers/commentCtrl');
 const multer = require('./middleware/multer-config');
 
 // Router
@@ -30,9 +31,18 @@ exports.router = (function(){
     apiRouter.put('/messages/:messageId/', multer, messagesCtrl.putMyMessage);
     apiRouter.delete('/messages/:messageId/', multer, messagesCtrl.deleteMyMessage);
 
-    // Moderation Messages
+    // Comments routes
+    // apiRouter.get('/messages/comment/', commentCtrl.listMessage);
+    apiRouter.post('/messages/comment/:messageId/new/', commentCtrl.createComment);
+    //apiRouter.delete('/messages/comment/:messageId/:commentId/', commentCtrl.deleteMyComment);
+
+    // Moderation
     apiRouter.put('/messages/:messageId/moderate/', messagesCtrl.moderateMessage);
     apiRouter.delete('/messages/:messageId/moderate/', multer, messagesCtrl.deleteMessage);
+    //apiRouter.delete('/messages/comment/:messageId/:commentId/', commentCtrl.deleteComment);
+
+    
+
 
     // Likes routes
     apiRouter.post('/messages/:messageId/vote/like', likesCtrl.likePost);
