@@ -252,6 +252,7 @@ module.exports = {
     asyncLib.waterfall([
       function(done){
         // Récupérer l'utilisateur dans la base de données
+        console.log(1);
         models.User.findOne({
           attributes : ['id','email','username'],
           where: {id: userId}
@@ -268,24 +269,25 @@ module.exports = {
 
     function(userFound, done){
       // Verification des likes pour suppression
+      console.log(2);
       models.Like.destroy({
         where : {userId}
       })
-      .then(function(likeFound){
-        done(null, likeFound);
+      .then(function(complete){
+        done(null, complete);
       })
       .catch(function(err){
-        return res.status(500).json({err});
+        return res.status(500).json({'error':' - ' +err});
       });
     },
 
     function(userFound, done){
       // Verification des commentaires pour suppression
+      console.log(3);
       models.Comment.destroy({
         where : {userId}
       })
-      .then(function(commentFound){
-        console.log(commentFound);
+      .then(function(userFound){
         done(null, userFound);
       })
       .catch(function(err){
@@ -295,6 +297,7 @@ module.exports = {
 
     function(userFound, done){
       // Verification des messages pour suppression
+      console.log(4);
       models.Message.destroy({
         where : {userId}
       })
@@ -308,11 +311,11 @@ module.exports = {
 
     function(userFound, done){
       // Supression du compte de l'utilisateur
+      console.log(5);
       models.User.destroy({
         where : {id : userId}
       })
       .then(function(userId){
-        console.log(6);
         done(userId);
       })
       .catch(function(err){
