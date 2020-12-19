@@ -40,11 +40,13 @@ module.exports = {
             function(userFound, done){
                 if(userFound){
                     models.Comment.create({
+                        userId : userFound.id,
                         messageId : messageId,
                         username : userFound.username,
                         comment : comment
                     })
                     .then(function(newComment){
+                        console.log(4);
                         // Si tout c'est bien passé, le message est envoyé.
                         done(newComment);
                     })
@@ -82,7 +84,7 @@ module.exports = {
         // Récupération de tous les messages via findAll
         models.Comment.findAll({
             // Verification des entrées utilisateurs, si vide mettre des données par défaut.
-            order: [(order != null) ? order.split(':'):['title','ASC']],
+            order: [(order != null) ? order.split(':'):['comment','ASC']],
             attributes : (fields !== '*' && fields != null) ? fields.split(',') :null,
             limit: (!isNaN(limit)) ? limit : null,
             offset: (!isNaN(offset)) ? offset : null,
@@ -182,6 +184,7 @@ module.exports = {
 
         // Récupération des paramètres
         let messageId = parseInt(req.params.messageId);
+        let commentId = parseInt(req.params.commentId);
 
         asyncLib.waterfall([
             // Récupérer l'utilisateur dans la base de données (correspondant au token)
@@ -202,12 +205,12 @@ module.exports = {
             function(userFound, done){
                 // Récupération de l'ID du commentaire
                 models.Comment.findOne({
-                    where: {id : messageId}
+                    where: {userId : userFound.id}
                 })
-                .then(function(CommentFound){
+                .then(function(commentFound){
                     // Si trouvé, il est comparé a l'UserName
-                    if(CommentFound.username == userFound.username){
-                        done(null, CommentFound.id);
+                    if(commentFound.username == userFound.username){
+                        done(null);
                     } else {
                         // Sinon, on retourne une erreur d'accès
                         return res.status(403).json({'error':'this is not your message.'});
@@ -219,13 +222,19 @@ module.exports = {
                 });
             },
 
-            function(CommentFound, done){
+            function(userFound, done){
+                console.log('STEP');
                 // Récupérer l'id du commentaire concerné
-                if(CommentFound){
+                if(userFound){
                     models.Comment.destroy({
-                        where : {id: CommentFound}
+                        where : {
+                            id : commentId,
+                            messageId,
+                            username : userFound.username
+                        }
                     })
                     .then(function(deleteComment){
+                        console.log('STEP');
                         // Si tout c'est bien passé, un information de réussite est envoyée.
                         done(deleteComment);
                     })

@@ -6,7 +6,7 @@ const cors = require('cors');
 const path = require('path');
 
 // On importe l'API routeur, on précise aussi qu'on veut l'objet .router
-const apiRouter = require('./apiRouter').router;
+const apiRouter = require('./routes/apiRouter').router;
 
 // Instantiate Server
 const server = express();

@@ -267,31 +267,59 @@ module.exports = {
     },
 
     function(userFound, done){
-      // Anonimysation des messages utilisateur (Modification Nom et Email)
-      userFound.update({
-        email : 'Rm',
-        username : 'Someone'
+      // Verification des likes pour suppression
+      models.Like.destroy({
+        where : {userId}
       })
-      .then(function(userFound){
-        done(userFound);
+      .then(function(likeFound){
+        done(null, likeFound);
       })
       .catch(function(err){
         return res.status(500).json({err});
       });
-    }
-/*
+    },
+
     function(userFound, done){
-      userFound.destroy({
+      // Verification des commentaires pour suppression
+      models.Comment.destroy({
+        where : {userId}
+      })
+      .then(function(commentFound){
+        console.log(commentFound);
+        done(null, userFound);
+      })
+      .catch(function(err){
+        return res.status(500).json({'Error':'- '+err});
+      });
+    },
+
+    function(userFound, done){
+      // Verification des messages pour suppression
+      models.Message.destroy({
+        where : {userId}
+      })
+      .then(function(message){
+        done(null, userFound);
+      })
+      .catch(function(err){
+        return res.status(500).json({'Error':'- '+err});
+      });
+    },
+
+    function(userFound, done){
+      // Supression du compte de l'utilisateur
+      models.User.destroy({
         where : {id : userId}
       })
       .then(function(userId){
+        console.log(6);
         done(userId);
       })
       .catch(function(err){
         return res.status(500).json({'error':'unable to unsubscribe', err});
       });
     }
-*/
+
     ],
     function(userId){
         if(userId){

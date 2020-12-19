@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-
       // Relation N:M, relation entre la table User et Message, via Like.
       models.User.belongsToMany(models.Message,{
         through: models.Like,
@@ -56,7 +55,8 @@ module.exports = (sequelize, DataTypes) => {
         model: 'User',
         key: 'id'
       }
-    }
+    },
+    isLike: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Like',
