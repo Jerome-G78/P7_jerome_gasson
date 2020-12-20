@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-
       // Relation N:M, relation entre la table User et Message, via Comment.
       models.User.belongsToMany(models.Message,{
         through: models.Comment,

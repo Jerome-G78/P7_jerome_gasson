@@ -248,6 +248,7 @@ module.exports = {
 
     // Verifier que ce token est valide pour faire une requête en BDD
     let userId = jwtUtils.getUserId(headerAuth);
+    let MsgIds = [];
 
     asyncLib.waterfall([
       function(done){
@@ -277,7 +278,7 @@ module.exports = {
         done(null, complete);
       })
       .catch(function(err){
-        return res.status(500).json({'error':' - ' +err});
+        return res.status(500).json({'error':' - ' + err});
       });
     },
 
@@ -295,14 +296,81 @@ module.exports = {
       });
     },
 
+    //!\ Intégrer la suppression des Likes & commentaires d'autres utilisateurs liées au message.
+    // WIP START
+    // Recherche de tous les messages de l'utilisateur et ajout au tableau
+    function(done){
+      console.log(4);
+      models.Message.findAll({
+        attributes:['id'],
+        where:{userId}
+      })
+      .then(function(messageFound){
+        MsgIds.push(messageFound.id);
+        console.log(messageFound, MsgIds);
+        console.log(41);
+        done(null);
+      })
+      .catch(function(err){
+        return res.status(500).json({'Error':''+err});
+      });
+    },
+
+    // Supression des Likes d'autres utilisateurs liée au message
+    function(MsgIds, done){
+      console.log(5);
+      if(MsgIds.length > 0){
+        console.log(51);
+        for(let i=0; i < MsgIds.length;i++)
+          models.Like.destroy({
+            where:{messageId : [i]}
+          })
+          .then(function(){
+            console.log(52);
+            done(null);
+          })
+          .catch(function(err){
+            return res.status(500).json({'Error':''+err});
+          })
+
+      } else {
+        console.log(53);
+        done(null);
+      }
+    },
+
+    // Supression des Comments d'autres utilisateurs liée au message
+    function(MsgIds, done){
+      console.log(6);
+      if(MsgIds.length > 0){
+        console.log(61);
+        for(let i=0; i < MsgIds.length;i++)
+          models.Comment.destroy({
+            where:{messageId : [i]}
+          })
+          .then(function(){
+            console.log(62);
+            done(null);
+          })
+          .catch(function(err){
+            return res.status(500).json({'Error':''+err});
+          })
+
+      } else {
+        console.log(63);
+        done(null);
+      }
+    },
+    // WIP END
+
     function(userFound, done){
       // Verification des messages pour suppression
-      console.log(4);
+      console.log(9);
       models.Message.destroy({
         where : {userId}
       })
       .then(function(message){
-        done(null, userFound);
+        done(null, message);
       })
       .catch(function(err){
         return res.status(500).json({'Error':'- '+err});
@@ -311,7 +379,7 @@ module.exports = {
 
     function(userFound, done){
       // Supression du compte de l'utilisateur
-      console.log(5);
+      console.log(9);
       models.User.destroy({
         where : {id : userId}
       })

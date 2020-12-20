@@ -23,7 +23,7 @@ exports.router = (function(){
     apiRouter.post('/users/login/', usersCtrl.login);
     apiRouter.get('/users/me/', usersCtrl.getUserProfile);
     apiRouter.put('/users/me/', usersCtrl.updateUserProfile);
-    apiRouter.delete('/users/unsubscribe/', usersCtrl.deleteProfile);
+    apiRouter.delete('/users/unsubscribe/', usersCtrl.deleteProfile); // WIP clean others Likes/Comments
     
     // Messages routes
     apiRouter.get('/messages/', messagesCtrl.listMessage);
@@ -34,12 +34,12 @@ exports.router = (function(){
     // Comments routes
     apiRouter.get('/messages/comment/', commentCtrl.listComment);
     apiRouter.post('/messages/comment/:messageId/new/', commentCtrl.createComment);
-    apiRouter.delete('/messages/comment/:messageId/:commentId/', commentCtrl.deleteMyComment); // BUG MSG Err. unable to delete comment in DB
+    apiRouter.delete('/messages/comment/:messageId/:commentId/', commentCtrl.deleteMyComment);
 
     // Moderation
     apiRouter.put('/messages/:messageId/moderate/', messagesCtrl.moderateMessage);
     apiRouter.delete('/messages/:messageId/moderate/', multer, messagesCtrl.deleteMessage);
-    apiRouter.delete('/messages/:commentId/moderate/', commentCtrl.deleteComment); // BUG MSG Err.
+    apiRouter.delete('/messages/comment/:messageId/:commentId/moderate/', commentCtrl.deleteComment);
 
     // Likes routes
     apiRouter.post('/messages/:messageId/vote/like', likesCtrl.likePost); // BUG Tables Push

@@ -113,6 +113,7 @@ module.exports = {
 
         // Récupération des paramètres
         let messageId = parseInt(req.params.messageId);
+        let commentId = parseInt(req.params.commentId);
 
         asyncLib.waterfall([
             // Récupérer l'utilisateur dans la base de données (correspondant au token)
@@ -138,7 +139,8 @@ module.exports = {
                 })
                 .then(function(userFound){
                     if(userFound.isAdmin == true){
-                    done(null, userFound);
+                        console.log(212)
+                        done(null, commentId);
                     } else {
                         return res.status(403).json({'error':'you do not have sufficient privileges'});
                     }
@@ -148,29 +150,36 @@ module.exports = {
                 });
             },
 
-            function(userFound ,done){
-                // Suppression du commentaire
-                if(messageId){
+            function(commentFound, done){
+                // Récupérer l'id du commentaire concerné
+                if(commentFound){
                     models.Comment.destroy({
-                        where: {messageId : messageId}
+                        where : {
+                            id : commentId,
+                            messageId
+                        }
                     })
-                    .then(function(userFound){
-                        done(null, userFound);
+                    .then(function(deleteComment){
+                        // Si tout c'est bien passé, un information de réussite est envoyée.
+                        done(deleteComment);
                     })
                     .catch(function(err){
-                        return res.status(500).json({'error':'unable to remove comment in DB'});
-                    })
+                        // En cas de problème, un message d'erreur est retourné.
+                        res.status(500).json({'error':'unable to delete comment in DB' + err});
+                    });
                 } else {
-                    done(null, userFound);
+                    // En cas de problème, un message d'erreur est retourné.
+                    res.status(404).json({'error':'comment not found'});
                 }
             },
-        ], function(deleteMessage){
-            if(deleteMessage){
-                // delete du commentaire OK
+
+        ], function(deleteComment){
+            if(deleteComment){
+                // delete du message OK
                 return res.status(201).json({'message':'comment deleted successfully'});
             } else {
-                // Le commentaire n'est pas présent.
-                return res.status(500).json({'error':'message not found'});
+                // Le message n'est pas présent.
+                return res.status(500).json({'error':'comment not found'});
             }
         });
     },
@@ -203,49 +212,23 @@ module.exports = {
             },
 
             function(userFound, done){
-                // Récupération de l'ID du commentaire
-                models.Comment.findOne({
-                    where: {userId : userFound.id}
-                })
-                .then(function(commentFound){
-                    // Si trouvé, il est comparé a l'UserName
-                    if(commentFound.username == userFound.username){
-                        done(null);
-                    } else {
-                        // Sinon, on retourne une erreur d'accès
-                        return res.status(403).json({'error':'this is not your message.'});
+                // suppression du commentaire concerné
+                models.Comment.destroy({
+                    where : {
+                        id : commentId,
+                        messageId,
+                        username : userFound.username
                     }
                 })
+                .then(function(deleteComment){
+                    console.log(deleteComment);
+                    // Si tout c'est bien passé, un information de réussite est envoyée.
+                    done(deleteComment);
+                })
                 .catch(function(err){
-                    // Sinon, on retourne une erreur serveur
-                    return res.status(500).json({'error':'faillure - ' + err});
-                });
-            },
-
-            function(userFound, done){
-                console.log('STEP');
-                // Récupérer l'id du commentaire concerné
-                if(userFound){
-                    models.Comment.destroy({
-                        where : {
-                            id : commentId,
-                            messageId,
-                            username : userFound.username
-                        }
-                    })
-                    .then(function(deleteComment){
-                        console.log('STEP');
-                        // Si tout c'est bien passé, un information de réussite est envoyée.
-                        done(deleteComment);
-                    })
-                    .catch(function(err){
-                        // En cas de problème, un message d'erreur est retourné.
-                        res.status(500).json({'error':'unable to delete comment in DB'});
-                    });
-                } else {
                     // En cas de problème, un message d'erreur est retourné.
-                    res.status(404).json({'error':'comment not found'});
-                }
+                    res.status(500).json({'error':'unable to delete comment in DB' + err});
+                });
             },
 
         ], function(deleteComment){
@@ -254,7 +237,7 @@ module.exports = {
                 return res.status(201).json({'message':'comment deleted successfully'});
             } else {
                 // Le message n'est pas présent.
-                return res.status(500).json({'error':'comment not found'});
+                return res.status(404).json({'error':'comment not found'});
             }
         });
     }
