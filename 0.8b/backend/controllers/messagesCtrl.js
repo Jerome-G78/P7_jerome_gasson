@@ -270,24 +270,41 @@ module.exports = {
                     if(filename !=null){
                         fs.unlinkSync(`images/${filename}`);
                     }
-                    done(null);
+                    done(null, message);
                 })
                 .catch(function(err){
                     return res.status(500).json({'error':'unable to delete file! - ' + err});
                 })
             },
 
-            function(done){
+            function(messageId, done){
                 // S'il y a des likes liée au messages, il seront supprimés.
                 if(messageId){
                     models.Like.destroy({
-                        where: {messageId : messageId}
+                        where: {messageId : messageId.id}
                     })
                     .then(function(){
                         done(null, messageId);
                     })
                     .catch(function(err){
-                        return res.status(500).json({'error':'unable to remove Likes in DB'});
+                        return res.status(500).json({'error':'unable to remove Likes in DB' + err});
+                    })
+                } else {
+                    done(null);
+                }
+            },
+
+            function(messageId, done){
+                // S'il y a des Commentaires liée au messages, il seront supprimés.
+                if(messageId){
+                    models.Comment.destroy({
+                        where: {messageId : messageId.id}
+                    })
+                    .then(function(){
+                        done(null, messageId);
+                    })
+                    .catch(function(err){
+                        return res.status(500).json({'error':'unable to remove Likes in DB' + err});
                     })
                 } else {
                     done(null);
@@ -298,7 +315,7 @@ module.exports = {
                 // Récupérer l'id du message concerné
                 if(messageId){
                     models.Message.destroy({
-                        where : {id: messageId}
+                        where : {id: messageId.id}
                     })
                     .then(function(deleteMessage){
                         // Si tout c'est bien passé, un information de réussite est envoyée.
@@ -500,7 +517,24 @@ module.exports = {
                 // S'il y a des likes liée au messages, il seront supprimés.
                 if(messageId){
                     models.Like.destroy({
-                        where: {messageId : messageId}
+                        where: {messageId : messageId.id}
+                    })
+                    .then(function(){
+                        done(null, messageId);
+                    })
+                    .catch(function(err){
+                        return res.status(500).json({'error':'unable to remove Likes in DB' + err});
+                    })
+                } else {
+                    done(null);
+                }
+            },
+
+            function(messageId, done){
+                // S'il y a des Commentaires liée au messages, il seront supprimés.
+                if(messageId){
+                    models.Comment.destroy({
+                        where: {messageId : messageId.id}
                     })
                     .then(function(){
                         done(null, messageId);
