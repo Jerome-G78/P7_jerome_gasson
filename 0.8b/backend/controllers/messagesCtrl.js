@@ -148,7 +148,6 @@ module.exports = {
                     messageId.update({
                         title : (title? title : userFound.title),
                         content : (content? content : userFound.content)
-                        // attachment : attachment,
                     })
                     .then(function(moderateMessage){
                         // Si tout c'est bien passé, le message est envoyé.
@@ -260,25 +259,24 @@ module.exports = {
                     return res.status(500).json({err});
                 });
             },
-/* ERROR
-            function(userFound, done){
+
+            function(done){
                 // Suppression des images uploadés (si presentes)
                 models.Message.findOne({
-                    where : {userId}
+                    where : {id : messageId}
                 })
                 .then(function(message){
-                    console.log(2);
                     let filename = message.attachment.split('/images/')[1];
-                    console.log(filename);
-                    fs.unlinkSync(`images/${filename}`);
-                    console.log(3);
-                    done(null, message);
+                    if(filename !=null){
+                        fs.unlinkSync(`images/${filename}`);
+                    }
+                    done(null);
                 })
                 .catch(function(err){
                     return res.status(500).json({'error':'unable to delete file! - ' + err});
                 })
             },
-*/
+
             function(done){
                 // S'il y a des likes liée au messages, il seront supprimés.
                 if(messageId){
@@ -286,7 +284,7 @@ module.exports = {
                         where: {messageId : messageId}
                     })
                     .then(function(){
-                        done(null);
+                        done(null, messageId);
                     })
                     .catch(function(err){
                         return res.status(500).json({'error':'unable to remove Likes in DB'});
@@ -296,9 +294,8 @@ module.exports = {
                 }
             },
 
-            function(done){
+            function(messageId, done){
                 // Récupérer l'id du message concerné
-
                 if(messageId){
                     models.Message.destroy({
                         where : {id: messageId}
@@ -481,25 +478,24 @@ module.exports = {
                     return res.status(500).json({'error':'faillure - ' + err});
                 });
             },
-/* ERROR
+
             function(userFound, done){
                 // Suppression des images uploadés (si presentes)
                 models.Message.findOne({
                     where : {userId}
                 })
                 .then(function(message){
-                    console.log(2);
                     let filename = message.attachment.split('/images/')[1];
-                    console.log(filename);
-                    fs.unlinkSync(`images/${filename}`);
-                    console.log(3);
+                    if(filename !=null){
+                        fs.unlinkSync(`images/${filename}`);
+                    }
                     done(null, message);
                 })
                 .catch(function(err){
                     return res.status(500).json({'error':'unable to delete file! - ' + err});
                 })
             },
-*/
+
             function(messageId, done){
                 // S'il y a des likes liée au messages, il seront supprimés.
                 if(messageId){
@@ -519,23 +515,20 @@ module.exports = {
 
             function(messageId, done){
                 // Récupérer l'id du message concerné
-
-                if(messageId){
-                    models.Message.destroy({
-                        where : {id: messageId}
-                    })
-                    .then(function(deleteMessage){
-                        // Si tout c'est bien passé, un information de réussite est envoyée.
-                        done(deleteMessage);
-                    })
-                    .catch(function(err){
-                        // En cas de problème, un message d'erreur est retourné.
-                        res.status(500).json({'error':'unable to delete message in DB' +err});
-                    });
-                } else {
+                models.Message.destroy({
+                    where : {
+                        id : messageId.id,
+                        userId
+                    }
+                })
+                .then(function(deleteMessage){
+                    // Si tout c'est bien passé, un information de réussite est envoyée.
+                    done(deleteMessage);
+                })
+                .catch(function(err){
                     // En cas de problème, un message d'erreur est retourné.
-                    res.status(404).json({'error':'message not found'});
-                }
+                    res.status(500).json({'error':'unable to delete message in DB' +err});
+                });
             },
 
         ], function(deleteMessage){
