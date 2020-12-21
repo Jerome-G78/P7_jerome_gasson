@@ -302,14 +302,15 @@ module.exports = {
     function(done){
       console.log(4);
       models.Message.findAll({
-        attributes:['id'],
-        where:{userId}
+        where:{
+          userId
+        }
       })
       .then(function(messageFound){
+        console.log(messageFound);
         MsgIds.push(messageFound.id);
-        console.log(messageFound, MsgIds);
-        console.log(41);
-        done(null);
+        console.log(MsgIds);
+        done(null, MsgIds);
       })
       .catch(function(err){
         return res.status(500).json({'Error':''+err});
@@ -319,22 +320,19 @@ module.exports = {
     // Supression des Likes d'autres utilisateurs liée au message
     function(MsgIds, done){
       console.log(5);
-      if(MsgIds.length > 0){
-        console.log(51);
-        for(let i=0; i < MsgIds.length;i++)
-          models.Like.destroy({
-            where:{messageId : [i]}
-          })
-          .then(function(){
-            console.log(52);
-            done(null);
-          })
-          .catch(function(err){
-            return res.status(500).json({'Error':''+err});
-          })
-
+      if(MsgIds != undefined){
+        for(let i=0; i < MsgIds.length; i++)
+        models.Like.destroy({
+          where:{messageId : [i]}
+        })
+        .then(function(){
+          console.log(51);
+          done(null);
+        })
+        .catch(function(err){
+          return res.status(500).json({'Error':''+err});
+        })
       } else {
-        console.log(53);
         done(null);
       }
     },
@@ -342,22 +340,19 @@ module.exports = {
     // Supression des Comments d'autres utilisateurs liée au message
     function(MsgIds, done){
       console.log(6);
-      if(MsgIds.length > 0){
-        console.log(61);
-        for(let i=0; i < MsgIds.length;i++)
-          models.Comment.destroy({
-            where:{messageId : [i]}
-          })
-          .then(function(){
-            console.log(62);
-            done(null);
-          })
-          .catch(function(err){
-            return res.status(500).json({'Error':''+err});
-          })
-
+      if(MsgIds != undefined){
+        for(let i=0; i < MsgIds.length; i++)
+        models.Comment.destroy({
+          where:{messageId : [i]}
+        })
+        .then(function(){
+          console.log(61);
+          done(null);
+        })
+        .catch(function(err){
+          return res.status(500).json({'Error':''+err});
+        })
       } else {
-        console.log(63);
         done(null);
       }
     },

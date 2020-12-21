@@ -46,7 +46,6 @@ module.exports = {
                         comment : comment
                     })
                     .then(function(newComment){
-                        console.log(4);
                         // Si tout c'est bien passé, le message est envoyé.
                         done(newComment);
                     })
@@ -139,7 +138,6 @@ module.exports = {
                 })
                 .then(function(userFound){
                     if(userFound.isAdmin == true){
-                        console.log(212)
                         done(null, commentId);
                     } else {
                         return res.status(403).json({'error':'you do not have sufficient privileges'});
@@ -221,7 +219,6 @@ module.exports = {
                     }
                 })
                 .then(function(deleteComment){
-                    console.log(deleteComment);
                     // Si tout c'est bien passé, un information de réussite est envoyée.
                     done(deleteComment);
                 })

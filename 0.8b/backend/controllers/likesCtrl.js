@@ -76,12 +76,17 @@ module.exports = {
                 }
             },
             function(messageFound, userFound, isUserAlreadyLiked, done) {
+                console.log("Inf:" + isUserAlreadyLiked);
                     // S'assurer qu l'utilisateur n'as pas déjà Like le message
                     if(!isUserAlreadyLiked){
                         // Ajouter la relation qui uni le message et l'utilisateur
-                        messageFound.addUser(userFound)
+                        models.Like.create({
+                            messageId : messageId,
+                            userId : userId,
+                            isLike : 1
+                        })
                         .then(function(alreadyLikeFound) {
-                            done(null,messageFound, userFound); //isUserAlreadyLiked
+                            done(null,messageFound, userFound);
                         })
                         .catch(function(err){
                             return res.status(500).json({'error':'unable to set user reaction'});
