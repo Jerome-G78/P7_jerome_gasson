@@ -301,49 +301,50 @@ module.exports = {
         // Récuperation de tous les messages de l'utilisateur...
         models.Message.findAll({
           attributes:['id'],
-          where: { userId }
+          where: { userId },
         })
         .then(function(messages){
-          console.log(5 + ": Supression des likes & commentaires liés au messages...");
+          console.log(5 + ": Supression des likes & commentaires liés aux messages...");
           for(message in messages){
             models.Like.destroy({
               where: { messageId : messages[message].id }
             })
-            .then(function(message){
-              models.Comment.destroy({
-                where: { messageId : messages[message].id }
-              })
+            models.Comment.destroy({
+              where: { messageId : messages[message].id }
             })
           }
+          done(null);
+        })
+        .catch(function(err){
+          return res.status(500).json({'error':'faillure to delete Like, Comment or Mesage!' + err});
+        })
+      },
+
+      function(done){
+        models.Message.findAll({
+          where: { userId }
         })
         .then(function(messages){
-          // Supression des attatchment du message (si présent)
-          console.log(6 + ": Supression des attachement (si présents)...");
-          models.Message.findAll({
-            where: { userId }
-          })
-          .then(function(messages){
-            for(message in messages){
-              let filename = messages[message].attachment.split('/images/')[1];
-              if(filename !=null){
-                  fs.unlinkSync(`images/${filename}`);
-              }
+          console.log(6 + ": Supression des attatchement des messages...");
+          for(message in messages){
+            console.log(message);
+            let filename = messages[message].attachment.split('/images/')[1];
+            if(filename !=null){
+                fs.unlinkSync(`images/${filename}`);
             }
-          })
-          .then(function(messages){
             models.Message.destroy({
-            where: { userId }
+              where: {userId}
             })
-            done(null, done);
-          })
-          .catch(function(err){
-            return res.status(500).json({'error':'faillure to delete Like, Comment or Mesage!' + err});
-          });
+          }
+          done(null);
+        })
+        .catch(function(err){
+          return res.status(500).json({'error':'faillure to delete Like, Comment or Mesage!' + err});
         })
       },
 
       function(completed, done){
-        console.log(7 + ": Supression du compte de l'utilisateur");
+        console.log(8 + ": Supression du compte de l'utilisateur");
         // Supression du compte de l'utilisateur
         models.User.destroy({
           where: { id : userId }
