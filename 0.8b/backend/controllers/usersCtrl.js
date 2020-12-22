@@ -337,7 +337,7 @@ module.exports = {
             done(null, done);
           })
           .catch(function(err){
-            return res.status(500).json({'error':' - ' + err});
+            return res.status(500).json({'error':'faillure to delete Like, Comment or Mesage!' + err});
           });
         })
       },
@@ -352,7 +352,7 @@ module.exports = {
           return res.status(201).json({'Message':'unsubscribe sucess'});
         })
         .catch(function(err){
-          return res.status(500).json({'error':'faillure to delete Like, Comment or Mesage!' + err});
+          return res.status(500).json({'error':'faillure to unsubscribe!' + err});
         });
       }
     ])
