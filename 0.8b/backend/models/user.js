@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       // Le model actuel.typeDeRelation(models.référence)
       models.User.hasMany(models.Message);
+      models.User.hasMany(models.Like);
+      models.User.hasMany(models.Comment);
     }
   };
   User.init({

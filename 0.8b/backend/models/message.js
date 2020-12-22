@@ -18,6 +18,8 @@ module.exports = (sequelize, DataTypes) => {
           allowNull : false
         }
       })
+      models.Message.hasMany(models.Like);
+      models.Message.hasMany(models.Comment);
     }
   };
   Message.init({

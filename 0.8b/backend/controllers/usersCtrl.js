@@ -6,6 +6,7 @@ let asyncLib = require('async');
 let fs = require('fs');
 const { where } = require('sequelize');
 const { DataTypes } = require('sequelize');
+const { isDate } = require('util');
 
 
 // Regex
@@ -243,159 +244,117 @@ module.exports = {
   },
 
   deleteProfile: function(req, res, next){
+    // Regarder la doc Sequelize
+    // delete cascade : true
+
     // Récupération de l'en-tête d'authorisation
     let headerAuth = req.headers['authorization'];
 
     // Verifier que ce token est valide pour faire une requête en BDD
     let userId = jwtUtils.getUserId(headerAuth);
-    let MsgIds = [];
 
     asyncLib.waterfall([
       function(done){
+        console.log(1 + ": Récupérer l'utilisateur dans la base de données");
+      
         // Récupérer l'utilisateur dans la base de données
-        console.log(1);
         models.User.findOne({
           attributes : ['id','email','username'],
-          where: {id: userId}
-      })
-      .then(function(userFound){
-        // Si l'utilisateur est rouvé, le retourner
-        done(null,userFound);
-      })
-      .catch(function(err){
-        // Sinon envoyer une erreur
-        return res.status(500).json({'error':'unable to verify user', err});
-      });
-    },
-
-    function(userFound, done){
-      // Verification des likes pour suppression
-      console.log(2);
-      models.Like.destroy({
-        where : {userId}
-      })
-      .then(function(complete){
-        done(null, complete);
-      })
-      .catch(function(err){
-        return res.status(500).json({'error':' - ' + err});
-      });
-    },
-
-    function(userFound, done){
-      // Verification des commentaires pour suppression
-      console.log(3);
-      models.Comment.destroy({
-        where : {userId}
-      })
-      .then(function(userFound){
-        done(null, userFound);
-      })
-      .catch(function(err){
-        return res.status(500).json({'Error':'- '+err});
-      });
-    },
-
-    //!\ Intégrer la suppression des Likes & commentaires d'autres utilisateurs liées au message.
-    // WIP START
-    // Recherche de tous les messages de l'utilisateur et ajout au tableau
-    function(done){
-      console.log(4);
-      models.Message.findAll({
-        where:{
-          userId
-        }
-      })
-      .then(function(messageFound){
-        console.log(messageFound);
-        MsgIds.push(messageFound.id);
-        console.log(MsgIds);
-        done(null, MsgIds);
-      })
-      .catch(function(err){
-        return res.status(500).json({'Error':''+err});
-      });
-    },
-
-    // Supression des Likes d'autres utilisateurs liée au message
-    function(MsgIds, done){
-      console.log(5);
-      if(MsgIds != undefined){
-        for(let i=0; i < MsgIds.length; i++)
-        models.Like.destroy({
-          where:{messageId : [i]}
+          where: {id: userId},
+          include: [{
+            model: models.Comment,
+            model: models.like,
+            model: models.Message
+          }]
         })
-        .then(function(){
-          console.log(51);
+        .then(userFound => {
+          console.log(2 + ": Verification des likes liées pour suppression...");
+          // Verification des likes liées pour suppression
+          models.Like.destroy({
+            where: { userId },
+            cascade : true,
+            include: [{
+              model: models.Comment,
+              model: models.like,
+              model: models.Message
+            }]
+          })
+        })
+        .then(likeFound => {
+          console.log(3 + ": Verification des Comment liées pour suppression...");
+          // Verification des Comment liées pour suppression
+          models.Comment.destroy({
+            where: { userId },
+            cascade : true,
+            include: [{
+              model: models.Comment,
+              model: models.like,
+              model: models.Message
+            }]
+          })
           done(null);
         })
-        .catch(function(err){
-          return res.status(500).json({'Error':''+err});
-        })
-      } else {
-        done(null);
-      }
-    },
+      },
 
-    // Supression des Comments d'autres utilisateurs liée au message
-    function(MsgIds, done){
-      console.log(6);
-      if(MsgIds != undefined){
-        for(let i=0; i < MsgIds.length; i++)
-        models.Comment.destroy({
-          where:{messageId : [i]}
+      function(done){
+        console.log(4 + ": Récupératon des messages de l'utilisateur...");
+        // Récuperation de tous les messages de l'utilisateur...
+        models.Message.findAll({
+          attributes:['id'],
+          where: { userId }
+        })
+        .then(function(messages){
+          console.log(5 + ": Supression des likes & commentaires liés au messages...");
+          for(message in messages){
+            models.Like.destroy({
+              where: { messageId : messages[message].id }
+            })
+            .then(function(message){
+              models.Comment.destroy({
+                where: { messageId : messages[message].id }
+              })
+            })
+          }
+        })
+        .then(function(messages){
+          // Supression des attatchment du message (si présent)
+          console.log(6 + ": Supression des attachement (si présents)...");
+          models.Message.findAll({
+            where: { userId }
+          })
+          .then(function(messages){
+            for(message in messages){
+              let filename = messages[message].attachment.split('/images/')[1];
+              if(filename !=null){
+                  fs.unlinkSync(`images/${filename}`);
+              }
+            }
+          })
+          .then(function(messages){
+            models.Message.destroy({
+            where: { userId }
+            })
+            done(null, done);
+          })
+          .catch(function(err){
+            return res.status(500).json({'error':' - ' + err});
+          });
+        })
+      },
+
+      function(completed, done){
+        console.log(7 + ": Supression du compte de l'utilisateur");
+        // Supression du compte de l'utilisateur
+        models.User.destroy({
+          where: { id : userId }
         })
         .then(function(){
-          console.log(61);
-          done(null);
+          return res.status(201).json({'Message':'unsubscribe sucess'});
         })
         .catch(function(err){
-          return res.status(500).json({'Error':''+err});
-        })
-      } else {
-        done(null);
+          return res.status(500).json({'error':'faillure to delete Like, Comment or Mesage!' + err});
+        });
       }
-    },
-    // WIP END
-
-    function(userFound, done){
-      // Verification des messages pour suppression
-      console.log(9);
-      models.Message.destroy({
-        where : {userId}
-      })
-      .then(function(message){
-        done(null, message);
-      })
-      .catch(function(err){
-        return res.status(500).json({'Error':'- '+err});
-      });
-    },
-
-    function(userFound, done){
-      // Supression du compte de l'utilisateur
-      console.log(9);
-      models.User.destroy({
-        where : {id : userId}
-      })
-      .then(function(userId){
-        done(userId);
-      })
-      .catch(function(err){
-        return res.status(500).json({'error':'unable to unsubscribe', err});
-      });
-    }
-
-    ],
-    function(userId){
-        if(userId){
-            // Désinscription effectuée
-            return res.status(201).json({'message':'unsubscribe sucess'});
-        } else {
-            // Une erreur est survenue
-            return res.status(500).json({'error':'user not found in DB'});
-        }
-    });
+    ])
   }
-
 }
