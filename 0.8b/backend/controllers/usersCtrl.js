@@ -270,14 +270,36 @@ module.exports = {
         .then(userFound => {
           console.log(2 + ": Verification des likes liées pour suppression...");
           // Verification des likes liées pour suppression
-          models.Like.destroy({
-            where: { userId },
-            cascade : true,
-            include: [{
-              model: models.Comment,
-              model: models.like,
-              model: models.Message
-            }]
+          models.Like.findAll({
+            attributes: ['id','userId', 'messageId'],
+            where: {
+              userId,
+              isLike : 1
+            }
+          })
+          .then(function(isLiked){
+            console.log(2-1 + ": Décrémentation des compteurs...");
+            // Décrémentation du compteur liée...
+            for(likeFound in isLiked){
+              models.Message.findOne({
+                where: {id:isLiked[likeFound].messageId}
+              })
+              .then(function(messageFound){
+                messageFound.update({
+                  likes : messageFound.likes -1
+                })
+              })
+              models.Like.destroy({
+                where: { userId },
+                cascade : true,
+                include: [{
+                  model: models.Comment,
+                  model: models.like,
+                  model: models.Message
+                }]
+              })
+            }
+            done(null);
           })
         })
         .then(likeFound => {
@@ -292,7 +314,7 @@ module.exports = {
               model: models.Message
             }]
           })
-          done(null);
+          // done(null);
         })
       },
 
