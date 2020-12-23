@@ -299,7 +299,6 @@ module.exports = {
                 }]
               })
             }
-            done(null);
           })
         })
         .then(likeFound => {
@@ -314,7 +313,7 @@ module.exports = {
               model: models.Message
             }]
           })
-          // done(null);
+          done(null);
         })
       },
 
