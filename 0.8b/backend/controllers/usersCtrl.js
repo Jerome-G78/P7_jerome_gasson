@@ -327,7 +327,6 @@ module.exports = {
         .then(function(messages){
           console.log(6 + ": Supression des attatchement des messages...");
           for(message in messages){
-            console.log(message);
             let filename = messages[message].attachment.split('/images/')[1];
             if(filename !=null){
                 fs.unlinkSync(`images/${filename}`);
