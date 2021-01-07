@@ -8,7 +8,7 @@
                     <button type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
-                <div class="modal-body">
+                <div @click="LogInVerify" class="modal-body">
                     <form action="/action_page.php">
 
                         <div @click="LogInVerify" class="form-group">
@@ -106,7 +106,7 @@ export default {
             console.log(this.Loading);
             */
 
-            // Registering
+            // LogIn
             this.subOkay = true;
 
             // Cleaning
@@ -118,6 +118,8 @@ export default {
 
             // Completed
             this.subCompleted = true;
+            this.$store.commit('setConnected',this.Connected = true);
+            console.log(this.Connected);
             this.$store.commit('setLoading',this.Loading = false);
             console.log(this.Loading);
         }

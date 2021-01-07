@@ -39,6 +39,9 @@ export default createStore({
     },
     setLoading(state, newValue){
       state.CHKuserName = newValue;
+    },
+    setConnected(state, newValue){
+      state.Connected = newValue;
     }
   },
   actions: {
