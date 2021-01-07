@@ -72,7 +72,7 @@ export default {
     name: 'SignIn',
     data(){
         return {
-            // Récupération des variables dans vue X
+            // Récupération des variables globales dans vue X
             userName: this.$store.state.userName,
             Connected: this.$store.state.Connected,
             CHKeMail: this.$store.state.CHKeMail,

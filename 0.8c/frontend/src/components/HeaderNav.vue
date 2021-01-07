@@ -20,44 +20,6 @@
     </header>
     <!-- Modals Navigation START -->
 
-    <div class="modal" id="logginModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h4 class="modal-title"><i class="fas fa-key"></i> Connexion</h4>
-                    <button type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-                <div class="modal-body">
-                    <form action="/action_page.php">
-
-                        <div class="form-group">
-                            <label for="email">Email <span class ="text-danger"> * </span>:</label>
-                            <input type="email" class="form-control" id="email" placeholder="Entrez une adresse e-mail" name="email">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="pwd">Mot de Passe <span class ="text-danger"> * </span>:</label>
-                            <input type="password" class="form-control" id="pwd" placeholder="Entrez un mot de passe" name="pswd">
-                            <p class ="text-danger"><small><i>* : Champs obligatoires</i></small></p>
-                        </div>
-
-                        <div class="alert alert-info">
-                            <strong><i class="fas fa-info-circle"></i><i class="fas fa-exclamation-triangle"></i></strong> ...
-                        </div>
-
-                    </form>
-                </div>
-        
-                <div class="modal-footer">
-                    <button type="submit" title="M'identifier" class="btn btn-primary">M'identifer...</button>
-                </div>
-        
-            </div>
-        </div>
-    </div>
-
     <div class="modal" id="NewMessage">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -153,10 +115,6 @@ export default {
             // Récupération des variables dans vue X
             userName: this.$store.state.userName,
             Connected: this.$store.state.Connected,
-            CHKeMail: this.$store.state.CHKeMail,
-            CHKpassword: this.$store.state.CHKpassword,
-            ComparePwds: this.$store.state.ComparePwds,
-            CHKuserName: this.$store.state.CHKuserName,
             Loading: this.$store.state.Loading,
 
             // Variables locales
@@ -165,80 +123,12 @@ export default {
             subCompleted: false,
 
             // Messages
-            email: "Veuillez renseigner un e-mail",
-            username: "Veuillez renseigner un nom d'utilisateur",
-            Mdp: "Veuillez renseigner un mot de passe",
-            MDPFail: "Les mots de passes ne sont pas identiques",
-            subOK: "Votre inscription a bien été prise en compte",
-            subFail: "Une erreur est survenue lors de l'inscription!"
-
         }
     },
     // Création de la logique du module
     methods:{
-        SingInVerify(){
-            let Email = document.getElementById('Semail').value;
-            let Pwd = document.getElementById('Spwd').value;
-            let PwdC = document.getElementById('SpwdC').value;
-            let Name = document.getElementById('Sname').value;
-            console.log(Email, Pwd, PwdC, Name);
-
-
-            if(Email !=''){
-                this.$store.commit('setCHKeMail',this.CHKeMail = true);
-
-            } else {
-                this.$store.commit('setCHKeMail',this.CHKeMail = false);
-            }
-
-            if(Name !=''){
-                this.$store.commit('setCHKuserName', this.CHKuserName = true);
-            } else {
-                this.$store.commit('setCHKuserName', this.CHKuserName = false);
-            }
-
-            if(Pwd !='' && PwdC !='' && (Pwd == PwdC)){
-                this.$store.commit('setComparePwds', this.ComparePwds = false);
-                this.$store.commit('setCHKpassword', this.CHKpassword = true);
-            }
-            if(Pwd !='' && PwdC !='' && (Pwd != PwdC)){
-                this.$store.commit('setComparePwds', this.ComparePwds = true);
-            }
-            if(Pwd=='' || PwdC=='') {
-                this.$store.commit('setCHKpassword', this.CHKpassword = false);
-            }
-        },
-        Subscribe(){
-            this.$store.commit('setLoading',this.Loading = true);
-            console.log(this.Loading);
-            let Email = document.getElementById('Semail').value;
-            let Pwd = document.getElementById('Spwd').value;
-            let PwdC = document.getElementById('SpwdC').value;
-            let Name = document.getElementById('Sname').value;
-
-            // Faillure
-            /*
-            this.subFailure = true;
-            this.$store.commit('setLoading',this.Loading = false);
-            console.log(this.Loading);
-            */
-
-            // Registering
-            this.subOkay = true;
-
-            // Cleaning
-            document.getElementById('Semail').value = '';
-            document.getElementById('Spwd').value = '';
-            document.getElementById('SpwdC').value = '';
-            document.getElementById('Sname').value = '';
-            
-
-            // Completed
-            this.subCompleted = true;
-            this.$store.commit('setLoading',this.Loading = false);
-            console.log(this.Loading);
-        }
-    },
+        
+    }
     
 }
 </script>
