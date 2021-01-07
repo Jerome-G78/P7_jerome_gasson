@@ -23,8 +23,8 @@
                     <p class ="text-danger"><small><i>* : Champs obligatoires</i></small></p>
 
                     <div class="form-group">
-                        <input @click="JoinPict" id="Join" type="checkbox"> joindre une image
-                        <input @click="JoinPict" v-if="uploadFile" id="uploadFile" type="file">
+                        <input @click="JoinPict" id="Join" type="checkbox"> joindre une image <br/>
+                        <input @click="SetPict" v-if="uploadFile" id="uploadFile" type="file">
                     </div>
 
                 </div>

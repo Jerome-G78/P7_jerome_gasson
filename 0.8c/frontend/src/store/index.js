@@ -4,7 +4,7 @@ export default createStore({
   state: {
     // Déclaration des données du "store" de vue X
     Connected: true,
-    isAdmin: true,
+    isAdmin: false,
     ownMessage: false,
     userId:0,
 
