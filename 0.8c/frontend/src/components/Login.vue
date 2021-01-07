@@ -111,6 +111,7 @@ export default {
 
             // Completed
             this.subCompleted = true;
+            this.Connected = true;
             this.$store.commit('setConnected',this.Connected = true);
             console.log(this.$store.state.Connected);
             this.$store.commit('setLoading',this.Loading = false);

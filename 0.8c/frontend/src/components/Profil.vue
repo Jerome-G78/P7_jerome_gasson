@@ -31,7 +31,7 @@
 
                     <div v-if="isAdmin" class="form-group">
                         <h5>Options Modérateur</h5>
-                        <label for="Search"><i class="fas fa-search"></i> Rechercher</label>
+                        <label for="Search"><i class="fas fa-search"></i> Rechercher un utilisateur</label>
                         <input @keyup="checkNameExist" type="text" class="form-control" id="Search" placeholder="Tapez le nom d'un utilisateur" name="Search">
                         <button v-if="findUser && !findUserAdmin" type="button" title="Accorder les drois modérateur" class="btn btn-primary" >Accorder</button>
                         <button v-if="findUser && findUserAdmin" type="button" title="Supprimer les drois modérateur" class="btn btn-primary" >Retirer</button>

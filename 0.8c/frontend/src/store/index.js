@@ -20,6 +20,12 @@ export default createStore({
     ComparePwds:false,
     CHKuserName:false,
 
+    // New Message
+    Ntitle:'',
+    Ncontent:'',
+    Nattachment: 0,
+    Npicture:'',
+
     // Loading
     Loading:false
 
@@ -30,6 +36,8 @@ export default createStore({
   },
   mutations: {
     // Permet de mettre a jour les données dans le store (state)
+
+    // SignIn
     setCHKeMail(state, newValue){
       state.CHKeMail = newValue;
     },
@@ -48,12 +56,28 @@ export default createStore({
     setConnected(state, newValue){
       state.Connected = newValue;
     },
+
+    // Profil
     setBioEdit(state, newValue){
       state.BioEdit = newValue;
     },
     setBio(state, newValue){
       state.bio = newValue;
-    }
+    },
+
+    // New Message
+    setNtitle(state, newValue){
+      state.Ntitle = newValue;
+    },
+    setNcontent(state, newValue){
+      state.Ncontent = newValue;
+    },
+    setNattachment(state, newValue){
+      state.Nattachment = newValue;
+    },
+    setNpicture(state, newValue){
+      state.Npicture = newValue;
+    },
 
   },
   actions: {

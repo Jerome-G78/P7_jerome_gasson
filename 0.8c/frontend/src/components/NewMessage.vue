@@ -12,24 +12,25 @@
 
                     <div class="form-group">
                         <label for="title">Titre <span class ="text-danger"> * </span>:</label>
-                        <input type="text" class="form-control" id="title" placeholder="Ajoutez un Titre" name="title">
+                        <input @keyup="MsgVerify" type="text" class="form-control" id="title" placeholder="Ajoutez un Titre" name="title">
                     </div>
 
                     <div class="form-group">
                         <label for="Content"> Contenue du message <span class ="text-danger"> * </span> :</label>
-                        <textarea class="form-control" id="Content" placeholder="Contenue de votre message" rows="3"></textarea>
+                        <textarea @keyup="MsgVerify" class="form-control" id="Content" placeholder="Contenue de votre message" rows="3"></textarea>
                     </div>
-                    <p> 
-                        Joindre une image :
-                        <input id="uploadFile" type="file">
-                    </p>
 
                     <p class ="text-danger"><small><i>* : Champs obligatoires</i></small></p>
+
+                    <div class="form-group">
+                        <input @click="JoinPict" id="Join" type="checkbox"> joindre une image
+                        <input @click="JoinPict" v-if="uploadFile" id="uploadFile" type="file">
+                    </div>
 
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" title="Envoyer" class="btn btn-primary" data-dismiss="modal">Envoyer...</button>
+                    <button v-if="chkCompleted" type="button" title="Envoyer" class="btn btn-primary" data-dismiss="modal">Envoyer...</button>
                 </div>
         
             </div>
@@ -44,13 +45,18 @@ export default {
         return {
             // Récupération des variables globales dans vue X
             userName: this.$store.state.userName,
-            Connected: this.$store.state.Connected,
             Loading: this.$store.state.Loading,
+            Ntitle:this.$store.state.Ntitle,
+            Ncontent:this.$store.state.Ncontent,
+            Nattachment: this.$store.state.Nattachment,
+            Npicture:this.$store.state.Npicture,
 
             // Variables locales
+            chkCompleted: false,
             subOkay: false,
             subFailure: false,
             subCompleted: false,
+            uploadFile: false,
 
             // Messages
             subOK: "Message envoyé! ",
@@ -60,10 +66,48 @@ export default {
     // Création de la logique du module
     methods:{
         MsgVerify(){
+            let CHKtitle = document.getElementById("title").value;
+            let CHKContent = document.getElementById("Content").value;
+
+            if(CHKtitle !=''){
+                this.$store.commit('setNtitle', CHKtitle);
+            } else {
+                this.$store.commit('setNtitle', '');
+            }
+
+            if(CHKContent !=''){
+                this.$store.commit('setNcontent', CHKContent);
+            } else {
+                this.$store.commit('setNcontent', '');
+            }
+
+            if(CHKtitle !='' && CHKContent !=''){
+                this.chkCompleted = true;
+            } else {
+                this.chkCompleted = false;
+            }
 
         },
+
+        JoinPict(){
+            if(this.uploadFile){
+                this.uploadFile = false;
+                this.Nattachment = 0;
+                this.$store.commit('setNattachment', 0); // Global ?!
+
+            } else {
+                this.uploadFile = true;
+                this.Nattachment = 1;
+                this.$store.commit('setNattachment', 1); // Global ?!
+            }
+        },
+
+        SetPict(){
+            // WIP
+        },
+
         Post(){
-           
+           // WIP
         }
     },
 }
