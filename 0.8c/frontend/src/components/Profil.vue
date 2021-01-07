@@ -116,6 +116,7 @@ export default {
             this.$store.commit('setLoading',this.Loading = false);
         },
         checkNameExist(){
+            //WIP
             let searchName = document.getElementById("Search").value;
 
             if(searchName !='' && searchName == this.userName){
@@ -133,10 +134,10 @@ export default {
 
         },
         addRight(){
-            //
+            //WIP
         },
         removeRight(){
-            //
+            //WIP
         }
     },
 }
