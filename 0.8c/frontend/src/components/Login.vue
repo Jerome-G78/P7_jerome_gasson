@@ -109,19 +109,12 @@ export default {
             // LogIn
             this.subOkay = true;
 
-            // Cleaning
-            document.getElementById('Semail').value = '';
-            document.getElementById('Spwd').value = '';
-            document.getElementById('SpwdC').value = '';
-            document.getElementById('Sname').value = '';
-            
-
             // Completed
             this.subCompleted = true;
             this.$store.commit('setConnected',this.Connected = true);
-            console.log(this.Connected);
+            console.log(this.$store.state.Connected);
             this.$store.commit('setLoading',this.Loading = false);
-            console.log(this.Loading);
+            console.log(this.$store.state.Loading);
         }
     },
 }

@@ -3,11 +3,16 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     // Déclaration des données du "store" de vue X
-    Connected: false,
+    Connected: true,
     isAdmin: true,
     ownMessage: false,
     userId:0,
+
+    // Profil
     userName:'Poppy',
+    email:'test@centuryflop.com',
+    bio:'Hello c est poppY',
+    BioEdit : false,
 
     // SignIn
     CHKeMail:false,
@@ -42,7 +47,14 @@ export default createStore({
     },
     setConnected(state, newValue){
       state.Connected = newValue;
+    },
+    setBioEdit(state, newValue){
+      state.BioEdit = newValue;
+    },
+    setBio(state, newValue){
+      state.bio = newValue;
     }
+
   },
   actions: {
     //
