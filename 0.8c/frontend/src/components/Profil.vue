@@ -108,7 +108,6 @@ export default {
            //SubOkay
            this.bio = BioArea;
            this.$store.commit('setBio', BioArea);
-           console.log(this.bio);
            this.subOkay = true;
 
            // Completed
