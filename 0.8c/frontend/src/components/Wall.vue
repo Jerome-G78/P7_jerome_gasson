@@ -1,5 +1,4 @@
 <template>
-    <!-- Wall START -->
 	<div v-if="Loading" class="spinner-border text-primary text-center" id="WallLoad">
         <p>Chargement des messages... </p>
     </div>
@@ -22,12 +21,12 @@
                 </div>
                 <hr v-if="Connected">
                 <div id="Comment" v-if="Connected" class="row justify-content-start">
-                    <div class="col-9 form-group">
+                    <div v-if="Connected" class="col-9 form-group">
                         <label for="comment">Commentaire</label>
-                        <input type="text" class="form-control" id="comment" placeholder="Commentez!" name="comment">
+                        <input @keyup="CommentVerify" type="text" class="form-control" id="comment" placeholder="Commentez!" name="comment">
                     </div>
                     <div class="col-3 align-items-center">
-                        <button type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
+                        <button @click="Submit" v-if="ValueComment" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
                     </div>
                 </div>
                 <hr>
@@ -47,7 +46,6 @@
         </div>
     </div>
     <!-- POST END -->
-    <!-- Wall END -->
 </template>
 
 <script>
@@ -61,6 +59,45 @@ export default {
             ownMessage: this.$store.state.ownMessage,
             Connected: this.$store.state.Connected,
             Loading: this.$store.state.Loading,
+
+            // Variables Local
+            CHKcomment : false,
+            ValueComment: false,
+        }
+    },
+    // Création de la logique du module
+    methods:{
+        CommentVerify(){
+            let Comment = document.getElementById('comment').value;
+
+            if(Comment !=''){
+                this.ValueComment = true;
+            } else {
+                this.ValueComment = false;
+            }
+        },
+        Submit(){
+            // Sucess
+            document.getElementById('comment').value = '';
+            this.ValueComment = false;
+            this.subOkay = true;
+            this.subCompleted = true;
+            this.chkOK = false;
+
+            // Faillure
+            /*
+            this.subFailure = true;
+            this.subCompleted = true;
+            */
+        },
+        ResetStats(){
+            // WIP
+            document.getElementById('TitleEdit').value = '';
+            document.getElementById('ContentEdit').value = '';
+            this.subFailure = false;
+            this.subOkay = false;
+            this.subCompleted = false;
+            this.chkOK = false;
         }
     }
 }
