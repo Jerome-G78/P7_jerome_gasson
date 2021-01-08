@@ -17,7 +17,7 @@
                     <button v-if="Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> 0</button>
                     <button v-if="Connected && ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
                     <button v-if="Connected && isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
-                    <button v-if="Connected && (isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                    <button @click="DeletePost" v-if="Connected && (isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                 </div>
                 <hr v-if="Connected">
                 <div id="Comment" v-if="Connected" class="row justify-content-start">
@@ -39,7 +39,7 @@
                         </p>
                     </div>
                     <div class="col-3">
-                        <button v-if="Connected && (isAdmin || ownMsg)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                        <button @click="DeleteComment" v-if="Connected && (isAdmin || ownMsg)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>
             </div>
@@ -98,7 +98,14 @@ export default {
             this.subOkay = false;
             this.subCompleted = false;
             this.chkOK = false;
+        },
+        DeleteComment(){
+            //WIP
+        },
+        DeletePost(){
+            //WIP
         }
+
     }
 }
 </script>
