@@ -5,20 +5,20 @@
 
                 <div class="modal-header">
                     <h4 class="modal-title"><i class="fas fa-key"></i> Connexion</h4>
-                    <button type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
+                    <button @click="ResetStats" type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
-                <div @click="LogInVerify" class="modal-body">
+                <div class="modal-body">
                     <form action="/action_page.php">
 
-                        <div @click="LogInVerify" class="form-group">
+                        <div class="form-group">
                             <label for="Lemail">Email <span class ="text-danger"> * </span>:</label>
-                            <input type="email" class="form-control" id="Lemail" placeholder="Entrez une adresse e-mail" name="email">
+                            <input @keyup="LogInVerify" type="email" class="form-control" id="Lemail" placeholder="Entrez une adresse e-mail" name="email">
                         </div>
 
-                        <div @click="LogInVerify" class="form-group">
+                        <div class="form-group">
                             <label for="Lpwd">Mot de Passe <span class ="text-danger"> * </span>:</label>
-                            <input type="password" class="form-control" id="Lpwd" placeholder="Entrez un mot de passe" name="pswd">
+                            <input @keyup="LogInVerify" type="password" class="form-control" id="Lpwd" placeholder="Entrez un mot de passe" name="pswd">
                             <p class ="text-danger"><small><i>* : Champs obligatoires</i></small></p>
                         </div>
 
@@ -94,10 +94,8 @@ export default {
         LogIn(){
             this.$store.commit('setLoading',this.Loading = true);
             console.log(this.Loading);
-            let Email = document.getElementById('Semail').value;
-            let Pwd = document.getElementById('Spwd').value;
-            let PwdC = document.getElementById('SpwdC').value;
-            let Name = document.getElementById('Sname').value;
+            let Email = document.getElementById('Lemail').value;
+            let Pwd = document.getElementById('Lpwd').value;
 
             // Faillure
             /*
@@ -116,6 +114,15 @@ export default {
             console.log(this.$store.state.Connected);
             this.$store.commit('setLoading',this.Loading = false);
             console.log(this.$store.state.Loading);
+        },
+        ResetStats(){
+            // WIP
+            document.getElementById('Lemail').value = '';
+            document.getElementById('Lpwd').value = '';
+            this.subFailure = false;
+            this.subOkay = false;
+            this.subCompleted = false;
+            this.chkOK = false;
         }
     },
 }

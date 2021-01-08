@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     // Déclaration des données du "store" de vue X
-    Connected: true,
+    Connected: false,
     isAdmin: true,
     ownMessage: true,
     userId:0,
