@@ -6,6 +6,8 @@
     <NewMessage/>
     <Profil/>
     <Wall/>
+    <WallEditPost/>
+    <WallModeratePost/>
     <Footer/>
   </div>
 </template>
@@ -18,12 +20,15 @@ import Login from '@/components/Login.vue'
 import NewMessage from '@/components/NewMessage.vue'
 import Profil from '@/components/Profil.vue'
 import Wall from '@/components/Wall.vue'
+import WallEditPost from '@/components/WallEditPost.vue'
+import WallModeratePost from '@/components/WallModeratePost.vue'
 import Footer from '@/components/Footer.vue'
+
 
 export default {
   name: 'Home',
   components: {
-    HeaderNav, SignIn, Login, NewMessage, Profil, Wall, Footer
+    HeaderNav, SignIn, Login, NewMessage, Profil, Wall, WallEditPost, WallModeratePost, Footer
   }
 }
 </script>
