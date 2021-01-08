@@ -126,8 +126,7 @@ export default {
         this.chkCompleted = false;
 
         // Completed
-        this.uploadFile = false;
-        this.Nattachment = 0;
+        document.getElementById("Join").checked = false;
         document.getElementById("title").value = '';
         document.getElementById("Content").value ='';
 
