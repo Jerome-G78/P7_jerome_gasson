@@ -27,10 +27,23 @@
                         <input @click="SetPict" v-if="uploadFile" id="uploadFile" type="file">
                     </div>
 
+                    <div v-if="subOkay" class="alert alert-success">
+                        {{subOK}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div v-if="subFailure" class="alert alert-danger">
+                        {{subFail}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
                 </div>
 
                 <div class="modal-footer">
-                    <button v-if="chkCompleted" type="button" title="Envoyer" class="btn btn-primary" data-dismiss="modal">Envoyer...</button>
+                    <button @click="Post" v-if="chkCompleted" type="button" title="Envoyer" class="btn btn-primary">Envoyer...</button>
                 </div>
         
             </div>
@@ -59,7 +72,7 @@ export default {
             uploadFile: false,
 
             // Messages
-            subOK: "Message envoyé! ",
+            subOK: "Message envoyé!",
             subFail: "Une erreur est survenue!"
         }
     },
@@ -108,6 +121,17 @@ export default {
 
         Post(){
            // WIP
+           // Sucess
+        this.subOkay = true;
+        this.chkCompleted = false;
+
+        // Completed
+        this.uploadFile = false;
+        this.Nattachment = 0;
+        document.getElementById("title").value = '';
+        document.getElementById("Content").value ='';
+
+        this.subCompleted = true;
         }
     },
 }
