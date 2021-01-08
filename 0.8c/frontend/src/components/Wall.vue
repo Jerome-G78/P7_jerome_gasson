@@ -5,6 +5,7 @@
     </div>
     <!-- POST START-->
     <div class="row justify-content-center">
+        <br/>
         <div class="col-11 col-sm-9 col-md-6 bg-info text-white media border p-4 m-0" id="">
             <div class="media-body">
                 <h4>[Utilisateur] <small><i>(Posté le [Date])</i></small></h4>
