@@ -26,6 +26,9 @@ export default createStore({
     Nattachment: 0,
     Npicture:'',
 
+    // Likes
+    LikesCounter : 0,
+
     // Loading
     Loading:false
 
@@ -77,6 +80,11 @@ export default createStore({
     },
     setNpicture(state, newValue){
       state.Npicture = newValue;
+    },
+
+    // Likes
+    setLikes(state, newValue){
+      state.LikesCounter =+ newValue;
     },
 
   },

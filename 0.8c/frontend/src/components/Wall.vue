@@ -14,7 +14,7 @@
                 <p>[Content...]</p><br/>
                 <hr v-if="Connected">
                 <div id="EditContent" class="row justify-content-center">
-                    <button v-if="Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> 0</button>
+                    <button @click="Like" v-if="Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{LikeCounter}}</button>
                     <button v-if="Connected && ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
                     <button v-if="Connected && isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
                     <button @click="DeletePost" v-if="Connected && (isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
@@ -59,10 +59,12 @@ export default {
             ownMessage: this.$store.state.ownMessage,
             Connected: this.$store.state.Connected,
             Loading: this.$store.state.Loading,
+            LikeCounter: this.$store.state.LikesCounter,
 
             // Variables Local
             CHKcomment : false,
             ValueComment: false,
+            Liked: false,
         }
     },
     // Création de la logique du module
@@ -90,20 +92,31 @@ export default {
             this.subCompleted = true;
             */
         },
-        ResetStats(){
+        Like(){
             // WIP
-            document.getElementById('TitleEdit').value = '';
-            document.getElementById('ContentEdit').value = '';
-            this.subFailure = false;
-            this.subOkay = false;
-            this.subCompleted = false;
-            this.chkOK = false;
+            if(this.Liked){
+                console.log('Disliked');
+                this.Liked = false;
+                this.LikeCounter -=1;
+                this.$store.commit('setLikes', this.LikeCounter);
+                console.log(this.LikeCounter);
+                
+            } else {
+                console.log('Liked');
+                this.Liked = true;
+                this.LikeCounter +=1;
+                this.$store.commit('setLikes', this.LikeCounter);
+                console.log(this.LikeCounter);
+            }
+            
         },
         DeleteComment(){
             //WIP
+            console.log('Comment Deleted')
         },
         DeletePost(){
             //WIP
+            console.log('Post Deleted')
         }
 
     }
