@@ -1,6 +1,6 @@
 <template>
     <!-- Wall START -->
-	<div class="spinner-border text-primary text-center" id="WallLoad">
+	<div v-if="Loading" class="spinner-border text-primary text-center" id="WallLoad">
         <p>Chargement des messages... </p>
     </div>
     <!-- POST START-->
@@ -58,7 +58,8 @@ export default {
             // Récupération des variables dans vue X
             isAdmin: this.$store.state.isAdmin,
             ownMessage: this.$store.state.ownMessage,
-            Connected: this.$store.state.Connected
+            Connected: this.$store.state.Connected,
+            Loading: this.$store.state.Loading,
         }
     }
 }
