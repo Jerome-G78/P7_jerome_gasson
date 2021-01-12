@@ -57,7 +57,7 @@
                 </div>
                 <div v-if="subFailure" class="alert alert-danger">
                     {{subFail}}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -135,31 +135,44 @@ export default {
             console.log(this.Loading);
             let Email = document.getElementById('Semail').value;
             let Pwd = document.getElementById('Spwd').value;
-            let PwdC = document.getElementById('SpwdC').value;
             let Name = document.getElementById('Sname').value;
+            let Bio = document.getElementById('SBio').value;
 
-            // Faillure
-            /*
+            // Initialisation de la promesse vers l'API via AXIOS
+            axios.post('http://localhost:3000/api/users/register/', {
+                email : Email,
+                username : Name,
+                password : Pwd,
+                bio : Bio
+            }).then(res => {
+                console.log(res);
+                this.subOkay = true;
+                // Cleaning
+                document.getElementById('Semail').value = '';
+                document.getElementById('Spwd').value = '';
+                document.getElementById('SpwdC').value = '';
+                document.getElementById('Sname').value = '';
+                document.getElementById('SBio').value = '';
+
+                // Completed
+                this.subCompleted = true;
+                this.$store.commit('setLoading',this.Loading = false);
+                console.log(this.Loading);
+            })
+            .catch(err => {
+            //WIP
+            console.log(err);
             this.subFailure = true;
-            this.$store.commit('setLoading',this.Loading = false);
-            console.log(this.Loading);
-            */
-
-            // Registering
-            this.subOkay = true;
-
             // Cleaning
-            document.getElementById('Semail').value = '';
             document.getElementById('Spwd').value = '';
             document.getElementById('SpwdC').value = '';
-            document.getElementById('Sname').value = '';
-            document.getElementById('SBio').value = '';
-            
+            this.$store.commit('setLoading',this.Loading = false);
 
             // Completed
             this.subCompleted = true;
             this.$store.commit('setLoading',this.Loading = false);
             console.log(this.Loading);
+            });
         },
         ResetStats(){
             // WIP

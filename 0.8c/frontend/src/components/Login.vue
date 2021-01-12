@@ -36,7 +36,7 @@
                     </div>
                     <div v-if="subFailure" class="alert alert-danger">
                         {{subFail}}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -75,7 +75,7 @@ export default {
         LogInVerify(){
             let Email = document.getElementById('Lemail').value;
             let Pwd = document.getElementById('Lpwd').value;
-            console.log(Email, Pwd);
+            // console.log(Email, Pwd);
 
 
             if(Email !=''){
@@ -97,29 +97,52 @@ export default {
             let Email = document.getElementById('Lemail').value;
             let Pwd = document.getElementById('Lpwd').value;
 
-            // Faillure
-            /*
-            this.subFailure = true;
-            this.$store.commit('setLoading',this.Loading = false);
-            console.log(this.Loading);
-            */
+            // Initialisation de la promesse vers l'API via AXIOS
+            axios.post('http://localhost:3000/api/users/login/', {
+                email: Email,
+                password: Pwd
+            })
+            .then(res =>{
+                // Récupération des information du compte de l'utilisateur
+                console.log(res);
+                this.subOkay = true;
+                this.subCompleted = true;
+                this.Connected = true;
+                this.$store.commit('setConnected', this.Connected);
+                console.log(this.$store.state.Connected);
+                this.$store.commit('setEmail', res.data.email);
+                console.log(this.$store.state.email);
+                document.getElementById('Lemail').value = '';
+                document.getElementById('Lpwd').value = '';
+                this.$store.commit('setUserName', res.data.userName);
+                console.log(this.$store.state.userName);
+                this.$store.commit('setUserID', res.data.userId);
+                console.log(this.$store.state.userId);
+                this.$store.commit('setToken', res.data.token);
+                console.log(this.$store.state.Token);
+                this.$store.commit('setIsAdmin', res.data.isAdmin);
+                console.log(this.$store.state.isAdmin);
+                this.$store.commit('setLoading',this.Loading = false);
+                console.log(this.$store.state.Loading);
 
-            // LogIn
-            this.subOkay = true;
-
-            // Completed
-            this.subCompleted = true;
-            this.Connected = true;
-            this.$store.commit('setConnected',this.Connected = true);
-            console.log(this.$store.state.Connected);
-            this.$store.commit('setLoading',this.Loading = false);
-            console.log(this.$store.state.Loading);
+            })
+            .catch(err =>{
+                //WIP
+                console.log(err);
+                this.subFailure = true;
+                // this.subFail = err.error;
+                this.Loading = false;
+                this.$store.commit('setLoading',this.Loading = false);
+                console.log(this.Loading);
+            });
         },
         ResetStats(){
             // WIP
             document.getElementById('Lemail').value = '';
             document.getElementById('Lpwd').value = '';
             this.subFailure = false;
+            this.CHKeMail = false
+            this.CHKpassword = false;
             this.subOkay = false;
             this.subCompleted = false;
             this.chkOK = false;

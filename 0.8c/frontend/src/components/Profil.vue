@@ -65,6 +65,7 @@ export default {
             Loading: this.$store.state.Loading,
             isAdmin: this.$store.state.isAdmin,
             BioEdit: this.$store.state.BioEdit,
+            Token: this.$store.state.Token,
 
             // Variables locales
             findUser:false,
@@ -96,24 +97,49 @@ export default {
             let BioArea = document.getElementById("Bio").value;
             this.$store.commit('setLoading',this.Loading = true);
             this.$store.commit('setBioEdit',this.BioEdit = false);
-            // code
 
-            // Faillure
-            /*
-            this.subFailure = true;
-            this.$store.commit('setLoading',this.Loading = false);
-            console.log(this.Loading);
-            */
+            // Configuration de l'en-tete AXIOS (intégration du token)
+            axios.interceptors.request.use(
+                config => {
+                    config.headers.authorization = `Bearer ${this.Token}`;
+                    return config;
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            );
 
-           //SubOkay
-           this.bio = BioArea;
-           this.$store.commit('setBio', BioArea);
-           this.subOkay = true;
+            // Initialisation de la promesse vers l'API via AXIOS
+            axios.put('http://localhost:3000/api/users/me/',{
+                bio: BioArea,
+                })
+            .then(res =>{
+                // Envoie des données en base
+                console.log(res);
+                this.bio = BioArea;
 
-           // Completed
-            document.getElementById('Bio').value = '';
-            this.subCompleted = true;
-            this.$store.commit('setLoading',this.Loading = false);
+                //SubOkay
+                this.$store.commit('setBio', BioArea);
+                this.subOkay = true;
+                this.subCompleted = true;
+                this.$store.commit('setLoading',this.Loading = false);
+                console.log(this.$store.state.Loading);
+
+                // Completed
+                document.getElementById('Bio').value = '';
+                this.subCompleted = true;
+                this.$store.commit('setLoading',this.Loading = false);
+            })
+            .catch(err =>{
+                //WIP
+                console.log(err);
+                this.subFailure = true;
+                // this.subFail = err.error;
+                this.Loading = false;
+                this.$store.commit('setLoading',this.Loading = false);
+                console.log(this.Loading);
+            });
+
         },
         checkNameExist(){
             //WIP

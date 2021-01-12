@@ -4,14 +4,16 @@ export default createStore({
   state: {
     // Déclaration des données du "store" de vue X
     Connected: true,
-    isAdmin: true,
-    ownMessage: true,
-    userId:0,
+    isAdmin: false,
+    // ownMessage: false,
+    // ownComment: false,
+    userId:5,
+    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTA0NDEzNDMsImV4cCI6MTYxMDQ4NDU0M30.YtzHuxt9XYunvIVxGc6bcT6C6DcmZCEhvnFnTBbDE1Q',
 
     // Profil
-    userName:'Poppy',
-    email:'test@centuryflop.com',
-    bio:'Hello c est poppY',
+    userName:'Teddy5',
+    email:'Teddy@runner.com',
+    bio:'TesT',
     BioEdit : false,
 
     // SignIn
@@ -61,6 +63,26 @@ export default createStore({
     },
 
     // Profil
+    setUserID(state, newValue){
+      state.userId = newValue;
+    },
+
+    setUserName(state, newValue){
+      state.userName = newValue;
+    },
+
+    setEmail(state, newValue){
+      state.email = newValue;
+    },
+
+    setIsAdmin(state, newValue){
+      state.isAdmin = newValue;
+    },
+
+    setToken(state, newValue){
+      state.Token = newValue;
+    },
+
     setBioEdit(state, newValue){
       state.BioEdit = newValue;
     },

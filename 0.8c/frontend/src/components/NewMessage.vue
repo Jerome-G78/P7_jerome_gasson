@@ -5,7 +5,7 @@
         
                 <div class="modal-header">
                     <h4 class="modal-title"><i class="far fa-newspaper"></i> Poster un message </h4>
-                    <button type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
+                    <button @click="ResetStats" type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
                 </div>
         
                 <div class="modal-body">
@@ -35,7 +35,7 @@
                     </div>
                     <div v-if="subFailure" class="alert alert-danger">
                         {{subFail}}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -63,6 +63,7 @@ export default {
             Ncontent:this.$store.state.Ncontent,
             Nattachment: this.$store.state.Nattachment,
             Npicture:this.$store.state.Npicture,
+            Token: this.$store.state.Token,
 
             // Variables locales
             chkCompleted: false,
@@ -81,6 +82,7 @@ export default {
         MsgVerify(){
             let CHKtitle = document.getElementById("title").value;
             let CHKContent = document.getElementById("Content").value;
+            console.log(CHKtitle, CHKContent);
 
             if(CHKtitle !=''){
                 this.$store.commit('setNtitle', CHKtitle);
@@ -107,11 +109,13 @@ export default {
                 this.uploadFile = false;
                 this.Nattachment = 0;
                 this.$store.commit('setNattachment', 0); // Global ?!
+                console.log(this.Nattachment);
 
             } else {
                 this.uploadFile = true;
                 this.Nattachment = 1;
                 this.$store.commit('setNattachment', 1); // Global ?!
+                console.log(this.Nattachment);
             }
         },
 
@@ -120,17 +124,100 @@ export default {
         },
 
         Post(){
-           // WIP
-           // Sucess
-        this.subOkay = true;
-        this.chkCompleted = false;
+            // WIP
+            console.log(this.Ntitle, this.Ncontent, this.uploadFile, this.Nattachment);
 
-        // Completed
-        document.getElementById("Join").checked = false;
-        document.getElementById("title").value = '';
-        document.getElementById("Content").value ='';
+            if(this.Nattachment == 1 && this.Npicture != ''){
+                // Configuration de l'en-tete AXIOS (intégration du token)
+                axios.interceptors.request.use(
+                    config => {
+                        config.headers.authorization = `Bearer ${this.Token}`;
+                        // config.headers.Content-Type = `multipart/form-data`;
+                        return config;
+                    },
+                    error => {
+                        return Promise.reject(error);
+                    }
+                );
 
-        this.subCompleted = true;
+                // Initialisation de la promesse vers l'API via AXIOS
+                axios.post('http://localhost:3000/api/messages/new/', {
+                    title: document.getElementById("title").value,
+                    content: document.getElementById("Content").value,
+                    attachment: 1,
+                    image: ''
+                })
+                .then(res =>{
+                    // Sucess
+                    this.subOkay = true;
+                    this.chkCompleted = false;
+
+                    // Completed
+                    document.getElementById("Join").checked = false;
+                    document.getElementById("title").value = '';
+                    document.getElementById("Content").value ='';
+                    this.subCompleted = true;
+
+                })
+                .catch(err =>{
+                    console.log(err);
+                    this.subFailure = true;
+                    // this.subFail = err.error;
+                    this.Loading = false;
+                    this.$store.commit('setLoading',this.Loading = false);
+                    console.log(this.Loading);
+                });
+
+            } else {
+                // Configuration de l'en-tete AXIOS (intégration du token)
+                axios.interceptors.request.use(
+                    config => {
+                        config.headers.authorization = `Bearer ${this.Token}`;
+                        return config;
+                    },
+                    error => {
+                        return Promise.reject(error);
+                    }
+                );
+
+                // Initialisation de la promesse vers l'API via AXIOS
+                axios.post('http://localhost:3000/api/messages/new/', {
+                    title: document.getElementById("title").value,
+                    content: document.getElementById("Content").value
+                })
+                .then(res =>{
+                    // Sucess
+                    this.subOkay = true;
+                    this.chkCompleted = false;
+
+                    // Completed
+                    document.getElementById("Join").checked = false;
+                    document.getElementById("title").value = '';
+                    document.getElementById("Content").value ='';
+                    this.subCompleted = true;
+
+                })
+                .catch(err =>{
+                    console.log(err);
+                    this.subFailure = true;
+                    // this.subFail = err.error;
+                    this.Loading = false;
+                    this.$store.commit('setLoading',this.Loading = false);
+                    console.log(this.Loading);
+                });
+            }
+        },
+        ResetStats(){
+            // WIP
+            document.getElementById('title').value = '';
+            document.getElementById('Content').value = '';
+            document.getElementById("Join").checked = false;
+            this.Nattachment = 0,
+            this.chkCompleted = false;
+            this.subFailure = false;
+            this.uploadFile = false
+            this.subOkay = false;
+            this.subCompleted = false;
         }
     },
 }
