@@ -123,7 +123,7 @@ export default {
                 this.$store.commit('setIsAdmin', res.data.isAdmin);
                 console.log(this.$store.state.isAdmin);
                 this.$store.commit('setLoading',this.Loading = false);
-                console.log(this.$store.state.Loading);
+                console.log(this.Loading);
 
             })
             .catch(err =>{

@@ -7,13 +7,13 @@ export default createStore({
     isAdmin: false,
     // ownMessage: false,
     // ownComment: false,
-    userId:5,
-    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTA0NDEzNDMsImV4cCI6MTYxMDQ4NDU0M30.YtzHuxt9XYunvIVxGc6bcT6C6DcmZCEhvnFnTBbDE1Q',
+    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTA0NjQwNTcsImV4cCI6MTYxMDUwNzI1N30.wy9h4XDniXNH4Ndi7x3WfOa8VWg4n707KjDaANHecIA',
 
     // Profil
-    userName:'Teddy5',
-    email:'Teddy@runner.com',
-    bio:'TesT',
+    userId:0,
+    userName:'',
+    email:'',
+    bio:'',
     BioEdit : false,
 
     // SignIn

@@ -7,19 +7,19 @@
     <div v-for="Post in Posts" :key="Post">
         <br/>
         <div class="row justify-content-center">
-            <div class="col-11 col-sm-9 col-md-6 bg-info text-white media border p-4 m-0" :id="Post.id">
-                <div class="media-body">
+            <div class="col-11 col-sm-9 col-md-6 bg-info text-white media border p-4 m-0">
+                <div :id="Post.id" class="media-body">
                     <h4>{{Post.User.username}} <small><i>(Créer le {{PostDate}} à {{PostTime}})</i></small></h4>
                     <hr>
                     <h5><i>{{Post.title}}</i></h5>
                     <img class="rounded img-fluid d-flex" :src="Post.attachment"/>
                     <p>{{Post.content}}</p><br/>
                     <hr v-if="Connected">
-                    <div id="EditContent" class="row justify-content-center">
+                    <div class="Mod row justify-content-center">
                         <button @click.stop="Like" v-if="Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
-                        <button v-if="Connected && ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
-                        <button v-if="Connected && isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
-                        <button @click="DeletePost" v-if="Connected && (isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                        <button @click.stop="" v-if="Connected && ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
+                        <button @click.stop="" v-if="Connected && isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
+                        <button @click.stop="DeletePost" v-if="Connected && (isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                     </div>
                     <hr v-if="Connected">
                     <div id="Comment" v-if="Connected" class="row justify-content-start">
@@ -73,7 +73,6 @@ export default {
             CommentId:0,
             CommentDate:'',
             CommentTime:'',
-            
             
             CHKcomment : false,
             ValueComment: false,
@@ -182,7 +181,7 @@ export default {
         },
         DeletePost(){
             //WIP
-            console.log('Post Deleted')
+            console.log('Post Deleted');
         }
 
     }
