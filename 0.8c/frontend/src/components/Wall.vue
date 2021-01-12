@@ -36,7 +36,7 @@
                     <div v-for="Comment in Comments" :key="Comment" id="PostedComments" class="row justify-content-end">
                         <div class="col-9">
                             <p>
-                                <i>{{Comment.username}} - [{{CommentDate}} à {{CommentTime}}]</i><br/>
+                                <i>{{Comment.username}} ({{CommentDate}} à {{CommentTime}})</i><br/>
                                 {{Comment.comment}}
                             </p>
                         </div>
@@ -65,10 +65,12 @@ export default {
 
             // Variables Local
             Posts: [],
+            PostId:0,
             PostDate:'',
             PostTime:'',
 
             Comments:[],
+            CommentId:0,
             CommentDate:'',
             CommentTime:'',
             
@@ -76,7 +78,6 @@ export default {
             CHKcomment : false,
             ValueComment: false,
 
-            mID:0,
             ownMessage: false,
             ownComment: false,
             Liked: false,
@@ -93,8 +94,9 @@ export default {
                 // Récupération des messages & likes liées
                 this.Posts = res.data;
                 console.log(this.Posts);
-                this.LikeCounter = res.data.likes;
                 for(let i=0; i < this.Posts.length; i++){
+                    this.PostId = this.Posts[i].id;
+                    // console.log(this.PostId);
                     // Récupération de la date & l'heure du Post
                     let date= this.Posts[i].createdAt.split('T')[0];
                     this.PostDate= date;
@@ -105,23 +107,28 @@ export default {
                     }
                 }
             })
-            axios.get('http://localhost:3000/api/messages/comment?fields=messageId,username,comment,createdAt')
+            .catch(err =>{
+                console.log(err);
+            });
+
+            axios.get('http://localhost:3000/api/messages/comment?fields=id,messageId,username,comment,createdAt')
             .then(res =>{
                 // Récupération des commentaires liées
                 this.Comments = res.data;
                 console.log(this.Comments);
                 for(let i=0; i < this.Comments.length; i++){
-                    if(this.Comments.messageId == this.Posts.id){
-                        // Récupération de la date & l'heure du message
-                        let date= this.Comments[i].createdAt.split('T')[0];
-                        this.CommentDate = date;
-                        let time= this.Comments[i].createdAt.split('T')[1];
-                        this.CommentTime = time.replace('.000Z','');
-                    }
+                    this.CommentId = this.Comments[i].id;
+                    // console.log(this.CommentId);
+                    // Récupération de la date & l'heure du message
+                    let date= this.Comments[i].createdAt.split('T')[0];
+                    this.CommentDate = date;
+                    let time= this.Comments[i].createdAt.split('T')[1];
+                    this.CommentTime = time.replace('.000Z','');
+
                     if(res.data[i].username == this.$store.state.userName){
                         this.ownComment = true;
                     }
-                }    
+                }
             })
             .catch(err =>{
                 console.log(err);
@@ -137,6 +144,7 @@ export default {
             }
         },
         Submit(){
+            // WIP
             // Sucess
             document.getElementById('comment').value = '';
             this.ValueComment = false;
