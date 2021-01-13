@@ -29,6 +29,12 @@ export default {
   name: 'Home',
   components: {
     HeaderNav, SignIn, Login, NewMessage, Profil, Wall, WallEditPost, WallModeratePost, Footer
+  },
+  data(){
+    return{
+    // Récupération des variables globales dans vue X
+    Connected: this.$store.state.Connected,
+    }
   }
 }
 </script>

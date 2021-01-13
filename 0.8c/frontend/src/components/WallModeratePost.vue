@@ -50,6 +50,7 @@ export default {
             // Récupération des variables dans vue X
             isAdmin: this.$store.state.isAdmin,
             Connected: this.$store.state.Connected,
+            PostId: this.$store.state.CurrentPostId,
 
             // Variables locales
             CHKtitle: false,
@@ -89,19 +90,58 @@ export default {
             }
         },
         Submit(){
-            // Sucess
-            document.getElementById('TitleMod').value = '';
-            document.getElementById('ContentMod').value = '';
-            this.subOkay = true;
-            this.subCompleted = true;
-            this.chkOK = false;
-            
+            let TitleMod = document.getElementById('TitleMod').value;
+            let ContentMod = document.getElementById('ContentMod').value;
+            console.log(this.PostId);
 
-            // Faillure
-            /*
-            this.subFailure = true;
-            this.subCompleted = true;
-            */
+            // Configuration de l'en-tete AXIOS (intégration du token)
+            axios.interceptors.request.use(
+                config => {
+                    config.headers.authorization = `Bearer ${this.Token}`;
+                    return config;
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            );
+
+            // Initialisation de la promesse vers l'API via AXIOS
+            axios.put('http://localhost:3000/api/messages/'+this.PostId+'/moderate',{
+                title: TitleMod,
+                content : ContentMod
+                })
+            .then(res =>{
+                // Envoie des données en base
+                console.log(res);
+                this.bio = BioArea;
+
+                //SubOkay
+                this.$store.commit('setBio', BioArea);
+                this.subOkay = true;
+                this.subCompleted = true;
+                this.$store.commit('setLoading',this.Loading = false);
+                console.log(this.$store.state.Loading);
+
+                // Sucess
+                this.subOkay = true;
+                this.subCompleted = true;
+                this.chkOK = false;
+
+                // Completed
+                document.getElementById('TitleMod').value = '';
+                document.getElementById('ContentMod').value = '';
+                this.subCompleted = true;
+                this.$store.commit('setLoading',this.Loading = false);
+            })
+            .catch(err =>{
+                //WIP
+                console.log(err);
+                this.subFailure = true;
+                this.subCompleted = true;
+                this.Loading = false;
+                this.$store.commit('setLoading',this.Loading = false);
+                console.log(this.Loading);
+            });
         },
 
         ResetStats(){

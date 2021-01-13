@@ -4,9 +4,9 @@
         <!-- Navigation -->
         <nav id="NavBar" class="navbar navbar-light justify-content-end"> 				<!-- Menu de navigation -->
             <ul class="nav">
-                <li @click="Loading" v-if="!Connected" class="nav-item"><a class="nav-link" href="#" title="Inscription au site" data-toggle="modal" data-target="#registrationModal"> <i class="far fa-address-card"></i> Inscription </a></li>
-                <li @click="Loading" v-if="!Connected" class="nav-item"><a class="nav-link" href="#" title="Connexion au site" data-toggle="modal" data-target="#logginModal"> <i class="fas fa-key"></i> Connexion </a></li>
-                <li @click="Loading" v-if="Connected" class="nav-item"><a class="nav-link" href="#" title="Créer un Message" data-toggle="modal" data-target="#NewMessage"> <i class="far fa-newspaper"></i> Nouveau Message </a></li>
+                <li @click="Load" v-if="!Connected" class="nav-item"><a class="nav-link" href="#" title="Inscription au site" data-toggle="modal" data-target="#registrationModal"> <i class="far fa-address-card"></i> Inscription </a></li>
+                <li @click="Load" v-if="!Connected" class="nav-item"><a class="nav-link" href="#" title="Connexion au site" data-toggle="modal" data-target="#logginModal"> <i class="fas fa-key"></i> Connexion </a></li>
+                <li @click="Load" v-if="Connected" class="nav-item"><a class="nav-link" href="#" title="Créer un Message" data-toggle="modal" data-target="#NewMessage"> <i class="far fa-newspaper"></i> Nouveau Message </a></li>
                 <li @click="LoadProfil" v-if="Connected" class="nav-item"><a class="nav-link" href="#" title="Mon profil" data-toggle="modal" data-target="#profilModal"> <i class="far fa-user"></i> Mon Compte </a></li>
             </ul>
         </nav>
@@ -23,10 +23,11 @@
 <script>
 export default {
     name: 'HeaderNav',
-    el:'#NavBar',
+    // el:'#NavBar',
     data(){
         return {
             // Récupération des variables dans vue X
+            // Connected: this.$store.state.Connected,
             Connected: this.$store.state.Connected,
             Token:this.$store.state.Token,
             
@@ -82,7 +83,7 @@ export default {
                 });
 
         },
-        Loading(){
+        Load(){
             this.Loading = true;
         }
     }

@@ -3,17 +3,17 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     // Déclaration des données du "store" de vue X
-    Connected: true,
+    Connected: false,
     isAdmin: false,
     // ownMessage: false,
     // ownComment: false,
-    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTA0NjQwNTcsImV4cCI6MTYxMDUwNzI1N30.wy9h4XDniXNH4Ndi7x3WfOa8VWg4n707KjDaANHecIA',
+    Token:'',
 
     // Profil
-    userId:0,
-    userName:'',
-    email:'',
-    bio:'',
+    userId:2,
+    userName:'Poppy',
+    email:'Poppy@lol.com',
+    bio:'Salut ici PoppY !',
     BioEdit : false,
 
     // SignIn
@@ -27,6 +27,12 @@ export default createStore({
     Ncontent:'',
     Nattachment: 0,
     Npicture:'',
+
+    // Edit Post & Moderate Posts
+    CurrentPostId:0,
+
+    // Delete Comments
+    CurrentCommentId:0,
 
     // Likes
     LikesCounter : 0,
@@ -102,6 +108,16 @@ export default createStore({
     },
     setNpicture(state, newValue){
       state.Npicture = newValue;
+    },
+
+    // Edit & Moderate Posts
+    setCurrentPostId(state, newValue){
+      state.CurrentPostId = newValue;
+    },
+
+    // Delete Comments
+    setCurrentCommentId(state, newValue){
+      state.CurrentCommentId = newValue;
     },
 
     // Likes

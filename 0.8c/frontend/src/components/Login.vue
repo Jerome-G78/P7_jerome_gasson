@@ -109,6 +109,7 @@ export default {
                 this.subCompleted = true;
                 this.Connected = true;
                 this.$store.commit('setConnected', this.Connected);
+                localStorage.setItem("Connected", true);
                 console.log(this.$store.state.Connected);
                 this.$store.commit('setEmail', res.data.email);
                 console.log(this.$store.state.email);

@@ -15,10 +15,10 @@
                     <img class="rounded img-fluid d-flex" :src="Post.attachment"/>
                     <p>{{Post.content}}</p><br/>
                     <hr v-if="Connected">
-                    <div class="Mod row justify-content-center">
+                    <div id="Buttons" @mouseover="SetPostId" class="row justify-content-center">
                         <button @click.stop="Like" v-if="Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
-                        <button @click.stop="" v-if="Connected && ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
-                        <button @click.stop="" v-if="Connected && isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
+                        <button v-if="Connected && ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
+                        <button v-if="Connected && isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
                         <button @click.stop="DeletePost" v-if="Connected && (isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                     </div>
                     <hr v-if="Connected">
@@ -52,9 +52,10 @@
 </template>
 
 <script>
+
 export default {
     name: 'Wall',
-    el: "#EditContent",
+    // el: "#EditContent",
     data(){
         return {
             // Récupération des variables dans vue X
@@ -62,15 +63,17 @@ export default {
             Connected: this.$store.state.Connected,
             Loading: this.$store.state.Loading,
             LikeCounter: this.$store.state.LikesCounter,
+            PostId:this.$store.state.CurrentPostId,
+            CommentId:this.$store.state.CurrentCommentId,
 
             // Variables Local
             Posts: [],
-            PostId:0,
+            // PostId:0,
             PostDate:'',
             PostTime:'',
 
             Comments:[],
-            CommentId:0,
+            // CommentId:0,
             CommentDate:'',
             CommentTime:'',
             
@@ -157,6 +160,17 @@ export default {
             this.subCompleted = true;
             */
         },
+        DeleteComment(){
+            //WIP
+            console.log('Comment Deleted')
+        },
+
+        SetPostId(){
+            // Récupérer le PostID, pour l'éditer, le supprimer ou le modérer.
+            console.log("Mouse Over!");
+            let OverId = document.getElementById("Buttons").parentNode.id;
+            this.$store.commit('setCurrentPostId',this.PostId);
+        },
         Like(){
             // WIP
             if(this.Liked){
@@ -175,15 +189,40 @@ export default {
             }
             
         },
-        DeleteComment(){
-            //WIP
-            console.log('Comment Deleted')
-        },
         DeletePost(){
             //WIP
-            console.log('Post Deleted');
+            // Configuration de l'en-tete AXIOS (intégration du token)
+            axios.interceptors.request.use(
+                config => {
+                    config.headers.authorization = `Bearer ${this.Token}`;
+                    return config;
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            );
+            if(this.isAdmin){
+                // Initialisation de la promesse vers l'API via AXIOS
+                axios.delete('http://localhost:3000/api/messages/'+this.PostId+'/moderate')
+                .then(res =>{
+                    console.log(res);
+                })
+                .catch(err =>{
+                    console.log(err);
+                });
+                console.log('Post Deleted');
+            } else {
+                // Initialisation de la promesse vers l'API via AXIOS
+                axios.delete('http://localhost:3000/api/messages/'+this.PostId)
+                .then(res =>{
+                    console.log(res);
+                })
+                .catch(err =>{
+                    console.log(err);
+                });
+                console.log('Post Deleted');
+            }
         }
-
     }
 }
 </script>
