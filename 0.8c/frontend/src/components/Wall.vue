@@ -1,7 +1,10 @@
 <template>
-    <button @click="wallLoad">Charger</button>
+    <button @click="ReLoad">Recharger...</button>
 	<div v-if="Loading" class="spinner-border text-primary text-center" id="WallLoad">
         <p>Chargement des messages... </p>
+    </div>
+    <div v-if="!Loading && NoData" class="spinner-border text-primary text-center" id="WallLoad">
+        <p>Aucuns messages a charger ... a vous de jouer! :D </p>
     </div>
     <!-- POST START-->
     <div v-for="Post in Posts" :key="Post">
@@ -62,6 +65,7 @@ export default {
             isAdmin: this.$store.state.isAdmin,
             Connected: this.$store.state.Connected,
             Loading: this.$store.state.Loading,
+            NoData:this.$store.state.NoData,
             LikeCounter: this.$store.state.LikesCounter,
             PostId:this.$store.state.CurrentPostId,
             CommentId:this.$store.state.CurrentCommentId,
@@ -88,7 +92,7 @@ export default {
     },
     // Création de la logique du module
     methods:{
-        wallLoad(){
+        ReLoad(){
             //WIP
             // Initialisation de la promesse vers l'API via AXIOS
             axios.get('http://localhost:3000/api/messages/')
@@ -129,6 +133,10 @@ export default {
 
                     if(res.data[i].username == this.$store.state.userName){
                         this.ownComment = true;
+                    }
+
+                    if(this.Posts == 0){
+                        this.$store.commit('setNoData', true);
                     }
                 }
             })
@@ -223,6 +231,34 @@ export default {
                 console.log('Post Deleted');
             }
         }
+    },
+    mounted(){
+        // Lors du chargement du comosant, appeler les messages dans la BDD
+        // Initialisation de la promesse vers l'API via AXIOS
+        axios.get('http://localhost:3000/api/messages/')
+        .then(res =>{
+            // Récupération des messages & likes liées
+            this.Posts = res.data;
+            console.log(this.Posts);
+            for(let i=0; i < this.Posts.length; i++){
+                this.PostId = this.Posts[i].id;
+                // console.log(this.PostId);
+                // Récupération de la date & l'heure du Post
+                let date= this.Posts[i].createdAt.split('T')[0];
+                this.PostDate= date;
+                let time= this.Posts[i].createdAt.split('T')[1];
+                this.PostTime = time.replace('.000Z','');
+                if(res.data[i].User.username == this.$store.state.userName){
+                    this.ownMessage = true;
+                }
+            }
+            if(this.Posts == 0){
+                this.$store.commit('setNoData', true);
+            }
+        })
+        .catch(err =>{
+            console.log(err);
+        });
     }
 }
 </script>

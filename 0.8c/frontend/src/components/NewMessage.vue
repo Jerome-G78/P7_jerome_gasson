@@ -168,6 +168,57 @@ export default {
                     console.log(this.Loading);
                 });
 
+                // Rechargement du mur de messages
+                // Initialisation de la promesse vers l'API via AXIOS
+                axios.get('http://localhost:3000/api/messages/')
+                .then(res =>{
+                    // Récupération des messages & likes liées
+                    this.Posts = res.data;
+                    console.log(this.Posts);
+                    for(let i=0; i < this.Posts.length; i++){
+                        this.PostId = this.Posts[i].id;
+                        // console.log(this.PostId);
+                        // Récupération de la date & l'heure du Post
+                        let date= this.Posts[i].createdAt.split('T')[0];
+                        this.PostDate= date;
+                        let time= this.Posts[i].createdAt.split('T')[1];
+                        this.PostTime = time.replace('.000Z','');
+                        if(res.data[i].User.username == this.$store.state.userName){
+                            this.ownMessage = true;
+                        }
+                    }
+                })
+                .catch(err =>{
+                    console.log(err);
+                });
+
+                axios.get('http://localhost:3000/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+                .then(res =>{
+                    // Récupération des commentaires liées
+                    this.Comments = res.data;
+                    console.log(this.Comments);
+                    for(let i=0; i < this.Comments.length; i++){
+                        this.CommentId = this.Comments[i].id;
+                        // console.log(this.CommentId);
+                        // Récupération de la date & l'heure du message
+                        let date= this.Comments[i].createdAt.split('T')[0];
+                        this.CommentDate = date;
+                        let time= this.Comments[i].createdAt.split('T')[1];
+                        this.CommentTime = time.replace('.000Z','');
+
+                        if(res.data[i].username == this.$store.state.userName){
+                            this.ownComment = true;
+                        }
+
+                        if(this.Posts == 0){
+                            this.$store.commit('setNoData', true);
+                        }
+                    }
+                })
+                .catch(err =>{
+                    console.log(err);
+                });
+
             } else {
                 // Configuration de l'en-tete AXIOS (intégration du token)
                 axios.interceptors.request.use(
@@ -205,6 +256,7 @@ export default {
                     this.$store.commit('setLoading',this.Loading = false);
                     console.log(this.Loading);
                 });
+
             }
         },
         ResetStats(){

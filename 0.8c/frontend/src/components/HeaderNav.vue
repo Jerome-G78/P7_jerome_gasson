@@ -27,7 +27,6 @@ export default {
     data(){
         return {
             // Récupération des variables dans vue X
-            // Connected: this.$store.state.Connected,
             Connected: this.$store.state.Connected,
             Token:this.$store.state.Token,
             
@@ -35,7 +34,6 @@ export default {
             userName: this.$store.state.userName,
             email: this.$store.state.email,
             bio: this.$store.state.email,
-            
 
             Loading: this.$store.state.Loading,
 
