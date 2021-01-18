@@ -4,15 +4,15 @@ export default createStore({
   state: {
     url:'http://localhost:3000',
     // Déclaration des données du "store" de vue X
-    Connected: true,
+    Connected: false,
     isAdmin: false,
     // ownMessage: false,
     // ownComment: false,
     Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTA5OTg3MjksImV4cCI6MTYxMTA4NTEyOX0.-r7Swz4Zy5pHSk4T-u8lGKlAVKAzm6UO-78nEw1cx0c',
 
     // Profil
-    userId:2,
-    userName:'Poppy',
+    userId:0,
+    userName:'Non chargée',
     email:'Non chargée',
     bio:'Non chargée',
     BioEdit : false,
