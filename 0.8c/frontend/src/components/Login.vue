@@ -53,6 +53,7 @@ export default {
     data(){
         return {
             // Récupération des variables globales dans vue X
+            url:this.$store.state.url,
             userName: this.$store.state.userName,
             Connected: this.$store.state.Connected,
             CHKeMail: this.$store.state.CHKeMail,
@@ -98,7 +99,7 @@ export default {
             let Pwd = document.getElementById('Lpwd').value;
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.post('http://localhost:3000/api/users/login/', {
+            axios.post(this.url+'/api/users/login/', {
                 email: Email,
                 password: Pwd
             })
@@ -136,7 +137,7 @@ export default {
                 this.$store.commit('setLoading',this.Loading = false);
                 console.log(this.Loading);
             });
-            axios.get('http://localhost:3000/api/messages/')
+            axios.get(this.url+'/api/messages/')
             .then(res =>{
                 // Récupération des messages & likes liées
                 this.Posts = res.data;
@@ -158,7 +159,7 @@ export default {
                 console.log(err);
             });
 
-            axios.get('http://localhost:3000/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+            axios.get(this.url+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
             .then(res =>{
                 // Récupération des commentaires liées
                 this.Comments = res.data;

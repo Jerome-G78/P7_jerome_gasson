@@ -62,6 +62,7 @@ export default {
     data(){
         return {
             // Récupération des variables dans vue X
+            url:this.$store.state.url,
             isAdmin: this.$store.state.isAdmin,
             Connected: this.$store.state.Connected,
             Loading: this.$store.state.Loading,
@@ -95,7 +96,7 @@ export default {
         ReLoad(){
             //WIP
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.get('http://localhost:3000/api/messages/')
+            axios.get(this.url+'/api/messages/?order=id:ASC')
             .then(res =>{
                 // Récupération des messages & likes liées
                 this.Posts = res.data;
@@ -117,7 +118,7 @@ export default {
                 console.log(err);
             });
 
-            axios.get('http://localhost:3000/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+            axios.get(this.url+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
             .then(res =>{
                 // Récupération des commentaires liées
                 this.Comments = res.data;
@@ -211,7 +212,7 @@ export default {
             );
             if(this.isAdmin){
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.delete('http://localhost:3000/api/messages/'+this.PostId+'/moderate')
+                axios.delete(this.url+'/api/messages/'+this.PostId+'/moderate')
                 .then(res =>{
                     console.log(res);
                 })
@@ -221,7 +222,7 @@ export default {
                 console.log('Post Deleted');
             } else {
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.delete('http://localhost:3000/api/messages/'+this.PostId)
+                axios.delete(this.url+'/api/messages/'+this.PostId)
                 .then(res =>{
                     console.log(res);
                 })
@@ -235,7 +236,7 @@ export default {
     mounted(){
         // Lors du chargement du comosant, appeler les messages dans la BDD
         // Initialisation de la promesse vers l'API via AXIOS
-        axios.get('http://localhost:3000/api/messages/')
+        axios.get(this.url+'/api/messages/?order=id:ASC')
         .then(res =>{
             // Récupération des messages & likes liées
             this.Posts = res.data;

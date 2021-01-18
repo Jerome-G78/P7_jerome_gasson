@@ -27,6 +27,7 @@ export default {
     data(){
         return {
             // Récupération des variables dans vue X
+            url:this.$store.state.url,
             Connected: this.$store.state.Connected,
             Token:this.$store.state.Token,
             
@@ -56,7 +57,7 @@ export default {
                     }
                 );
             // Initialisation de la promesse vers l'API via AXIOS
-                axios.get('http://localhost:3000/api/users/me')
+                axios.get(this.url+'/api/users/me')
                 .then(res =>{
                     console.log(res)
                     // Sucess

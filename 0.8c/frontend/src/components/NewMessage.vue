@@ -29,7 +29,7 @@
 
                     <div v-if="subOkay" class="alert alert-success">
                         {{subOK}}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -57,6 +57,7 @@ export default {
     data(){
         return {
             // Récupération des variables globales dans vue X
+            url:this.$store.state.url,
             userName: this.$store.state.userName,
             Loading: this.$store.state.Loading,
             Ntitle:this.$store.state.Ntitle,
@@ -141,7 +142,7 @@ export default {
                 );
 
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.post('http://localhost:3000/api/messages/new/', {
+                axios.post(this.url+'/api/messages/new/', {
                     title: document.getElementById("title").value,
                     content: document.getElementById("Content").value,
                     attachment: 1,
@@ -157,6 +158,12 @@ export default {
                     document.getElementById("title").value = '';
                     document.getElementById("Content").value ='';
                     this.subCompleted = true;
+                    this.Nattachment = 0,
+                    this.chkCompleted = false;
+                    this.subFailure = false;
+                    this.uploadFile = false
+                    this.subOkay = false;
+                    this.subCompleted = false;
 
                 })
                 .catch(err =>{
@@ -170,7 +177,7 @@ export default {
 
                 // Rechargement du mur de messages
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.get('http://localhost:3000/api/messages/')
+                axios.get(this.url+'/api/messages/')
                 .then(res =>{
                     // Récupération des messages & likes liées
                     this.Posts = res.data;
@@ -192,7 +199,7 @@ export default {
                     console.log(err);
                 });
 
-                axios.get('http://localhost:3000/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+                axios.get(this.url+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
                 .then(res =>{
                     // Récupération des commentaires liées
                     this.Comments = res.data;
@@ -232,7 +239,7 @@ export default {
                 );
 
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.post('http://localhost:3000/api/messages/new/', {
+                axios.post(this.url+'/api/messages/new/', {
                     title: document.getElementById("title").value,
                     content: document.getElementById("Content").value
                 })

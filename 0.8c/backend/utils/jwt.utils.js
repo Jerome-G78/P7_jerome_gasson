@@ -17,7 +17,7 @@ module.exports = {
         JWT_SIGN_SECRET,
         {
             // Durée de validité
-            expiresIn: '12h'
+            expiresIn: '24h'
         })
     },
 

@@ -58,6 +58,7 @@ export default {
     data(){
         return {
             // Récupération des variables globales dans vue X
+            url:this.$store.state.url,
             userName: this.$store.state.userName,
             Connected: this.$store.state.Connected,
             email:this.$store.state.email,
@@ -110,7 +111,7 @@ export default {
             );
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.put('http://localhost:3000/api/users/me/',{
+            axios.put(this.url+'/api/users/me/',{
                 bio: BioArea,
                 })
             .then(res =>{

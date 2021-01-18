@@ -2,18 +2,19 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    url:'http://localhost:3000',
     // Déclaration des données du "store" de vue X
     Connected: true,
     isAdmin: false,
     // ownMessage: false,
     // ownComment: false,
-    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTA3MDUxNzgsImV4cCI6MTYxMDc0ODM3OH0.neYnG1uCsZP5qu4Y7qSdgyP_RrRl86TxLa3JumVEK4A',
+    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTA5OTg3MjksImV4cCI6MTYxMTA4NTEyOX0.-r7Swz4Zy5pHSk4T-u8lGKlAVKAzm6UO-78nEw1cx0c',
 
     // Profil
     userId:2,
     userName:'Poppy',
-    email:'Poppy@lol.com',
-    bio:'Salut ici PoppY !',
+    email:'Non chargée',
+    bio:'Non chargée',
     BioEdit : false,
 
     // SignIn

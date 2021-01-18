@@ -19,13 +19,13 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="Sname">Nom d'utilisateur <span class ="text-danger"> * </span>:</label>
-                            <input @keyup="SingInVerify" type="text" class="form-control" id="Sname" placeholder="Ex. Lewis" name="name"><br/>
+                            <label for="Sname">Nom d'utilisateur/Pseudo (entre 5 et 15 caractères) <span class ="text-danger"> * </span>:</label>
+                            <input @keyup="SingInVerify" type="text" class="form-control" id="Sname" placeholder="Ex. Lewis" name="name" maxlength="15"><br/>
                             <span class="alert alert-info" v-if="!CHKuserName"><strong><i class="fas fa-info-circle"></i></strong> {{username}}</span>
                         </div>
 
                         <div class="form-group">
-                            <label for="Spwd">Mot de Passe <span class ="text-danger"> * </span>:</label>
+                            <label for="Spwd">Mot de Passe (au moins 8 caractères) <span class ="text-danger"> * </span>:</label>
                             <input @keyup="SingInVerify" type="password" class="form-control" id="Spwd" placeholder="Renseignez un mot de passe" name="pswd"><br/>
                             <span class="alert alert-info" v-if="!CHKpassword"><strong><i class="fas fa-info-circle"></i></strong> {{Mdp}}</span>
                         </div>
@@ -73,6 +73,7 @@ export default {
     data(){
         return {
             // Récupération des variables globales dans vue X
+            url:this.$store.state.url,
             userName: this.$store.state.userName,
             Connected: this.$store.state.Connected,
             CHKeMail: this.$store.state.CHKeMail,
@@ -88,8 +89,8 @@ export default {
 
             // Messages
             email: "Veuillez renseigner un e-mail",
-            username: "Veuillez renseigner un nom d'utilisateur",
-            Mdp: "Veuillez renseigner un mot de passe",
+            username: "Veuillez renseigner un nom d'utilisateur / Pseudo",
+            Mdp: "Celui-ci doit contenir : 1 Majuscule, 1 Minuscule, 1 Nombre",
             MDPFail: "Les mots de passes ne sont pas identiques",
             subOK: "Votre inscription a bien été prise en compte",
             subFail: "Une erreur est survenue lors de l'inscription!"
@@ -139,7 +140,7 @@ export default {
             let Bio = document.getElementById('SBio').value;
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.post('http://localhost:3000/api/users/register/', {
+            axios.post(this.url+'/api/users/register/', {
                 email : Email,
                 username : Name,
                 password : Pwd,

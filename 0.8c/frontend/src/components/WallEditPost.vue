@@ -48,6 +48,7 @@ export default {
     data(){
         return {
             // Récupération des variables dans vue X
+            url:this.$store.state.url,
             Connected: this.$store.state.Connected,
             PostId: this.$store.state.CurrentPostId,
             Loading: this.$store.state.Loading,
@@ -105,7 +106,7 @@ export default {
             );
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.put('http://localhost:3000/api/messages/'+this.PostId,{
+            axios.put(this.url+'/api/messages/'+this.PostId,{
                 title: TitleEdit,
                 content : Content
                 })

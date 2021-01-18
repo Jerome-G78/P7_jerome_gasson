@@ -11,7 +11,8 @@ const { isDate } = require('util');
 
 // Regex
 const EMAIL_REGEX = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-const PASSWORD_REGEX = /^(?=.*\d).{4,8}$/;
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/ ///^(?=.*\d).{6,}$/;
+// Minimum six characters, at least one uppercase letter, one lowercase letter and one number.
 
 // Routes
 
@@ -33,7 +34,7 @@ module.exports = {
 
     // Vérification des variables envoyés
 
-    // Si le pseudo est égal ou plus grand que 13, ou inferrieur ou égal à 4 on rejette la demande
+    // Si le pseudo est égal ou plus grand que 16, ou inferrieur ou égal à 4 on rejette la demande
     if (username.length >= 16 || username.length <= 4){
       return res.status(400).json({'error':'username must be length 5 - 15'});
     }
@@ -45,7 +46,7 @@ module.exports = {
 
     // Verification du mot de passe via le Regex
     if (!PASSWORD_REGEX.test(password)){
-        return res.status(400).json({'error':'Password must be between 4 and 8 digits long and include at least one numeric digit.'});
+        return res.status(400).json({'error':'Password must be minimum 8 digits at least one uppercase letter, one lowercase letter and one number.'});
     }
 
     // Après verifications, Ajout de l'utilisateur dans la base de données
@@ -179,7 +180,7 @@ module.exports = {
     })
     .then(function(user){
         if(user){
-            res.status(201).json(user);
+            res.status(200).json(user);
         } else {
             res.status(404).json({'error':'user not found'});
         }
