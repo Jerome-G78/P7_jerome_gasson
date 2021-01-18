@@ -103,8 +103,8 @@ export default {
                 this.Posts = res.data;
                 console.log(this.Posts);
                 for(let i=0; i < this.Posts.length; i++){
+                    this.LikeCounter = this.Posts[i].likes;
                     this.PostId = this.Posts[i].id;
-                    // console.log(this.PostId);
                     // Récupération de la date & l'heure du Post
                     let date= this.Posts[i].createdAt.split('T')[0];
                     this.PostDate= date;
@@ -235,25 +235,43 @@ export default {
             this.$store.commit('setCurrentPostId',this.PostId);
         },
         Like(){
-            // WIP
-            if(this.Liked){
-                console.log('Disliked');
-                this.Liked = false;
-                this.LikeCounter -=1;
-                this.$store.commit('setLikes', this.LikeCounter);
-                console.log(this.LikeCounter);
-                
-            } else {
+            // Configuration de l'en-tete AXIOS (intégration du token)
+            axios.interceptors.request.use(
+                config => {
+                    config.headers.authorization = `Bearer ${this.Token}`;
+                    return config;
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            );
+
+            axios.post(this.url+"/api/messages/"+this.PostId+"/vote/like")
+            .then(res =>{
+                // Like le post
                 console.log('Liked');
+                console.log(res);
                 this.Liked = true;
                 this.LikeCounter +=1;
                 this.$store.commit('setLikes', this.LikeCounter);
                 console.log(this.LikeCounter);
-            }
+            })
+            .catch(err =>{
+                axios.post(this.url+"/api/messages/"+this.PostId+"/vote/dislike")
+                then(res=>{
+                    // Dislike le post
+                    console.log('Disliked');
+                    console.log(res);
+                    this.Liked = false;
+                    this.LikeCounter -=1;
+                    this.$store.commit('setLikes', this.LikeCounter);
+                    console.log(this.LikeCounter);
+                })
+                
+            });
             
         },
         DeletePost(){
-            //WIP
             // Configuration de l'en-tete AXIOS (intégration du token)
             axios.interceptors.request.use(
                 config => {
@@ -297,7 +315,7 @@ export default {
             console.log(this.Posts);
             for(let i=0; i < this.Posts.length; i++){
                 this.PostId = this.Posts[i].id;
-                // console.log(this.PostId);
+                this.LikeCounter = this.Posts[i].likes;
                 // Récupération de la date & l'heure du Post
                 let date= this.Posts[i].createdAt.split('T')[0];
                 this.PostDate= date;
