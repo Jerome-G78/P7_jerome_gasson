@@ -12,11 +12,11 @@
                     <p> Work In Progress ...</p>
                     <div class="form-group">
                         <label for="TitleEdit">Titre :</label>
-                        <input @keyup="EditVerify" type="text" class="form-control" id="TitleEdit" placeholder="Champ d'édition" name="TitleEdit">
+                        <input @keyup="EditVerify" type="text" class="form-control" id="TitleEdit" placeholder="Champ d'édition" name="TitleEdit" v-model="EditTitle">
                     </div>
                     <div class="form-group">
                         <label for="ContentEdit">Contenue :</label>
-                        <textarea @keyup="EditVerify" class="form-control" id="ContentEdit" placeholder="Champ d'édition" rows="3"></textarea>
+                        <textarea @keyup="EditVerify" class="form-control" id="ContentEdit" placeholder="Champ d'édition" rows="3" v-model="EditContent"></textarea>
                     </div>
                     <div v-if="subOkay && subCompleted" class="alert alert-info">
                         <strong><i class="fas fa-info-circle"></i></strong> {{OnSucess}}.
@@ -52,6 +52,9 @@ export default {
             Connected: this.$store.state.Connected,
             PostId: this.$store.state.CurrentPostId,
             Loading: this.$store.state.Loading,
+
+            EditTitle:this.$store.state.Etitle,
+            EditContent:this.$store.state.Etitle,
 
             // Variables locales
             CHKtitle: false,
@@ -152,6 +155,18 @@ export default {
             this.subCompleted = false;
             this.chkOK = false;
         }
+    },
+    mounted(){
+        /*
+        axios.get(this.url+'/api/messages/'+this.PostId)
+        .then(res =>{
+            console.log(res);
+
+        })
+        .catch(err =>{
+            console.log(err);
+        });
+        */
     }
 }
 </script>

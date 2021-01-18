@@ -43,7 +43,7 @@
                                 {{Comment.comment}}
                             </p>
                         </div>
-                        <div class="col-3">
+                        <div @mouseover="SetCommentId" id="CommentDeleteButton" class="col-3">
                             <button @click="DeleteComment" v-if="Connected && (isAdmin || ownComment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                         </div>
                     </div>
@@ -70,6 +70,7 @@ export default {
             LikeCounter: this.$store.state.LikesCounter,
             PostId:this.$store.state.CurrentPostId,
             CommentId:this.$store.state.CurrentCommentId,
+            Token:this.$store.state.Token,
 
             // Variables Local
             Posts: [],
@@ -155,25 +156,78 @@ export default {
             }
         },
         Submit(){
-            // WIP
-            // Sucess
-            document.getElementById('comment').value = '';
-            this.ValueComment = false;
-            this.subOkay = true;
-            this.subCompleted = true;
-            this.chkOK = false;
+            // Configuration de l'en-tete AXIOS (intégration du token)
+                axios.interceptors.request.use(
+                    config => {
+                        config.headers.authorization = `Bearer ${this.Token}`;
+                        return config;
+                    },
+                    error => {
+                        return Promise.reject(error);
+                    }
+                );
 
-            // Faillure
-            /*
-            this.subFailure = true;
-            this.subCompleted = true;
-            */
+            let comment = document.getElementById('comment').value;
+            console.log(comment);
+            axios.post(this.url+"/api/messages/comment/"+this.PostId+"/new/",{
+                comment : comment
+            })
+            .then(res =>{
+                // Sucess
+                document.getElementById('comment').value = '';
+                this.ValueComment = false;
+                this.subOkay = true;
+                this.subCompleted = true;
+                this.chkOK = false;
+
+            })
+            .catch(err =>{
+                // Faillure
+                this.subFailure = true;
+                this.subCompleted = true;
+                this.chkOK = false;
+            });
+        },
+        SetCommentId(){
+            // Récupérer le PostID, pour l'éditer, le supprimer ou le modérer.
+            console.log("Mouse Over!");
+            let OverId = document.getElementById("CommentDeleteButton").parentNode.id;
+            this.$store.commit('setCurrentCommentId',this.CommentId);
         },
         DeleteComment(){
             //WIP
-            console.log('Comment Deleted')
-        },
+            // Configuration de l'en-tete AXIOS (intégration du token)
+                axios.interceptors.request.use(
+                    config => {
+                        config.headers.authorization = `Bearer ${this.Token}`;
+                        return config;
+                    },
+                    error => {
+                        return Promise.reject(error);
+                    }
+                );
+            if(this.isAdmin){
+                axios.delete(this.url+"/api/messages/comment/"+this.PostId+"/"+this.CommentId+"/moderate/")
+                .then(res=>{
+                    console.log(res);
+                    console.log('commentaire supprimé');
+                })
+                .catch(err =>{
+                    console.log(err);
+                });
 
+            } else {
+                axios.delete(this.url+"/api/messages/comment/"+this.PostId+"/"+this.CommentId)
+                .then(res=>{
+                    console.log(res);
+                    console.log('commentaire supprimé');
+
+                })
+                .catch(err =>{
+                    console.log(err);
+                });
+            }
+        },
         SetPostId(){
             // Récupérer le PostID, pour l'éditer, le supprimer ou le modérer.
             console.log("Mouse Over!");

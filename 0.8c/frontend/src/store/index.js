@@ -4,15 +4,15 @@ export default createStore({
   state: {
     url:'http://localhost:3000',
     // Déclaration des données du "store" de vue X
-    Connected: false,
+    Connected: true,
     isAdmin: false,
     // ownMessage: false,
     // ownComment: false,
-    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTA5OTg3MjksImV4cCI6MTYxMTA4NTEyOX0.-r7Swz4Zy5pHSk4T-u8lGKlAVKAzm6UO-78nEw1cx0c',
+    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTEwMDI2NDUsImV4cCI6MTYxMTA4OTA0NX0.-8PNAaLoKmUKR-pvMFFtK--nFeTh7lR4LkKWZbauXME',
 
     // Profil
-    userId:0,
-    userName:'Non chargée',
+    userId:7,
+    userName:'Teddy',
     email:'Non chargée',
     bio:'Non chargée',
     BioEdit : false,
@@ -31,6 +31,8 @@ export default createStore({
 
     // Edit, Delete & Moderate Posts
     CurrentPostId:0,
+    Etitle:'',
+    Econtent:'',
 
     // Delete Comments
     CurrentCommentId:0,
@@ -115,6 +117,13 @@ export default createStore({
     // Edit & Moderate Posts
     setCurrentPostId(state, newValue){
       state.CurrentPostId = newValue;
+    },
+    setCurrentEtitle(state, newValue){
+      state.Etitle = newValue;
+    },
+
+    setCurrentEcontent(state, newValue){
+      state.Econtent = newValue;
     },
 
     // Delete Comments
