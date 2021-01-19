@@ -5,17 +5,17 @@ export default createStore({
     url:'http://localhost:3000',
     footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
-    Connected: true,
+    Connected: false,
     isAdmin: false,
     // ownMessage: false,
     // ownComment: false,
-    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTEwNTE5NTksImV4cCI6MTYxMTEzODM1OX0.k4vCpfyuWozFlRu2zS8_mYGyRRiKXwa9k0fv13RGapw',
+    Token:'',
 
     // Profil
-    userId:2,
-    userName:'Poppy',
-    email:'Poppy@lol.com',
-    bio:'Non chargée',
+    userId:0,
+    userName:'',
+    email:'',
+    bio:'',
     BioEdit : false,
 
     // SignIn

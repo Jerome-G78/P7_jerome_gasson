@@ -48,10 +48,13 @@
 </template>
 
 <script>
+import router from '@/router/index.js'
+
 export default {
     name: 'Login',
     data(){
         return {
+            currentRoute: window.location.pathname,
             // Récupération des variables globales dans vue X
             url:this.$store.state.url,
             userName: this.$store.state.userName,
@@ -94,7 +97,7 @@ export default {
         },
         LogIn(){
             this.$store.commit('setLoading',this.Loading = true);
-            console.log(this.Loading);
+            console.log("Loading : "+this.Loading);
             let Email = document.getElementById('Lemail').value;
             let Pwd = document.getElementById('Lpwd').value;
 
@@ -108,10 +111,9 @@ export default {
                 console.log(res);
                 this.subOkay = true;
                 this.subCompleted = true;
-                this.Connected = true;
                 this.$store.commit('setConnected', this.Connected);
                 localStorage.setItem("Connected", true);
-                console.log(this.$store.state.Connected);
+                console.log("Connected : "+ this.$store.state.Connected);
                 this.$store.commit('setEmail', res.data.email);
                 console.log(this.$store.state.email);
                 document.getElementById('Lemail').value = '';
@@ -126,6 +128,16 @@ export default {
                 console.log(this.$store.state.isAdmin);
                 this.$store.commit('setLoading',this.Loading = false);
                 console.log(this.Loading);
+
+                // Completed
+                console.log(this.currentRoute);
+                this.subOkay = false;
+                this.subCompleted = false;
+                this.Connected = true;
+                this.$store.commit('setConnected', this.Connected);
+                console.log("Connected : "+ this.$store.state.Connected);
+                // Redirrection vers la page Home...
+                router.push(this.currentRoute+'Home');
 
             })
             .catch(err =>{
