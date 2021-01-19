@@ -114,6 +114,12 @@ export default {
                         this.ownMessage = true;
                     }
                 }
+
+                if(this.Posts == 0){
+                this.$store.commit('setNoData', true);
+                } else {
+                    this.$store.commit('setNoData', false);
+                }
             })
             .catch(err =>{
                 console.log(err);
@@ -141,6 +147,7 @@ export default {
                         this.$store.commit('setNoData', true);
                     }
                 }
+
             })
             .catch(err =>{
                 console.log(err);
@@ -179,6 +186,7 @@ export default {
                 this.subOkay = true;
                 this.subCompleted = true;
                 this.chkOK = false;
+                router.push({path:'Home'});
 
             })
             .catch(err =>{
@@ -327,11 +335,41 @@ export default {
             }
             if(this.Posts == 0){
                 this.$store.commit('setNoData', true);
+            } else {
+                this.$store.commit('setNoData', false);
             }
         })
         .catch(err =>{
             console.log(err);
         });
+
+        axios.get(this.url+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+            .then(res =>{
+                // Récupération des commentaires liées
+                this.Comments = res.data;
+                console.log(this.Comments);
+                for(let i=0; i < this.Comments.length; i++){
+                    this.CommentId = this.Comments[i].id;
+                    // console.log(this.CommentId);
+                    // Récupération de la date & l'heure du message
+                    let date= this.Comments[i].createdAt.split('T')[0];
+                    this.CommentDate = date;
+                    let time= this.Comments[i].createdAt.split('T')[1];
+                    this.CommentTime = time.replace('.000Z','');
+
+                    if(res.data[i].username == this.$store.state.userName){
+                        this.ownComment = true;
+                    }
+
+                    if(this.Posts == 0){
+                        this.$store.commit('setNoData', true);
+                    }
+                }
+
+            })
+            .catch(err =>{
+                console.log(err);
+            });
     }
 }
 </script>

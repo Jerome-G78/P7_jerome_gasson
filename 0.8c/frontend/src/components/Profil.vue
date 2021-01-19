@@ -167,5 +167,26 @@ export default {
             //WIP
         }
     },
+    mounted(){
+        // Configuration de l'en-tete AXIOS (intégration du token)
+        axios.interceptors.request.use(
+            config => {
+                config.headers.authorization = `Bearer ${this.Token}`;
+                return config;
+            },
+            error => {
+                return Promise.reject(error);
+            }
+        );
+
+        axios.get(this.url+"/api/users/me")
+        .then(res =>{
+            console.log(res);
+            this.bio = res.data.bio;
+        })
+        .catch(err =>{
+            console.log(err);
+        });
+    }
 }
 </script>

@@ -52,6 +52,8 @@
 </template>
 
 <script>
+import router from '@/router/index.js'
+
 export default {
     name: 'NewMessage',
     data(){
@@ -164,6 +166,7 @@ export default {
                     this.uploadFile = false
                     this.subOkay = false;
                     this.subCompleted = false;
+                    router.push({path:'Home'});
 
                 })
                 .catch(err =>{

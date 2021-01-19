@@ -136,8 +136,10 @@ export default {
                 this.Connected = true;
                 this.$store.commit('setConnected', this.Connected);
                 console.log("Connected : "+ this.$store.state.Connected);
+                // Masquer la fenêtre Modal
+                $('#logginModal').modal('hide');
                 // Redirrection vers la page Home...
-                router.push(this.currentRoute+'Home');
+                router.push({path:'Home'});
 
             })
             .catch(err =>{
