@@ -54,7 +54,7 @@ export default {
             Loading: this.$store.state.Loading,
 
             EditTitle:this.$store.state.Etitle,
-            EditContent:this.$store.state.Etitle,
+            EditContent:this.$store.state.Econtent,
 
             // Variables locales
             CHKtitle: false,

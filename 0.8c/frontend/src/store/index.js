@@ -3,17 +3,18 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     url:'http://localhost:3000',
+    footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
     Connected: true,
     isAdmin: false,
     // ownMessage: false,
     // ownComment: false,
-    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTEwMDI2NDUsImV4cCI6MTYxMTA4OTA0NX0.-8PNAaLoKmUKR-pvMFFtK--nFeTh7lR4LkKWZbauXME',
+    Token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2MTEwNTE5NTksImV4cCI6MTYxMTEzODM1OX0.k4vCpfyuWozFlRu2zS8_mYGyRRiKXwa9k0fv13RGapw',
 
     // Profil
-    userId:7,
-    userName:'Teddy',
-    email:'Non chargée',
+    userId:2,
+    userName:'Poppy',
+    email:'Poppy@lol.com',
     bio:'Non chargée',
     BioEdit : false,
 
@@ -121,7 +122,6 @@ export default createStore({
     setCurrentEtitle(state, newValue){
       state.Etitle = newValue;
     },
-
     setCurrentEcontent(state, newValue){
       state.Econtent = newValue;
     },
