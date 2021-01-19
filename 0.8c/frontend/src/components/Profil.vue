@@ -44,6 +44,7 @@
                 </div>
 
                 <div class="modal-footer">
+                    <button @click="GoOut" type="button" title="Changer d'utilisateur" class="btn btn-primary" data-dismiss="modal">Changer d'utilisateur</button>
                     <button type="button" title="Désinscription" class="btn btn-danger" data-dismiss="modal">Désinscription</button>
                 </div>
         
@@ -53,6 +54,7 @@
 </template>
 
 <script>
+import router from '@/router/index.js'
 export default {
     name: 'Profil',
     data(){
@@ -165,6 +167,27 @@ export default {
         },
         removeRight(){
             //WIP
+        },
+        GoOut(){
+            // Réinitialisation des paramètres Vue X...
+            this.subOkay = false;
+            this.subCompleted = false;
+            this.$store.commit('setConnected', false);
+            console.log("Connected : "+ this.$store.state.Connected);
+            this.$store.commit('setEmail', '');
+            console.log(this.$store.state.email);
+            this.$store.commit('setUserName', '');
+            console.log(this.$store.state.userName);
+            this.$store.commit('setUserID', 0);
+            console.log(this.$store.state.userId);
+            this.$store.commit('setToken', '');
+            console.log(this.$store.state.Token);
+            this.$store.commit('setIsAdmin', false);
+            console.log(this.$store.state.isAdmin);
+            this.$store.commit('setLoading',this.Loading = false);
+            console.log(this.Loading);
+            // Redirrection vers la page D'accueil...
+            router.push({path:'/'});
         }
     },
     mounted(){
