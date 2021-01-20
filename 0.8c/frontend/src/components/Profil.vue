@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button @click="GoOut" type="button" title="Changer d'utilisateur" class="btn btn-primary" data-dismiss="modal">Changer d'utilisateur</button>
+                    <button @click="GoOut" type="button" title="Déconnexion" class="btn btn-primary" data-dismiss="modal">Déconnexion</button>
                     <button type="button" title="Désinscription" class="btn btn-danger" data-dismiss="modal">Désinscription</button>
                 </div>
         
@@ -170,23 +170,30 @@ export default {
         },
         GoOut(){
             // Réinitialisation des paramètres Vue X...
+            // Supression des informations de session utilisateur...
             this.subOkay = false;
             this.subCompleted = false;
             this.$store.commit('setConnected', false);
+            localStorage.removeItem('Connected');
             console.log("Connected : "+ this.$store.state.Connected);
             this.$store.commit('setEmail', '');
+            localStorage.removeItem('Email');
             console.log(this.$store.state.email);
             this.$store.commit('setUserName', '');
+            localStorage.removeItem('userName');
             console.log(this.$store.state.userName);
             this.$store.commit('setUserID', 0);
+            localStorage.removeItem('userId');
             console.log(this.$store.state.userId);
             this.$store.commit('setToken', '');
+            localStorage.removeItem('Token');
             console.log(this.$store.state.Token);
             this.$store.commit('setIsAdmin', false);
+            localStorage.removeItem('isAdmin');
             console.log(this.$store.state.isAdmin);
             this.$store.commit('setLoading',this.Loading = false);
             console.log(this.Loading);
-            // Redirrection vers la page D'accueil...
+            // Redirrection vers la page d'accueil...
             router.push({path:'/'});
         }
     },
