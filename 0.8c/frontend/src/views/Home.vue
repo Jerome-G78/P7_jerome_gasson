@@ -30,14 +30,13 @@ export default {
   data(){
     return{
     // Récupération des variables globales dans vue X
-    // Connected: this.$store.state.Connected,
-    // isAdmin: this.$store.state.isAdmin,
+      Connected: this.$store.state.Connected,
+      isAdmin: this.$store.state.isAdmin,
     }
   },
   computed:{
     data(){
       return {
-        isAdmin:this.$store.state.isAdmin,
         PostId:this.$store.state.CurrentPostId,
         CommentId:this.$store.state.CurrentCommentId,
         Etitle:this.$store.state.Etitle,
@@ -47,13 +46,6 @@ export default {
     }
   },
   mounted(){
-    return {
-      isAdmin:this.$store.state.isAdmin,
-      PostId:this.$store.state.CurrentPostId,
-      CommentId:this.$store.state.CurrentCommentId,
-      Etitle:this.$store.state.Etitle,
-      Econtent:this.$store.state.Econtent,
-    }
   }
 }
 </script>
