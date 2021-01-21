@@ -20,8 +20,8 @@
                     <hr v-if="Connected">
                     <div id="Buttons" @mouseover="SetPostId" class="row justify-content-center">
                         <button @click.stop="Like" v-if="Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
-                        <button v-if="Connected && ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
-                        <button v-if="Connected && isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
+                        <button @click="EditPost" v-if="Connected && ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
+                        <button @click="EditPost" v-if="Connected && isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
                         <button @click.stop="DeletePost" v-if="Connected && (isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                     </div>
                     <hr v-if="Connected">
@@ -68,8 +68,8 @@ export default {
             Loading: this.$store.state.Loading,
             NoData:this.$store.state.NoData,
             LikeCounter: this.$store.state.LikesCounter,
-            PostId:this.$store.state.CurrentPostId,
-            CommentId:this.$store.state.CurrentCommentId,
+            // PostId:this.$store.state.CurrentPostId,
+            // CommentId:this.$store.state.CurrentCommentId,
             Token:this.$store.state.Token,
 
             // Variables Local
@@ -92,9 +92,27 @@ export default {
 
         }
     },
+
+    computed:{
+        data(){
+            return{
+                Connected: this.$store.state.Connected,
+                isAdmin: this.$store.state.isAdmin,
+                
+                PostId:this.$store.state.CurrentPostId,
+                CommentId:this.$store.state.CurrentCommentId,
+                Etitle:this.$store.state.Etitle,
+                Econtent:this.$store.state.Econtent,
+            }
+        }
+
+    },
     // Création de la logique du module
     methods:{
         ReLoad(){
+            this.Loading = true;
+            this.$store.commit('setLoading',this.Loading);
+            console.log(this.Loading);
             //WIP
             // Initialisation de la promesse vers l'API via AXIOS
             axios.get(this.urlAPI+'/api/messages/?order=id:ASC')
@@ -150,9 +168,16 @@ export default {
                     }
                 }
 
+                this.Loading = false;
+                this.$store.commit('setLoading',this.Loading);
+                console.log(this.Loading);
+
             })
             .catch(err =>{
                 console.log(err);
+                this.Loading = false;
+                this.$store.commit('setLoading',this.Loading);
+                console.log(this.Loading);
             });
         },
         CommentVerify(){
@@ -313,10 +338,39 @@ export default {
                 });
                 console.log('Post Deleted');
             }
+        },
+        EditPost(){
+            let Counter = 0;
+            // Chargement du post (Axios)
+            axios.get(this.urlAPI+"/api/messages/?fields=id,title,content")
+            .then(res =>{
+                console.log(res);
+                // console.log(res.data.length);
+                console.log(this.PostId);
+                Counter = res.data.length;
+                for(let i=0; i < Counter; i++){
+                    // console.log('B-For');
+                    if(res.data[i].id == this.PostId){
+                        // console.log('IN-IF');
+                        this.Etitle=res.data[i].title;
+                        this.$store.commit('setCurrentEtitle',res.data[i].title);
+                        console.log(this.$store.state.Etitle);
+                        this.Econtent=res.data[i].content;
+                        this.$store.commit('setCurrentEcontent',res.data[i].content);
+                        console.log(this.$store.state.Econtent);
+                    }
+                }
+            })
+            .catch(err =>{
+                console.log(err);
+            });
         }
     },
     mounted(){
-        // Lors du chargement du comosant, appeler les messages dans la BDD
+        this.Loading = true;
+        this.$store.commit('setLoading',this.Loading);
+        console.log(this.Loading);
+        // Lors du chargement du composant, appeler les messages dans la BDD
         // Initialisation de la promesse vers l'API via AXIOS
         axios.get(this.urlAPI+'/api/messages/?order=id:ASC')
         .then(res =>{
@@ -343,6 +397,9 @@ export default {
         })
         .catch(err =>{
             console.log(err);
+            this.Loading = false;
+            this.$store.commit('setLoading',this.Loading);
+            console.log(this.Loading);
         });
 
         axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
@@ -368,9 +425,16 @@ export default {
                     }
                 }
 
+                this.Loading = false;
+                this.$store.commit('setLoading',this.Loading);
+                console.log(this.Loading);
+
             })
             .catch(err =>{
                 console.log(err);
+                this.Loading = false;
+                this.$store.commit('setLoading',this.Loading);
+                console.log(this.Loading);
             });
     }
 }

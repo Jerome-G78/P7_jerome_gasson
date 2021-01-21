@@ -48,13 +48,13 @@ export default {
     data(){
         return {
             // Récupération des variables dans vue X
-            urlAPI:this.$store.state.urlAPI,
+            urlAPI: this.$store.state.urlAPI,
             Connected: this.$store.state.Connected,
             PostId: this.$store.state.CurrentPostId,
             Loading: this.$store.state.Loading,
 
-            EditTitle:this.$store.state.Etitle,
-            EditContent:this.$store.state.Econtent,
+            EditTitle: this.$store.state.Etitle,
+            EditContent: this.$store.state.Econtent,
 
             // Variables locales
             CHKtitle: false,
@@ -70,6 +70,7 @@ export default {
             OnSucess:'Le message à été modifié',
         }
     },
+
     // Création de la logique du module
     methods:{
         EditVerify(){
@@ -116,10 +117,8 @@ export default {
             .then(res =>{
                 // Envoie des données en base
                 console.log(res);
-                this.bio = BioArea;
 
                 //SubOkay
-                this.$store.commit('setBio', BioArea);
                 this.subOkay = true;
                 this.subCompleted = true;
                 this.$store.commit('setLoading',this.Loading = false);
@@ -156,17 +155,22 @@ export default {
             this.chkOK = false;
         }
     },
-    mounted(){
-        /*
-        axios.get(this.url+'/api/messages/'+this.PostId)
-        .then(res =>{
-            console.log(res);
 
-        })
-        .catch(err =>{
-            console.log(err);
-        });
-        */
+    computed:{
+        data(){
+            return {
+            //  EditTitle:this.$store.state.Etitle,
+            //  EditContent:this.$store.state.Econtent,
+            //  PostId: this.$store.state.CurrentPostId,
+            }
+        }
+    },
+
+    mounted(){
+        //
+    },
+    updated(){
+        //
     }
 }
 </script>

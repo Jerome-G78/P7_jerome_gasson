@@ -125,6 +125,7 @@ export default {
         },
         Load(){
             this.Loading = true;
+            this.$store.commit('setLoading',this.Loading);
         }
     }
     

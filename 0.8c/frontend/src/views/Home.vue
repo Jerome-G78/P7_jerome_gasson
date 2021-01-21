@@ -19,6 +19,7 @@ import Wall from '@/components/Wall.vue'
 import WallEditPost from '@/components/WallEditPost.vue'
 import WallModeratePost from '@/components/WallModeratePost.vue'
 import Footer from '@/components/Footer.vue'
+import { computed } from 'vue'
 
 
 export default {
@@ -29,7 +30,29 @@ export default {
   data(){
     return{
     // Récupération des variables globales dans vue X
-    Connected: this.$store.state.Connected,
+    // Connected: this.$store.state.Connected,
+    // isAdmin: this.$store.state.isAdmin,
+    }
+  },
+  computed:{
+    data(){
+      return {
+        isAdmin:this.$store.state.isAdmin,
+        PostId:this.$store.state.CurrentPostId,
+        CommentId:this.$store.state.CurrentCommentId,
+        Etitle:this.$store.state.Etitle,
+        Econtent:this.$store.state.Econtent,
+      }
+
+    }
+  },
+  mounted(){
+    return {
+      isAdmin:this.$store.state.isAdmin,
+      PostId:this.$store.state.CurrentPostId,
+      CommentId:this.$store.state.CurrentCommentId,
+      Etitle:this.$store.state.Etitle,
+      Econtent:this.$store.state.Econtent,
     }
   }
 }

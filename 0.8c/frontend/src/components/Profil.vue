@@ -70,6 +70,8 @@ export default {
             BioEdit: this.$store.state.BioEdit,
             Token: this.$store.state.Token,
 
+            Loading: this.$store.state.Loading,
+
             // Variables locales
             findUser:false,
             findUserAdmin:false,

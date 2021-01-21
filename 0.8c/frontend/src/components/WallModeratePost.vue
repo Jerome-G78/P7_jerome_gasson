@@ -48,10 +48,13 @@ export default {
     data(){
         return {
             // Récupération des variables dans vue X
-            urlAPI:this.$store.state.urlAPI,
+            urlAPI: this.$store.state.urlAPI,
             isAdmin: this.$store.state.isAdmin,
             Connected: this.$store.state.Connected,
             PostId: this.$store.state.CurrentPostId,
+
+            EditTitle: this.$store.state.Etitle,
+            EditContent: this.$store.state.Econtent,
 
             // Variables locales
             CHKtitle: false,
@@ -67,6 +70,7 @@ export default {
             OnSucess:'Le message à été modéré',
         }
     },
+
     // Création de la logique du module
     methods:{
         ModerateVerify(){
@@ -154,6 +158,20 @@ export default {
             this.subCompleted = false;
             this.chkOK = false;
         }
+    },
+
+    computed:{
+        data(){
+            return {
+            //  EditTitle:this.$store.state.Etitle,
+            //  EditContent:this.$store.state.Econtent,
+            //  PostId: this.$store.state.CurrentPostId,
+            }
+        }
+    },
+
+    mounted(){ 
+        //
     }
 }
 </script>

@@ -68,6 +68,8 @@ export default {
             Npicture:this.$store.state.Npicture,
             Token: this.$store.state.Token,
 
+            Loading: this.$store.state.Loading,
+
             // Variables locales
             chkCompleted: false,
             subOkay: false,
@@ -306,6 +308,8 @@ export default {
             this.uploadFile = false
             this.subOkay = false;
             this.subCompleted = false;
+            this.Loading=false;
+            this.$store.commit('setLoading',this.Loading);
         }
     },
 }
