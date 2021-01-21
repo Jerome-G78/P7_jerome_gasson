@@ -48,7 +48,7 @@ export default {
     data(){
         return {
             // Récupération des variables dans vue X
-            url:this.$store.state.url,
+            urlAPI:this.$store.state.urlAPI,
             isAdmin: this.$store.state.isAdmin,
             Connected: this.$store.state.Connected,
             PostId: this.$store.state.CurrentPostId,
@@ -107,7 +107,7 @@ export default {
             );
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.put(this.url+'/api/messages/'+this.PostId+'/moderate',{
+            axios.put(this.urlAPI+'/api/messages/'+this.PostId+'/moderate',{
                 title: TitleMod,
                 content : ContentMod
                 })

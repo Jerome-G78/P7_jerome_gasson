@@ -73,7 +73,7 @@ export default {
     data(){
         return {
             // Récupération des variables globales dans vue X
-            url:this.$store.state.url,
+            urlAPI:this.$store.state.urlAPI,
             userName: this.$store.state.userName,
             Connected: this.$store.state.Connected,
             CHKeMail: this.$store.state.CHKeMail,
@@ -140,7 +140,7 @@ export default {
             let Bio = document.getElementById('SBio').value;
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.post(this.url+'/api/users/register/', {
+            axios.post(this.urlAPI+'/api/users/register/', {
                 email : Email,
                 username : Name,
                 password : Pwd,
@@ -159,6 +159,10 @@ export default {
                 this.subCompleted = true;
                 this.$store.commit('setLoading',this.Loading = false);
                 console.log(this.Loading);
+
+                // Masquer la fenêtre Modal
+                $('#registrationModal').modal('hide');
+
             })
             .catch(err => {
             //WIP

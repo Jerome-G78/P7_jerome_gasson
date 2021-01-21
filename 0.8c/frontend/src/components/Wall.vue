@@ -3,7 +3,7 @@
 	<div v-if="Loading" class="spinner-border text-primary text-center" id="WallLoad">
         <p>Chargement des messages... </p>
     </div>
-    <div v-if="!Loading && NoData" class="spinner-border text-primary text-center" id="WallLoad">
+    <div v-if="!Loading && Connected && NoData" class="spinner-border text-primary text-center" id="WallLoad">
         <p>Aucuns messages a charger ... a vous de jouer! :D </p>
     </div>
     <!-- POST START-->
@@ -62,7 +62,7 @@ export default {
     data(){
         return {
             // Récupération des variables dans vue X
-            url:this.$store.state.url,
+            urlAPI:this.$store.state.urlAPI,
             isAdmin: this.$store.state.isAdmin,
             Connected: this.$store.state.Connected,
             Loading: this.$store.state.Loading,
@@ -97,7 +97,7 @@ export default {
         ReLoad(){
             //WIP
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.get(this.url+'/api/messages/?order=id:ASC')
+            axios.get(this.urlAPI+'/api/messages/?order=id:ASC')
             .then(res =>{
                 // Récupération des messages & likes liées
                 this.Posts = res.data;
@@ -116,16 +116,18 @@ export default {
                 }
 
                 if(this.Posts == 0){
-                this.$store.commit('setNoData', true);
+                    this.$store.commit('setNoData', true);
+                    this.NoData = true;
                 } else {
                     this.$store.commit('setNoData', false);
+                    this.NoData = false;
                 }
             })
             .catch(err =>{
                 console.log(err);
             });
 
-            axios.get(this.url+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+            axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
             .then(res =>{
                 // Récupération des commentaires liées
                 this.Comments = res.data;
@@ -176,7 +178,7 @@ export default {
 
             let comment = document.getElementById('comment').value;
             console.log(comment);
-            axios.post(this.url+"/api/messages/comment/"+this.PostId+"/new/",{
+            axios.post(this.urlAPI+"/api/messages/comment/"+this.PostId+"/new/",{
                 comment : comment
             })
             .then(res =>{
@@ -215,7 +217,7 @@ export default {
                     }
                 );
             if(this.isAdmin){
-                axios.delete(this.url+"/api/messages/comment/"+this.PostId+"/"+this.CommentId+"/moderate/")
+                axios.delete(this.urlAPI+"/api/messages/comment/"+this.PostId+"/"+this.CommentId+"/moderate/")
                 .then(res=>{
                     console.log(res);
                     console.log('commentaire supprimé');
@@ -225,7 +227,7 @@ export default {
                 });
 
             } else {
-                axios.delete(this.url+"/api/messages/comment/"+this.PostId+"/"+this.CommentId)
+                axios.delete(this.urlAPI+"/api/messages/comment/"+this.PostId+"/"+this.CommentId)
                 .then(res=>{
                     console.log(res);
                     console.log('commentaire supprimé');
@@ -254,7 +256,7 @@ export default {
                 }
             );
 
-            axios.post(this.url+"/api/messages/"+this.PostId+"/vote/like")
+            axios.post(this.urlAPI+"/api/messages/"+this.PostId+"/vote/like")
             .then(res =>{
                 // Like le post
                 console.log('Liked');
@@ -265,7 +267,7 @@ export default {
                 console.log(this.LikeCounter);
             })
             .catch(err =>{
-                axios.post(this.url+"/api/messages/"+this.PostId+"/vote/dislike")
+                axios.post(this.urlAPI+"/api/messages/"+this.PostId+"/vote/dislike")
                 then(res=>{
                     // Dislike le post
                     console.log('Disliked');
@@ -292,7 +294,7 @@ export default {
             );
             if(this.isAdmin){
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.delete(this.url+'/api/messages/'+this.PostId+'/moderate')
+                axios.delete(this.urlAPI+'/api/messages/'+this.PostId+'/moderate')
                 .then(res =>{
                     console.log(res);
                 })
@@ -302,7 +304,7 @@ export default {
                 console.log('Post Deleted');
             } else {
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.delete(this.url+'/api/messages/'+this.PostId)
+                axios.delete(this.urlAPI+'/api/messages/'+this.PostId)
                 .then(res =>{
                     console.log(res);
                 })
@@ -316,7 +318,7 @@ export default {
     mounted(){
         // Lors du chargement du comosant, appeler les messages dans la BDD
         // Initialisation de la promesse vers l'API via AXIOS
-        axios.get(this.url+'/api/messages/?order=id:ASC')
+        axios.get(this.urlAPI+'/api/messages/?order=id:ASC')
         .then(res =>{
             // Récupération des messages & likes liées
             this.Posts = res.data;
@@ -343,7 +345,7 @@ export default {
             console.log(err);
         });
 
-        axios.get(this.url+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+        axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
             .then(res =>{
                 // Récupération des commentaires liées
                 this.Comments = res.data;

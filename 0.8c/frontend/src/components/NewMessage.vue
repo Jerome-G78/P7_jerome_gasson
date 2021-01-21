@@ -12,12 +12,12 @@
 
                     <div class="form-group">
                         <label for="title">Titre <span class ="text-danger"> * </span>:</label>
-                        <input @keyup="MsgVerify" type="text" class="form-control" id="title" placeholder="Ajoutez un Titre" name="title">
+                        <input @keyup="MsgVerify" type="text" class="form-control" id="title" placeholder="Ajoutez un Titre" name="title" v-model="Ntitle">
                     </div>
 
                     <div class="form-group">
                         <label for="Content"> Contenue du message <span class ="text-danger"> * </span> :</label>
-                        <textarea @keyup="MsgVerify" class="form-control" id="Content" placeholder="Contenue de votre message" rows="3"></textarea>
+                        <textarea @keyup="MsgVerify" class="form-control" id="Content" placeholder="Contenue de votre message" rows="3" v-model="Ncontent"></textarea>
                     </div>
 
                     <p class ="text-danger"><small><i>* : Champs obligatoires</i></small></p>
@@ -59,7 +59,7 @@ export default {
     data(){
         return {
             // Récupération des variables globales dans vue X
-            url:this.$store.state.url,
+            urlAPI:this.$store.state.urlAPI,
             userName: this.$store.state.userName,
             Loading: this.$store.state.Loading,
             Ntitle:this.$store.state.Ntitle,
@@ -89,12 +89,14 @@ export default {
 
             if(CHKtitle !=''){
                 this.$store.commit('setNtitle', CHKtitle);
+                console.log(this.Ntitle);
             } else {
                 this.$store.commit('setNtitle', '');
             }
 
             if(CHKContent !=''){
                 this.$store.commit('setNcontent', CHKContent);
+                console.log(this.Ncontent);
             } else {
                 this.$store.commit('setNcontent', '');
             }
@@ -108,6 +110,7 @@ export default {
         },
 
         JoinPict(){
+            //WIP
             if(this.uploadFile){
                 this.uploadFile = false;
                 this.Nattachment = 0;
@@ -144,7 +147,7 @@ export default {
                 );
 
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.post(this.url+'/api/messages/new/', {
+                axios.post(this.urlAPI+'/api/messages/new/', {
                     title: document.getElementById("title").value,
                     content: document.getElementById("Content").value,
                     attachment: 1,
@@ -180,7 +183,7 @@ export default {
 
                 // Rechargement du mur de messages
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.get(this.url+'/api/messages/')
+                axios.get(this.urlAPI+'/api/messages/')
                 .then(res =>{
                     // Récupération des messages & likes liées
                     this.Posts = res.data;
@@ -202,7 +205,7 @@ export default {
                     console.log(err);
                 });
 
-                axios.get(this.url+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+                axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
                 .then(res =>{
                     // Récupération des commentaires liées
                     this.Comments = res.data;
@@ -242,7 +245,7 @@ export default {
                 );
 
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.post(this.url+'/api/messages/new/', {
+                axios.post(this.urlAPI+'/api/messages/new/', {
                     title: document.getElementById("title").value,
                     content: document.getElementById("Content").value
                 })
@@ -253,7 +256,7 @@ export default {
 
                     // Rechargement du mur de messages
                     // Initialisation de la promesse vers l'API via AXIOS
-                    axios.get(this.url+'/api/messages/')
+                    axios.get(this.urlAPI+'/api/messages/')
                     .then(res =>{
                     // Récupération des messages & likes liées
                     this.Posts = res.data;
@@ -293,7 +296,9 @@ export default {
         ResetStats(){
             // WIP
             document.getElementById('title').value = '';
+            this.$store.commit('setNtitle', '');
             document.getElementById('Content').value = '';
+            this.$store.commit('setNcontent', '');
             document.getElementById("Join").checked = false;
             this.Nattachment = 0,
             this.chkCompleted = false;

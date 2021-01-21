@@ -45,7 +45,7 @@
 
                 <div class="modal-footer">
                     <button @click="GoOut" type="button" title="Déconnexion" class="btn btn-primary" data-dismiss="modal">Déconnexion</button>
-                    <button type="button" title="Désinscription" class="btn btn-danger" data-dismiss="modal">Désinscription</button>
+                    <button @click="Unsubscribe" type="button" title="Désinscription" class="btn btn-danger" data-dismiss="modal">Désinscription</button>
                 </div>
         
             </div>
@@ -60,7 +60,7 @@ export default {
     data(){
         return {
             // Récupération des variables globales dans vue X
-            url:this.$store.state.url,
+            urlAPI:this.$store.state.urlAPI,
             userName: this.$store.state.userName,
             Connected: this.$store.state.Connected,
             email:this.$store.state.email,
@@ -113,7 +113,7 @@ export default {
             );
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.put(this.url+'/api/users/me/',{
+            axios.put(this.urlAPI+'/api/users/me/',{
                 bio: BioArea,
                 })
             .then(res =>{
@@ -195,6 +195,52 @@ export default {
             console.log(this.Loading);
             // Redirrection vers la page d'accueil...
             router.push({path:'/'});
+        },
+        Unsubscribe(){
+            // Authentification de l'utilisateur...
+
+            // Configuration de l'en-tete AXIOS (intégration du token)
+            axios.interceptors.request.use(
+                config => {
+                    config.headers.authorization = `Bearer ${this.Token}`;
+                    return config;
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            );
+            // Suppression du compte utilisateur...
+            axios.delete(this.urlAPI+"/api/users/unsubscribe/")
+            .then(res =>{
+                localStorage.clear();
+                this.subOkay = false;
+                this.subCompleted = false;
+                this.$store.commit('setConnected', false);
+                localStorage.removeItem('Connected');
+                console.log("Connected : "+ this.$store.state.Connected);
+                this.$store.commit('setEmail', '');
+                localStorage.removeItem('Email');
+                console.log(this.$store.state.email);
+                this.$store.commit('setUserName', '');
+                localStorage.removeItem('userName');
+                console.log(this.$store.state.userName);
+                this.$store.commit('setUserID', 0);
+                localStorage.removeItem('userId');
+                console.log(this.$store.state.userId);
+                this.$store.commit('setToken', '');
+                localStorage.removeItem('Token');
+                console.log(this.$store.state.Token);
+                this.$store.commit('setIsAdmin', false);
+                localStorage.removeItem('isAdmin');
+                console.log(this.$store.state.isAdmin);
+                this.$store.commit('setLoading',this.Loading = false);
+                console.log(this.Loading);
+                // Redirrection vers la page d'accueil...
+                router.push({path:'/'});
+            })
+            .catch(err =>{
+                console.log(err);
+            });
         }
     },
     mounted(){
@@ -209,7 +255,7 @@ export default {
             }
         );
 
-        axios.get(this.url+"/api/users/me")
+        axios.get(this.urlAPI+"/api/users/me")
         .then(res =>{
             console.log(res);
             this.bio = res.data.bio;
