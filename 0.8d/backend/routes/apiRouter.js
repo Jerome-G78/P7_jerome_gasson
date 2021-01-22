@@ -46,7 +46,7 @@ exports.router = (function(){
     apiRouter.post('/messages/:messageId/vote/dislike', likesCtrl.dislikePost);
 
     // Administration
-    apiRouter.get('/users/', usersCtrl.getOneUserProfile);
+    apiRouter.post('/users/', usersCtrl.getOneUserProfile);
     apiRouter.put('/users/add', usersCtrl.updateUserAddRights);
     apiRouter.put('/users/remove', usersCtrl.updateUserRemoveRights);
 

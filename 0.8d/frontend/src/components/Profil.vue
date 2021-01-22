@@ -164,8 +164,8 @@ export default {
             if(searchName !=''){
                 console.log(searchName);
                 // Code faire une recherche dans la BDD
-                axios.get(this.urlAPI+"/api/users/",{
-                    Username : searchName,
+                axios.post(this.urlAPI+"/api/users/",{
+                        Username: searchName,
                 })
                 .then(res=>{
                     console.log('finded!');
