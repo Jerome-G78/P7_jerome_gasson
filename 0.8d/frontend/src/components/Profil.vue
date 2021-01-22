@@ -5,7 +5,7 @@
         
                 <div class="modal-header">
                     <h4 class="modal-title"><i class="far fa-user"></i> Mon Profil</h4>
-                    <button type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
+                    <button @click="ResetStats" type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
                 </div>
         
                 <div class="modal-body">
@@ -31,11 +31,24 @@
 
                     <div v-if="isAdmin" class="form-group">
                         <h5>Options Modérateur</h5>
-                        <p>Work In Progress...</p>
                         <label for="Search"><i class="fas fa-search"></i> Rechercher un utilisateur</label>
                         <input @keyup="checkNameExist" type="text" class="form-control" id="Search" placeholder="Tapez le nom d'un utilisateur" name="Search">
-                        <button v-if="findUser && !findUserAdmin" type="button" title="Accorder les drois modérateur" class="btn btn-primary" >Accorder</button>
-                        <button v-if="findUser && findUserAdmin" type="button" title="Supprimer les drois modérateur" class="btn btn-primary" >Retirer</button>
+                        <button @click="addRight" v-if="findUser && !findUserAdmin" type="button" title="Accorder les drois modérateur" class="btn btn-primary" >Accorder</button>
+                        <button @click="removeRight" v-if="findUser && findUserAdmin" type="button" title="Supprimer les drois modérateur" class="btn btn-danger" >Retirer</button>
+
+                        <div v-if="RightAdded" class="alert alert-success">
+                            <strong><i class="fas fa-check-circle"></i></strong> {{RightAdd}}
+                            <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div v-if="RightRemoved" class="alert alert-success">
+                            <strong><i class="fas fa-check-circle"></i></strong> {{RightRemove}}
+                            <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div v-if="!isAdmin" class="alert alert-info">
@@ -74,9 +87,14 @@ export default {
             Loading: this.$store.state.Loading,
 
             // Variables locales
+
+            BioEdit:false,
             findUser:false,
             findUserAdmin:false,
             findedUser:'',
+
+            RightAdded:false,
+            RightRemoved:false,
 
             subOkay: false,
             subFailure: false,
@@ -84,8 +102,9 @@ export default {
 
             // Messages
             subOK: "Connexion réussi.",
-            subFail: "Une erreur est survenue!"
-
+            subFail: "Une erreur est survenue!",
+            RightAdd: "Droit accordé à l'utilisateur",
+            RightRemove: "Droit supprimé à l'utilisateur"
         }
     },
     // Création de la logique du module
@@ -148,7 +167,6 @@ export default {
 
         },
         checkNameExist(){
-            //WIP
             let searchName = document.getElementById("Search").value;
 
             axios.interceptors.request.use(
@@ -184,7 +202,6 @@ export default {
 
         },
         addRight(){
-            //WIP
             let searchName = document.getElementById("Search").value;
 
             axios.interceptors.request.use(
@@ -202,6 +219,9 @@ export default {
             })
             .then(res=>{
                 console.log(res);
+                this.RightAdded = true;
+                this.findUser = false;
+                document.getElementById('Search').value = '';
             })
             .catch(err=>{
                 console.log(err);
@@ -209,7 +229,6 @@ export default {
 
         },
         removeRight(){
-            //WIP
             let searchName = document.getElementById("Search").value;
 
             axios.interceptors.request.use(
@@ -227,6 +246,9 @@ export default {
             })
             .then(res=>{
                 console.log(res);
+                this.RightRemoved = true;
+                this.findUser = false;
+                document.getElementById('Search').value = '';
             })
             .catch(err=>{
                 console.log(err);
@@ -306,6 +328,19 @@ export default {
             .catch(err =>{
                 console.log(err);
             });
+        },
+        ResetStats(){
+            document.getElementById('Search').value = '';
+            document.getElementById('Bio').value = '';
+            this.BioEdit = false;
+            this.findUser = false;
+            this.findUserAdmin = false;
+            this.findedUser = '';
+            this.subOkay = false;
+            this.subFailure = false;
+            this.subCompleted = false;
+            this.RightAdded = false;
+            this.RightRemoved = false;
         }
     },
     mounted(){
