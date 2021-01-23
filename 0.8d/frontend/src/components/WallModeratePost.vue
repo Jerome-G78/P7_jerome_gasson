@@ -12,11 +12,11 @@
                     <p> Work In Progress ...</p>
                     <div class="form-group">
                         <label for="TitleMod">Titre :</label>
-                        <input @keyup="ModerateVerify" type="text" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod">
+                        <input @keyup="ModerateVerify" type="text" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod" v-model="Data.EditTitle">
                     </div>
                     <div class="form-group">
                         <label for="ContentMod">Contenue :</label>
-                        <textarea @keyup="ModerateVerify" class="form-control" id="ContentMod" placeholder="Champ de modération" rows="3"></textarea>
+                        <textarea @keyup="ModerateVerify" class="form-control" id="ContentMod" placeholder="Champ de modération" rows="3" v-model="Data.EditContent"></textarea>
                     </div>
                     <div v-if="subOkay && subCompleted" class="alert alert-info">
                         <strong><i class="fas fa-info-circle"></i></strong> {{OnSucess}}.
@@ -47,7 +47,6 @@ export default {
     name: 'WallModeratePost',
     data(){
         return {
-            // Récupération des variables dans vue X
             urlAPI: this.$store.state.urlAPI,
             isAdmin: this.$store.state.isAdmin,
             Connected: this.$store.state.Connected,
@@ -69,6 +68,93 @@ export default {
             OnError:'Une erreur est survenue',
             OnSucess:'Le message à été modéré',
         }
+    },
+
+    computed:{
+        Data(){
+            return {
+            urlAPI:this.$store.state.urlAPI,
+            userName: this.$store.state.userName,
+            Connected: this.$store.state.Connected,
+            Loading: this.$store.state.Loading,
+            isAdmin: this.$store.state.isAdmin,
+            Token: this.$store.state.Token,
+
+            EditTitle: this.$store.state.Etitle,
+            EditContent: this.$store.state.Econtent,
+            PostId:this.$store.state.CurrentPostId,
+            }
+        },
+
+        ReLoadWall(){
+        this.$store.commit('setLoading',true);
+        console.log(this.Data.Loading);
+        // Lors du chargement du composant, appeler les messages dans la BDD
+        // Initialisation de la promesse vers l'API via AXIOS
+        axios.get(this.urlAPI+'/api/messages/?order=id:ASC')
+        .then(res =>{
+            // Récupération des messages & likes liées
+            this.Posts = res.data;
+            console.log(this.Posts);
+            for(let i=0; i < this.Posts.length; i++){
+                this.PostId = this.Posts[i].id;
+                this.LikeCounter = this.Posts[i].likes;
+                // Récupération de la date & l'heure du Post
+                let date= this.Posts[i].createdAt.split('T')[0];
+                this.$store.commit('setPostDate',date);
+                console.log(date);
+                let time= this.Posts[i].createdAt.split('T')[1];
+                let PTime = time.replace('.000Z','');
+                this.$store.commit('setPostTime',PTime);
+                console.log(PTime);
+                if(res.data[i].User.username == this.$store.state.userName){
+                    this.ownMessage = true;
+                }
+
+                if(this.Posts.length == 0){
+                    this.$store.commit('setNoData', true);
+                }
+            }
+
+            this.$store.commit('setLoading',false);
+            console.log(this.Data.Loading);
+            
+        })
+        .catch(err =>{
+            console.log(err);
+            this.$store.commit('setLoading',false);
+            console.log(this.Data.Loading);
+        });
+
+        axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+            .then(res =>{
+                // Récupération des commentaires liées
+                this.Comments = res.data;
+                console.log(this.Comments);
+                for(let i=0; i < this.Comments.length; i++){
+                    this.CommentId = this.Comments[i].id;
+                    // console.log(this.CommentId);
+                    // Récupération de la date & l'heure du message
+                    let date= this.Comments[i].createdAt.split('T')[0];
+                    this.CommentDate = date;
+                    let time= this.Comments[i].createdAt.split('T')[1];
+                    this.CommentTime = time.replace('.000Z','');
+
+                    if(res.data[i].username == this.$store.state.userName){
+                        this.ownComment = true;
+                    }
+                }
+
+                this.$store.commit('setLoading',false);
+                console.log(this.Data.Loading);
+
+            })
+            .catch(err =>{
+                console.log(err);
+                this.$store.commit('setLoading',false);
+                console.log(this.Data.Loading);
+            });
+        },
     },
 
     // Création de la logique du module
@@ -102,7 +188,7 @@ export default {
             // Configuration de l'en-tete AXIOS (intégration du token)
             axios.interceptors.request.use(
                 config => {
-                    config.headers.authorization = `Bearer ${this.Token}`;
+                    config.headers.authorization = `Bearer ${this.Data.Token}`;
                     return config;
                 },
                 error => {
@@ -111,62 +197,63 @@ export default {
             );
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.put(this.urlAPI+'/api/messages/'+this.PostId+'/moderate',{
+            if(this.Data.isAdmin){
+                axios.put(this.urlAPI+'/api/messages/'+this.Data.PostId+'/moderate',{
                 title: TitleMod,
                 content : ContentMod
                 })
-            .then(res =>{
-                // Envoie des données en base
-                console.log(res);
-                this.bio = BioArea;
+                .then(res =>{
+                    // Envoie des données en base
+                    console.log(res);
 
-                //SubOkay
-                this.$store.commit('setBio', BioArea);
-                this.subOkay = true;
-                this.subCompleted = true;
-                this.$store.commit('setLoading',this.Loading = false);
-                console.log(this.$store.state.Loading);
+                    //SubOkay
+                    this.subOkay = true;
+                    this.subCompleted = true;
+                    this.$store.commit('setLoading', false);
+                    console.log(this.$store.state.Loading);
 
-                // Sucess
-                this.subOkay = true;
-                this.subCompleted = true;
-                this.chkOK = false;
+                    // Sucess
+                    this.subOkay = true;
+                    this.subCompleted = true;
+                    this.chkOK = false;
 
-                // Completed
-                document.getElementById('TitleMod').value = '';
-                document.getElementById('ContentMod').value = '';
-                this.subCompleted = true;
-                this.$store.commit('setLoading',this.Loading = false);
-            })
-            .catch(err =>{
-                //WIP
-                console.log(err);
+                    // Completed
+                    this.subCompleted = true;
+                    this.$store.commit('setLoading',false);
+
+                    $('#ModerateModal').modal('hide');
+                })
+                .catch(err =>{
+                    //WIP
+                    console.log(err);
+                    this.subFailure = true;
+                    this.subCompleted = true;
+                    this.Loading = false;
+                    this.$store.commit('setLoading',false);
+                    console.log(this.Loading);
+                });
+
+            } else {
                 this.subFailure = true;
                 this.subCompleted = true;
                 this.Loading = false;
-                this.$store.commit('setLoading',this.Loading = false);
+                this.$store.commit('setLoading',false);
                 console.log(this.Loading);
-            });
+            }
+            
         },
 
         ResetStats(){
             //WIP
-            document.getElementById('TitleMod').value = '';
-            document.getElementById('ContentMod').value = '';
+            this.EditTitle = this.$store.state.Etitle;
+            console.log(this.EditTitle);
+            this.EditContent = this.$store.state.Econtent;
+            console.log(this.EditContent);
             this.subFailure = false;
             this.subOkay = false;
             this.subCompleted = false;
             this.chkOK = false;
-        }
-    },
-
-    computed:{
-        data(){
-            return {
-            //  EditTitle:this.$store.state.Etitle,
-            //  EditContent:this.$store.state.Econtent,
-            //  PostId: this.$store.state.CurrentPostId,
-            }
+            return this.$store.state.Etitle, this.$store.state.Econtent;
         }
     },
 

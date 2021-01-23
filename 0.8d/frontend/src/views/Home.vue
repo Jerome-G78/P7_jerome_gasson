@@ -24,6 +24,7 @@ import { computed } from 'vue'
 
 export default {
   name: 'Home',
+
   components: {
     HeaderNav, NewMessage, Profil, Wall, WallEditPost, WallModeratePost, Footer
   },
@@ -31,7 +32,7 @@ export default {
     return{
     // Récupération des variables globales dans vue X
       Connected: this.$store.state.Connected,
-      isAdmin: this.$store.state.isAdmin,
+      // isAdmin: this.$store.state.isAdmin,
     }
   },
   computed:{
@@ -41,9 +42,10 @@ export default {
         CommentId:this.$store.state.CurrentCommentId,
         Etitle:this.$store.state.Etitle,
         Econtent:this.$store.state.Econtent,
+        isAdmin:this.$store.state.isAdmin,
       }
+    },
 
-    }
   },
   mounted(){
   }

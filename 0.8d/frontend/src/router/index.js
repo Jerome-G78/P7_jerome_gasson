@@ -3,11 +3,13 @@ import Home from '../views/Home.vue'
 import Welcome from '../views/Welcome.vue'
 
 const routes = [
+  /*
   {
     path: '/Home',
     name: 'Home',
     component: Home
   },
+  */
   {
     path: '/',
     name: 'Welcome',

@@ -10,9 +10,9 @@
         
                 <div class="modal-body">
                     <p> 
-                        <strong> Nom : </strong>{{userName}}<br/>
-                        <strong> E-mail : </strong>{{email}}<br/>
-                        <strong> Biographie : </strong>{{bio}}<br/>
+                        <strong> Nom : </strong>{{Data.userName}}<br/>
+                        <strong> E-mail : </strong>{{Data.email}}<br/>
+                        <strong> Biographie : </strong>{{Data.bio}}<br/>
                     </p>
 
                     <div @keyup="checkBio" class="form-group">
@@ -29,7 +29,7 @@
                         <hr/>
                     </div>
 
-                    <div v-if="isAdmin" class="form-group">
+                    <div v-if="Data.isAdmin" class="form-group">
                         <h5>Options Modérateur</h5>
                         <label for="Search"><i class="fas fa-search"></i> Rechercher un utilisateur</label>
                         <input @keyup="checkNameExist" type="text" class="form-control" id="Search" placeholder="Tapez le nom d'un utilisateur" name="Search">
@@ -51,7 +51,7 @@
                         </div>
                     </div>
 
-                    <div v-if="!isAdmin" class="alert alert-info">
+                    <div v-if="!Data.isAdmin" class="alert alert-info">
                         <strong><i class="fas fa-info-circle"></i></strong> vous n'êtes pas modérateur.
                     </div>
                     
@@ -73,20 +73,8 @@ export default {
     name: 'Profil',
     data(){
         return {
-            // Récupération des variables globales dans vue X
-            urlAPI:this.$store.state.urlAPI,
-            userName: this.$store.state.userName,
-            Connected: this.$store.state.Connected,
-            email:this.$store.state.email,
-            bio:this.$store.state.bio,
-            Loading: this.$store.state.Loading,
-            isAdmin: this.$store.state.isAdmin,
-            BioEdit: this.$store.state.BioEdit,
-            Token: this.$store.state.Token,
-
-            Loading: this.$store.state.Loading,
-
             // Variables locales
+            urlAPI:this.$store.state.urlAPI,
 
             BioEdit:false,
             findUser:false,
@@ -107,6 +95,21 @@ export default {
             RightRemove: "Droit supprimé à l'utilisateur"
         }
     },
+
+    computed:{
+        Data(){
+            return {
+                userName: this.$store.state.userName,
+                Connected: this.$store.state.Connected,
+                email:this.$store.state.email,
+                bio:this.$store.state.bio,
+                Loading: this.$store.state.Loading,
+                isAdmin: this.$store.state.isAdmin,
+                Token: this.$store.state.Token,
+            }
+        }
+    },
+
     // Création de la logique du module
     methods:{
         checkBio(){            
@@ -120,13 +123,13 @@ export default {
         },
         updateBio(){
             let BioArea = document.getElementById("Bio").value;
-            this.$store.commit('setLoading',this.Loading = true);
-            this.$store.commit('setBioEdit',this.BioEdit = false);
+            this.$store.commit('setLoading', true);
+            this.$store.commit('setBioEdit', false);
 
             // Configuration de l'en-tete AXIOS (intégration du token)
             axios.interceptors.request.use(
                 config => {
-                    config.headers.authorization = `Bearer ${this.Token}`;
+                    config.headers.authorization = `Bearer ${this.Data.Token}`;
                     return config;
                 },
                 error => {
@@ -147,22 +150,21 @@ export default {
                 this.$store.commit('setBio', BioArea);
                 this.subOkay = true;
                 this.subCompleted = true;
-                this.$store.commit('setLoading',this.Loading = false);
+                this.$store.commit('setLoading', false);
                 console.log(this.$store.state.Loading);
 
                 // Completed
                 document.getElementById('Bio').value = '';
                 this.subCompleted = true;
-                this.$store.commit('setLoading',this.Loading = false);
+                this.$store.commit('setLoading', false);
             })
             .catch(err =>{
                 //WIP
                 console.log(err);
                 this.subFailure = true;
                 // this.subFail = err.error;
-                this.Loading = false;
-                this.$store.commit('setLoading',this.Loading = false);
-                console.log(this.Loading);
+                this.$store.commit('setLoading', false);
+                console.log(this.this.Data.Loading);
             });
 
         },
@@ -171,7 +173,7 @@ export default {
 
             axios.interceptors.request.use(
                 config => {
-                    config.headers.authorization = `Bearer ${this.Token}`;
+                    config.headers.authorization = `Bearer ${this.Data.Token}`;
                     return config;
                 },
                 error => {
@@ -206,7 +208,7 @@ export default {
 
             axios.interceptors.request.use(
                 config => {
-                    config.headers.authorization = `Bearer ${this.Token}`;
+                    config.headers.authorization = `Bearer ${this.Data.Token}`;
                     return config;
                 },
                 error => {
@@ -233,7 +235,7 @@ export default {
 
             axios.interceptors.request.use(
                 config => {
-                    config.headers.authorization = `Bearer ${this.Token}`;
+                    config.headers.authorization = `Bearer ${this.Data.Token}`;
                     return config;
                 },
                 error => {
@@ -260,9 +262,6 @@ export default {
             // Supression des informations de session utilisateur...
             this.subOkay = false;
             this.subCompleted = false;
-            this.$store.commit('setConnected', false);
-            localStorage.removeItem('Connected');
-            console.log("Connected : "+ this.$store.state.Connected);
             this.$store.commit('setEmail', '');
             localStorage.removeItem('Email');
             console.log(this.$store.state.email);
@@ -278,10 +277,14 @@ export default {
             this.$store.commit('setIsAdmin', false);
             localStorage.removeItem('isAdmin');
             console.log(this.$store.state.isAdmin);
-            this.$store.commit('setLoading',this.Loading = false);
-            console.log(this.Loading);
-            // Redirrection vers la page d'accueil...
-            router.push({path:'/'});
+            this.$store.commit('setConnected', false);
+            localStorage.removeItem('Connected');
+            console.log("Connected : "+ this.$store.state.Connected);
+            this.$store.commit('setLoading', false);
+            console.log(this.Data.Loading);
+
+            // Recharger la page internet
+            document.location.reload();
         },
         Unsubscribe(){
             // Authentification de l'utilisateur...
@@ -289,7 +292,7 @@ export default {
             // Configuration de l'en-tete AXIOS (intégration du token)
             axios.interceptors.request.use(
                 config => {
-                    config.headers.authorization = `Bearer ${this.Token}`;
+                    config.headers.authorization = `Bearer ${this.Data.Token}`;
                     return config;
                 },
                 error => {
@@ -320,10 +323,8 @@ export default {
                 this.$store.commit('setIsAdmin', false);
                 localStorage.removeItem('isAdmin');
                 console.log(this.$store.state.isAdmin);
-                this.$store.commit('setLoading',this.Loading = false);
-                console.log(this.Loading);
-                // Redirrection vers la page d'accueil...
-                router.push({path:'/'});
+                this.$store.commit('setLoading', false);
+                console.log(this.this.Data.Loading);
             })
             .catch(err =>{
                 console.log(err);
@@ -344,25 +345,28 @@ export default {
         }
     },
     mounted(){
-        // Configuration de l'en-tete AXIOS (intégration du token)
-        axios.interceptors.request.use(
-            config => {
-                config.headers.authorization = `Bearer ${this.Token}`;
-                return config;
-            },
-            error => {
-                return Promise.reject(error);
-            }
-        );
+        if(this.Data.Connected == true){
+            // Configuration de l'en-tete AXIOS (intégration du token)
+            axios.interceptors.request.use(
+                config => {
+                    config.headers.authorization = `Bearer ${this.Data.Token}`;
+                    return config;
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            );
 
-        axios.get(this.urlAPI+"/api/users/me")
-        .then(res =>{
-            console.log(res);
-            this.bio = res.data.bio;
-        })
-        .catch(err =>{
-            console.log(err);
-        });
+            axios.get(this.urlAPI+"/api/users/me")
+            .then(res =>{
+                console.log(res);
+                this.bio = res.data.bio;
+            })
+            .catch(err =>{
+                console.log(err);
+            });
+        }
+
     }
 }
 </script>
