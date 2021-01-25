@@ -11,12 +11,12 @@
                 <div class="modal-body">
 
                     <div class="form-group">
-                        <label for="title">Titre <span class ="text-danger"> * </span>:</label>
+                        <label for="title">Titre (Minimum 3 Caractères) <span class ="text-danger"> * </span>:</label>
                         <input @keyup="MsgVerify" type="text" class="form-control" id="title" placeholder="Ajoutez un Titre" name="title" v-model="Ntitle">
                     </div>
 
                     <div class="form-group">
-                        <label for="Content"> Contenue du message <span class ="text-danger"> * </span> :</label>
+                        <label for="Content"> Contenue du message (Minimum 5 Caractères) <span class ="text-danger"> * </span> :</label>
                         <textarea @keyup="MsgVerify" class="form-control" id="Content" placeholder="Contenue de votre message" rows="3" v-model="Ncontent"></textarea>
                     </div>
 
@@ -52,8 +52,6 @@
 </template>
 
 <script>
-import router from '@/router/index.js'
-
 export default {
     name: 'NewMessage',
     data(){

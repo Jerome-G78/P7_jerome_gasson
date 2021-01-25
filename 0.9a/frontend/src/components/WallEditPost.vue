@@ -9,13 +9,12 @@
                 </div>
         
                 <div class="modal-body">
-                    <p> Work In Progress ...</p>
                     <div class="form-group">
-                        <label for="TitleEdit">Titre :</label>
+                        <label for="TitleEdit">Titre : (Minimum 3 Caractères)</label>
                         <input @keyup="EditVerify" type="text" class="form-control" id="TitleEdit" placeholder="Champ d'édition" name="TitleEdit" v-model="Data.EditTitle">
                     </div>
                     <div class="form-group">
-                        <label for="ContentEdit">Contenue :</label>
+                        <label for="ContentEdit">Contenue (Minimum 5 Caractères):</label>
                         <textarea @keyup="EditVerify" class="form-control" id="ContentEdit" placeholder="Champ d'édition" rows="3" v-model="Data.EditContent"></textarea>
                     </div>
                     <div v-if="subOkay && subCompleted" class="alert alert-info">
