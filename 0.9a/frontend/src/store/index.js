@@ -7,8 +7,8 @@ export default createStore({
     // Déclaration des données du "store" de vue X
     Connected: false,
     isAdmin: false,
-    // ownMessage: false,
-    // ownComment: false,
+    ownMessage: false,
+    ownComment: false,
     Token:'',
 
     // Profil
@@ -44,7 +44,7 @@ export default createStore({
     // Loading
     Loading:false,
     WallReload:false,
-    NoData:false,
+    NoData:true,
     PostDate:'',
     PostTime:'',
 
@@ -160,6 +160,15 @@ export default createStore({
     // Reload
     setWallReload(state, newValue){
       state.WallReload = newValue;
+    },
+
+    // Own Message & Own Comment
+
+    setOwnMessage(state, newValue){
+      state.ownMessage = newValue;
+    },
+    setOwnComment(state, newValue){
+      state.ownComment = newValue;
     },
 
 

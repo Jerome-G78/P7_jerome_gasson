@@ -3,7 +3,7 @@
 	<div v-if="Data.Loading" class="spinner-border text-primary text-center" id="WallLoad">
         <p>Chargement des messages... </p>
     </div>
-    <div v-if="!Data.Loading && Data.Connected && NoData" class="spinner-border text-primary text-center" id="WallLoad">
+    <div v-if="!Data.Loading && Data.Connected && Data.NoData" class="spinner-border text-primary text-center" id="WallLoad">
         <p>Aucuns messages a charger ... a vous de jouer! :D </p>
     </div>
     <!--POST START-->
@@ -20,7 +20,7 @@
                     <hr v-if="Data.Connected">
                     <div id="Buttons" @mouseover.stop="SetPostId" class="row justify-content-center">
                         <button @click.stop="Like" v-if="Data.Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
-                        <button @click="EditPost" v-if="Data.Connected && ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
+                        <button @click="EditPost" v-if="Data.Connected && Data.ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
                         <button @click="EditPost" v-if="Data.Connected && Data.isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
                         <button @click.stop="DeletePost" v-if="Data.Connected && (Data.isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                     </div>
@@ -43,7 +43,7 @@
                             </p>
                         </div>
                         <div @mouseover="SetCommentId" id="CommentDeleteButton" class="col-3">
-                            <button @click="DeleteComment" v-if="Data.Connected && (Data.isAdmin || ownComment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                            <button @click="DeleteComment" v-if="Data.Connected && (Data.isAdmin || Data.ownComment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@ export default {
         return {
             // Variables Local
             urlAPI: this.$store.state.urlAPI,
-            NoData:this.$store.state.NoData,
+            // NoData:true,
 
             Posts: [],
             PostId:0,
@@ -90,13 +90,15 @@ export default {
         Data(){
             return {
                 userName: this.$store.state.userName,
-                Connected: this.$store.state.Connected,
-                email:this.$store.state.email,
-                bio:this.$store.state.bio,
-                Loading: this.$store.state.Loading,
-                WallReload: this.$store.state.WallReload,
                 isAdmin: this.$store.state.isAdmin,
                 Token: this.$store.state.Token,
+                ownMessage:this.$store.state.ownMessage,
+                ownComment:this.$store.state.ownComment,
+
+                Connected: this.$store.state.Connected,
+                Loading: this.$store.state.Loading,
+                WallReload: this.$store.state.WallReload,
+                NoData:this.$store.state.NoData,
             }
         },
 
@@ -117,7 +119,6 @@ export default {
             this.EditContent = this.$store.state.Econtent;
             return this.$store.state.Econtent;
         },
-
     },
     
     // Création de la logique du module
@@ -342,7 +343,7 @@ export default {
         .then(res =>{
             // Récupération des messages & likes liées
             this.Posts = res.data;
-            console.log(this.Posts);
+            console.log("Numbers of Posts: "+this.Posts);
             for(let i=0; i < this.Posts.length; i++){
                 this.PostId = this.Posts[i].id;
                 this.LikeCounter = this.Posts[i].likes;
@@ -355,12 +356,14 @@ export default {
                 this.$store.commit('setPostTime',PTime);
                 console.log(PTime);
                 if(res.data[i].User.username == this.$store.state.userName){
-                    this.ownMessage = true;
+                    this.$store.commit('setOwnMessage',true);
+                    console.log("OwnMessage : "+this.Data.ownMessage);
                 }
+            }
 
-                if(this.Posts.length == 0){
-                    this.$store.commit('setNoData', true);
-                }
+            if(this.Posts !=""){
+                this.$store.commit('setNoData', false);
+                console.log("NoData : "+this.Data.NoData);
             }
 
             this.$store.commit('setLoading',false);
@@ -377,7 +380,7 @@ export default {
             .then(res =>{
                 // Récupération des commentaires liées
                 this.Comments = res.data;
-                console.log(this.Comments);
+                console.log("Numbers of Comments: "+this.Comments);
                 for(let i=0; i < this.Comments.length; i++){
                     this.CommentId = this.Comments[i].id;
                     // console.log(this.CommentId);
@@ -388,7 +391,8 @@ export default {
                     this.CommentTime = time.replace('.000Z','');
 
                     if(res.data[i].username == this.$store.state.userName){
-                        this.ownComment = true;
+                        this.$store.commit('setOwnComment',true);
+                        console.log("OwnComment : "+this.Data.ownComment);
                     }
                 }
 
@@ -410,7 +414,7 @@ export default {
             .then(res =>{
                 // Récupération des messages & likes liées
                 this.Posts = res.data;
-                console.log(this.Posts);
+                console.log("Numbers of Posts: "+this.Posts);
                 for(let i=0; i < this.Posts.length; i++){
                     this.PostId = this.Posts[i].id;
                     this.LikeCounter = this.Posts[i].likes;
@@ -423,12 +427,17 @@ export default {
                     this.$store.commit('setPostTime',PTime);
                     console.log(PTime);
                     if(res.data[i].User.username == this.$store.state.userName){
-                        this.ownMessage = true;
+                        this.$store.commit('setOwnMessage',true);
+                        console.log("OwnMessage : "+this.Data.ownMessage);
                     }
+                }
 
-                    if(this.Posts.length == 0){
-                        this.$store.commit('setNoData', true);
-                    }
+                if(this.Posts !=""){
+                    this.$store.commit('setNoData', false);
+                    console.log("NoData : "+this.Data.NoData);
+                } else {
+                    this.$store.commit('setNoData', true);
+                    console.log("NoData : "+this.Data.NoData);
                 }
 
                 this.$store.commit('setLoading',false);
@@ -449,7 +458,7 @@ export default {
                 .then(res =>{
                     // Récupération des commentaires liées
                     this.Comments = res.data;
-                    console.log(this.Comments);
+                    console.log("Numbers of Comments: "+this.Comments);
                     for(let i=0; i < this.Comments.length; i++){
                         this.CommentId = this.Comments[i].id;
                         // console.log(this.CommentId);
@@ -460,7 +469,8 @@ export default {
                         this.CommentTime = time.replace('.000Z','');
 
                         if(res.data[i].username == this.$store.state.userName){
-                            this.ownComment = true;
+                            this.$store.commit('setOwnComment',true);
+                            console.log("OwnComment : "+this.Data.ownComment);
                         }
                     }
 

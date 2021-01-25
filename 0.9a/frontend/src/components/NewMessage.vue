@@ -192,6 +192,7 @@ export default {
 
                     this.$store.commit('setLoading', false);
                     console.log(this.Data.Loading);
+                    this.ResetStats();
 
                     $('#NewMessage').modal('hide');
                     this.$store.commit('setWallReload', true);
@@ -236,6 +237,7 @@ export default {
 
                     this.$store.commit('setLoading', false);
                     console.log(this.Data.Loading);
+                    this.ResetStats();
 
                     $('#NewMessage').modal('hide');
 
