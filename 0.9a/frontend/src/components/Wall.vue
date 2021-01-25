@@ -1,5 +1,5 @@
 <template>
-    <button @click="ReLoadWall">Recharger...</button>
+    <button @click="WallReload">Recharger...</button>
 	<div v-if="Data.Loading" class="spinner-border text-primary text-center" id="WallLoad">
         <p>Chargement des messages... </p>
     </div>
@@ -94,6 +94,7 @@ export default {
                 email:this.$store.state.email,
                 bio:this.$store.state.bio,
                 Loading: this.$store.state.Loading,
+                WallReload: this.$store.state.WallReload,
                 isAdmin: this.$store.state.isAdmin,
                 Token: this.$store.state.Token,
             }
@@ -156,7 +157,8 @@ export default {
                 this.chkOK = false;
 
                 // Rechargement du mur après opération
-                this.ReLoadWall();
+                this.$store.commit('setWallReload', true);
+                console.log(this.Data.WallReload);
 
             })
             .catch(err =>{
@@ -185,31 +187,33 @@ export default {
                         return Promise.reject(error);
                     }
                 );
-            if(this.Data.isAdmin){
-                axios.delete(this.urlAPI+"/api/messages/comment/"+this.PostId+"/"+this.CommentId+"/moderate/")
-                .then(res=>{
-                    console.log(res);
-                    console.log('commentaire supprimé');
-                    // Rechargement du mur après opération
-                    this.ReLoadWall();
-                })
-                .catch(err =>{
-                    console.log(err);
-                });
+                if(this.Data.isAdmin){
+                    axios.delete(this.urlAPI+"/api/messages/comment/"+this.PostId+"/"+this.CommentId+"/moderate/")
+                    .then(res=>{
+                        console.log(res);
+                        console.log('commentaire supprimé');
+                        // Rechargement du mur après opération
+                        this.$store.commit('setWallReload', true);
+                        console.log(this.Data.WallReload);
+                    })
+                    .catch(err =>{
+                        console.log(err);
+                    });
 
-            } else {
-                axios.delete(this.urlAPI+"/api/messages/comment/"+this.PostId+"/"+this.CommentId)
-                .then(res=>{
-                    console.log(res);
-                    console.log('commentaire supprimé');
-                    // Rechargement du mur après opération
-                    this.ReLoadWall();
+                } else {
+                    axios.delete(this.urlAPI+"/api/messages/comment/"+this.PostId+"/"+this.CommentId)
+                    .then(res=>{
+                        console.log(res);
+                        console.log('commentaire supprimé');
+                        // Rechargement du mur après opération
+                        this.$store.commit('setWallReload', true);
+                        console.log(this.Data.WallReload);
 
-                })
-                .catch(err =>{
-                    console.log(err);
-                });
-            }
+                    })
+                    .catch(err =>{
+                        console.log(err);
+                    });
+                }
         },
         SetPostId(){
             // Récupérer le PostID, pour l'éditer, le supprimer ou le modérer.
@@ -241,7 +245,8 @@ export default {
                 console.log(this.LikeCounter);
 
                 // Rechargement du mur après opération
-                this.ReLoadWall();
+                this.$store.commit('setWallReload', true);
+                console.log(this.Data.WallReload);
             })
             .catch(err =>{
                 axios.post(this.urlAPI+"/api/messages/"+this.PostId+"/vote/dislike")
@@ -255,7 +260,8 @@ export default {
                     console.log(this.LikeCounter);
 
                     // Rechargement du mur après opération
-                    this.ReLoadWall();
+                    this.$store.commit('setWallReload', true);
+                    console.log(this.Data.WallReload);
                 })
             });
             
@@ -278,7 +284,8 @@ export default {
                     console.log(res);
 
                     // Rechargement du mur après opération
-                    this.ReLoadWall();
+                    this.$store.commit('setWallReload', true);
+                    console.log(this.Data.WallReload);
                 })
                 .catch(err =>{
                     console.log(err);
@@ -290,7 +297,8 @@ export default {
                 .then(res =>{
                     console.log(res);
                     // Rechargement du mur après opération
-                    this.ReLoadWall();
+                    this.$store.commit('setWallReload', true);
+                    console.log(this.Data.WallReload);
                 })
                 .catch(err =>{
                     console.log(err);
@@ -321,75 +329,10 @@ export default {
                 console.log(err);
             });
         },
-        ReLoadWall(){
-        this.$store.commit('setLoading',true);
-        console.log(this.Data.Loading);
-        // Lors du chargement du composant, appeler les messages dans la BDD
-        // Initialisation de la promesse vers l'API via AXIOS
-        axios.get(this.urlAPI+'/api/messages/?order=id:ASC')
-        .then(res =>{
-            // Récupération des messages & likes liées
-            this.Posts = res.data;
-            console.log(this.Posts);
-            for(let i=0; i < this.Posts.length; i++){
-                this.PostId = this.Posts[i].id;
-                this.LikeCounter = this.Posts[i].likes;
-                // Récupération de la date & l'heure du Post
-                let date= this.Posts[i].createdAt.split('T')[0];
-                this.$store.commit('setPostDate',date);
-                console.log(date);
-                let time= this.Posts[i].createdAt.split('T')[1];
-                let PTime = time.replace('.000Z','');
-                this.$store.commit('setPostTime',PTime);
-                console.log(PTime);
-                if(res.data[i].User.username == this.$store.state.userName){
-                    this.ownMessage = true;
-                }
-
-                if(this.Posts.length == 0){
-                    this.$store.commit('setNoData', true);
-                }
-            }
-
-            this.$store.commit('setLoading',false);
-            console.log(this.Data.Loading);
-            
-        })
-        .catch(err =>{
-            console.log(err);
-            this.$store.commit('setLoading',false);
-            console.log(this.Data.Loading);
-        });
-
-        axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
-            .then(res =>{
-                // Récupération des commentaires liées
-                this.Comments = res.data;
-                console.log(this.Comments);
-                for(let i=0; i < this.Comments.length; i++){
-                    this.CommentId = this.Comments[i].id;
-                    // console.log(this.CommentId);
-                    // Récupération de la date & l'heure du message
-                    let date= this.Comments[i].createdAt.split('T')[0];
-                    this.CommentDate = date;
-                    let time= this.Comments[i].createdAt.split('T')[1];
-                    this.CommentTime = time.replace('.000Z','');
-
-                    if(res.data[i].username == this.$store.state.userName){
-                        this.ownComment = true;
-                    }
-                }
-
-                this.$store.commit('setLoading',false);
-                console.log(this.Data.Loading);
-
-            })
-            .catch(err =>{
-                console.log(err);
-                this.$store.commit('setLoading',false);
-                console.log(this.Data.Loading);
-            });
-        },
+        WallReload(){
+            this.$store.commit('setWallReload', true);
+            console.log(this.Data.WallReload);
+        }
     },
 
     mounted(){
@@ -459,5 +402,82 @@ export default {
                 console.log(this.Data.Loading);
             });
     },
+    updated(){
+        if(this.Data.WallReload == true){
+            // Lors du chargement du composant, appeler les messages dans la BDD
+            // Initialisation de la promesse vers l'API via AXIOS
+            axios.get(this.urlAPI+'/api/messages/?order=id:ASC')
+            .then(res =>{
+                // Récupération des messages & likes liées
+                this.Posts = res.data;
+                console.log(this.Posts);
+                for(let i=0; i < this.Posts.length; i++){
+                    this.PostId = this.Posts[i].id;
+                    this.LikeCounter = this.Posts[i].likes;
+                    // Récupération de la date & l'heure du Post
+                    let date= this.Posts[i].createdAt.split('T')[0];
+                    this.$store.commit('setPostDate',date);
+                    console.log(date);
+                    let time= this.Posts[i].createdAt.split('T')[1];
+                    let PTime = time.replace('.000Z','');
+                    this.$store.commit('setPostTime',PTime);
+                    console.log(PTime);
+                    if(res.data[i].User.username == this.$store.state.userName){
+                        this.ownMessage = true;
+                    }
+
+                    if(this.Posts.length == 0){
+                        this.$store.commit('setNoData', true);
+                    }
+                }
+
+                this.$store.commit('setLoading',false);
+                console.log(this.Data.Loading);
+                this.$store.commit('setWallReload', false);
+                console.log(this.Data.WallReload);
+                
+            })
+            .catch(err =>{
+                console.log(err);
+                this.$store.commit('setLoading',false);
+                console.log(this.Data.Loading);
+                this.$store.commit('setWallReload', false);
+                console.log(this.Data.WallReload);
+            });
+
+            axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+                .then(res =>{
+                    // Récupération des commentaires liées
+                    this.Comments = res.data;
+                    console.log(this.Comments);
+                    for(let i=0; i < this.Comments.length; i++){
+                        this.CommentId = this.Comments[i].id;
+                        // console.log(this.CommentId);
+                        // Récupération de la date & l'heure du message
+                        let date= this.Comments[i].createdAt.split('T')[0];
+                        this.CommentDate = date;
+                        let time= this.Comments[i].createdAt.split('T')[1];
+                        this.CommentTime = time.replace('.000Z','');
+
+                        if(res.data[i].username == this.$store.state.userName){
+                            this.ownComment = true;
+                        }
+                    }
+
+                    this.$store.commit('setLoading',false);
+                    console.log(this.Data.Loading);
+                    this.$store.commit('setWallReload', false);
+                    console.log(this.Data.WallReload);
+
+                })
+                .catch(err =>{
+                    console.log(err);
+                    this.$store.commit('setLoading',false);
+                    console.log(this.Data.Loading);
+                    this.$store.commit('setWallReload', false);
+                    console.log(this.Data.WallReload);
+                });
+        }
+    }
 }
 </script>

@@ -325,6 +325,9 @@ export default {
                 console.log(this.$store.state.isAdmin);
                 this.$store.commit('setLoading', false);
                 console.log(this.this.Data.Loading);
+
+                // Recharger la page internet
+                document.location.reload();
             })
             .catch(err =>{
                 console.log(err);

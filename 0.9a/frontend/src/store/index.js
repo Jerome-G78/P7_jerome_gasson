@@ -2,7 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    urlAPI:'http://shadsoft.fr:3000',
+    urlAPI:'http://localhost:3000',
     footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
     Connected: false,
@@ -43,6 +43,7 @@ export default createStore({
 
     // Loading
     Loading:false,
+    WallReload:false,
     NoData:false,
     PostDate:'',
     PostTime:'',
@@ -155,6 +156,12 @@ export default createStore({
     setCommentDate(state, newValue){
       state.PostDate = newValue;
     },
+
+    // Reload
+    setWallReload(state, newValue){
+      state.WallReload = newValue;
+    },
+
 
   },
   actions: {

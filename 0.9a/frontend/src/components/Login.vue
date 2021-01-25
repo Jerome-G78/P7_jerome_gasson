@@ -82,80 +82,11 @@ export default {
                 email:this.$store.state.email,
                 bio:this.$store.state.bio,
                 Loading: this.$store.state.Loading,
+                WallReload: this.$store.state.WallReload,
                 isAdmin: this.$store.state.isAdmin,
                 BioEdit: this.$store.state.BioEdit,
                 Token: this.$store.state.Token,
             }
-        },
-
-        ReLoadWall(){
-            this.$store.commit('setLoading',true);
-            console.log(this.$store.state.Loading);
-            // Lors du chargement du composant, appeler les messages dans la BDD
-            // Initialisation de la promesse vers l'API via AXIOS
-            axios.get(this.urlAPI+'/api/messages/?order=id:ASC')
-            .then(res =>{
-                // Récupération des messages & likes liées
-                this.Posts = res.data;
-                console.log(this.Posts);
-                for(let i=0; i < this.Posts.length; i++){
-                    this.PostId = this.Posts[i].id;
-                    this.LikeCounter = this.Posts[i].likes;
-                    // Récupération de la date & l'heure du Post
-                    let date= this.Posts[i].createdAt.split('T')[0];
-                    this.$store.commit('setPostDate',date);
-                    console.log(date);
-                    let time= this.Posts[i].createdAt.split('T')[1];
-                    let PTime = time.replace('.000Z','');
-                    this.$store.commit('setPostTime',PTime);
-                    console.log(PTime);
-                    if(res.data[i].User.username == this.$store.state.userName){
-                        this.ownMessage = true;
-                    }
-
-                    if(this.Posts.length == 0){
-                        this.$store.commit('setNoData', true);
-                    }
-                }
-
-                this.$store.commit('setLoading',false);
-                console.log(this.Data.Loading);
-                
-            })
-            .catch(err =>{
-                console.log(err);
-                this.$store.commit('setLoading',false);
-                console.log(this.Data.Loading);
-            });
-
-            axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
-                .then(res =>{
-                    // Récupération des commentaires liées
-                    this.Comments = res.data;
-                    console.log(this.Comments);
-                    for(let i=0; i < this.Comments.length; i++){
-                        this.CommentId = this.Comments[i].id;
-                        // console.log(this.CommentId);
-                        // Récupération de la date & l'heure du message
-                        let date= this.Comments[i].createdAt.split('T')[0];
-                        this.CommentDate = date;
-                        let time= this.Comments[i].createdAt.split('T')[1];
-                        this.CommentTime = time.replace('.000Z','');
-
-                        if(res.data[i].username == this.$store.state.userName){
-                            this.ownComment = true;
-                        }
-                    }
-
-                    this.$store.commit('setLoading',false);
-                    console.log(this.Data.Loading);
-
-                })
-                .catch(err =>{
-                    console.log(err);
-                    this.$store.commit('setLoading',false);
-                    console.log(this.Data.Loading);
-                });
         },
     },
     // Création de la logique du module
@@ -227,7 +158,8 @@ export default {
                 $('#logginModal').modal('hide');
 
                 // Recharger le mur
-                this.ReLoadWall;
+                this.$store.commit('setWallReload', true);
+                console.log(this.Data.WallReload);
 
             })
             .catch(err =>{
@@ -279,13 +211,13 @@ export default {
                         this.ownComment = true;
                     }
                 }
+                this.Data.WallReload = true;
             })
             .catch(err =>{
                 console.log(err);
             });
         },
         ResetStats(){
-            // WIP
             document.getElementById('Lemail').value = '';
             document.getElementById('Lpwd').value = '';
             this.subFailure = false;

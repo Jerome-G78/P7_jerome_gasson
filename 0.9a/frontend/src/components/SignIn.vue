@@ -180,7 +180,6 @@ export default {
             });
         },
         ResetStats(){
-            // WIP
             document.getElementById('Semail').value = '';
             document.getElementById('Spwd').value = '';
             document.getElementById('SpwdC').value = '';
