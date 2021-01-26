@@ -179,7 +179,6 @@ export default {
             this.$store.commit('setCurrentCommentId',CurrentCID);
         },
         DeleteComment(){
-            //WIP
             // Configuration de l'en-tete AXIOS (intégration du token)
                 axios.interceptors.request.use(
                     config => {
