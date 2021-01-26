@@ -24,8 +24,7 @@
 
                     <div class="form-group">
                         <input @click="JoinPict" id="Join" type="checkbox"> joindre une image <br/>
-                        <input @mouseover="SetPict" v-if="uploadFile" id="uploadFile" type="file"> <br v-if="this.Data.Nattachment ==1"/>
-                <!--    <img v-if="this.Data.Nattachment ==1" :src="Data.Npicture"/> Fail -->
+                        <input v-if="uploadFile" id="uploadFile" type="file">
                     </div>
 
                     <div v-if="subOkay" class="alert alert-success">
@@ -143,10 +142,6 @@ export default {
                 this.$store.commit('setNattachment', 1);
                 console.log(this.Data.Nattachment);
             }
-        },
-
-        SetPict(){
-            return this.$store.commit('setNpicture',document.querySelector("#uploadFile").value); // Fail - Not allowed to load local resource
         },
 
         Post(){
