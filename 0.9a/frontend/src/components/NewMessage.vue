@@ -24,7 +24,8 @@
 
                     <div class="form-group">
                         <input @click="JoinPict" id="Join" type="checkbox"> joindre une image <br/>
-                        <input v-if="uploadFile" id="uploadFile" type="file">
+                        <input @mouseover="SetPict" v-if="uploadFile" id="uploadFile" type="file"> <br v-if="this.Data.Nattachment ==1"/>
+                <!--    <img v-if="this.Data.Nattachment ==1" :src="Data.Npicture"/> Fail -->
                     </div>
 
                     <div v-if="subOkay" class="alert alert-success">
@@ -85,6 +86,8 @@ export default {
                 Connected: this.$store.state.Connected,
                 Loading: this.$store.state.Loading,
                 WallReload: this.$store.state.WallReload,
+                Npicture:this.$store.state.Npicture,
+                Nattachment: this.$store.state.Nattachment,
 
                 // User
                 userName: this.$store.state.userName,
@@ -129,16 +132,21 @@ export default {
             //WIP
             if(this.uploadFile){
                 this.uploadFile = false;
-                this.Nattachment = 0;
-                this.$store.commit('setNattachment', 0); // Global ?!
+                // this.Nattachment = 0;
+                this.$store.commit('setNattachment', 0);
+                this.$store.commit('setNpicture','');
                 console.log(this.Nattachment);
 
             } else {
                 this.uploadFile = true;
-                this.Nattachment = 1;
-                this.$store.commit('setNattachment', 1); // Global ?!
-                console.log(this.Nattachment);
+                // this.Nattachment = 1;
+                this.$store.commit('setNattachment', 1);
+                console.log(this.Data.Nattachment);
             }
+        },
+
+        SetPict(){
+            return this.$store.commit('setNpicture',document.querySelector("#uploadFile").value); // Fail - Not allowed to load local resource
         },
 
         Post(){

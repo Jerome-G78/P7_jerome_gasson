@@ -22,7 +22,7 @@
                         <button @click.stop="Like" v-if="Data.Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
                         <button @click="EditPost" v-if="Data.Connected && Data.ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
                         <button @click="EditPost" v-if="Data.Connected && Data.isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
-                        <button @click.stop="DeletePost" v-if="Data.Connected && (Data.isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                        <button @click.stop="DeletePost" v-if="Data.Connected && (Data.isAdmin || Data.ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                     </div>
                     <hr v-if="Data.Connected"/>
                     <div v-if="Data.Connected" class="row justify-content-start">

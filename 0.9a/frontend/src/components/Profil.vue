@@ -327,7 +327,8 @@ export default {
                 console.log(this.this.Data.Loading);
 
                 // Recharger la page internet
-                document.location.reload();
+                this.$store.commit('setWallReload', true);
+                console.log(this.Data.WallReload);
             })
             .catch(err =>{
                 console.log(err);
