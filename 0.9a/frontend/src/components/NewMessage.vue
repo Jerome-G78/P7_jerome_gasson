@@ -24,7 +24,7 @@
 
                     <div class="form-group">
                         <input @click="JoinPict" id="Join" type="checkbox"> joindre une image <br/>
-                        <input @click="SetPict" v-if="uploadFile" id="uploadFile" type="file">
+                        <input v-if="uploadFile" id="uploadFile" type="file">
                     </div>
 
                     <div v-if="subOkay" class="alert alert-success">
@@ -141,22 +141,31 @@ export default {
             }
         },
 
-        SetPict(){
-            // WIP
-        },
-
         Post(){
-            // WIP
             console.log(this.Ntitle, this.Ncontent, this.uploadFile, this.Nattachment);
             this.$store.commit('setLoading', true);
             console.log(this.Data.Loading);
 
-            if(this.Nattachment == 1 && this.Npicture != ''){
+            if(this.Nattachment == 1){
+                // Récupération du fichier Image
+                let formData = new FormData();
+                let imageFile = document.querySelector("#uploadFile");
+                // console.log(imageFile.value, imageFile.files[0]);
+                formData.append("image",imageFile.files[0]);
+                // Ajout des autres éléments au FormData ( title, content, attachment )
+                formData.append("title",document.getElementById("title").value);
+                formData.append("content",document.getElementById("Content").value);
+                formData.append("attachment",1);
+                // console.log(FormData);
+
                 // Configuration de l'en-tete AXIOS (intégration du token)
                 axios.interceptors.request.use(
                     config => {
-                        config.headers.authorization = `Bearer ${this.Data.Token}`;
-                        // config.headers.Content-Type = `multipart/form-data`;
+                       config.headers = {
+                           'authorization': `Bearer ${this.Data.Token}`,
+                           'Accept': 'application/json',
+                           'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
+                       }
                         return config;
                     },
                     error => {
@@ -165,12 +174,7 @@ export default {
                 );
 
                 // Initialisation de la promesse vers l'API via AXIOS
-                axios.post(this.urlAPI+'/api/messages/new/', {
-                    title: document.getElementById("title").value,
-                    content: document.getElementById("Content").value,
-                    attachment: 1,
-                    image: ''
-                })
+                axios.post(this.urlAPI+'/api/messages/new/',formData)
                 .then(res =>{
                     // Sucess
                     this.subOkay = true;

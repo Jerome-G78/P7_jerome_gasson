@@ -12,8 +12,8 @@
         <div class="row justify-content-center">
             <div class="col-11 col-sm-9 col-md-6 bg-info text-white media border p-4 m-0">
                 <div :id="Post.id" class="media-body">
-                    <h4>{{Post.User.username}} <small><i>(Créer le {{PostDate}} à {{PostTime}})</i></small></h4>
-                    <hr>
+                    <h4>{{Post.User.username}} <small><i>(Créer le {{Data.PostDate}} à {{Data.PostTime}})</i></small></h4>
+                    <hr/>
                     <h5><i>{{Post.title}}</i></h5>
                     <img class="rounded img-fluid d-flex" :src="Post.attachment"/>
                     <p>{{Post.content}}</p><br/>
@@ -24,21 +24,21 @@
                         <button @click="EditPost" v-if="Data.Connected && Data.isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
                         <button @click.stop="DeletePost" v-if="Data.Connected && (Data.isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                     </div>
-                    <hr v-if="Data.Connected">
-                    <div id="Comment" v-if="Data.Connected" class="row justify-content-start">
+                    <hr v-if="Data.Connected"/>
+                    <div v-if="Data.Connected" class="row justify-content-start">
                         <div v-if="Data.Connected" class="col-9 form-group">
                             <label for="comment">Commentaire</label>
-                            <input @keyup="CommentVerify" type="text" class="form-control" id="comment" placeholder="Commentez!" name="comment"/>
+                            <input :id="CPId" @keyup="CommentVerify" type="text" class="form-control" placeholder="Commentez!" name="comment"/>
                         </div>
                         <div class="col-3 align-items-center">
                             <button @click="Submit" v-if="ValueComment" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
                         </div>
                     </div>
                     <hr>
-                    <div v-for="Comment in Comments" :key="Comment" :id="Comment.id" class="row justify-content-end">
+                    <div v-for="Comment in Comments" :key="Comment" :id="Data.CommentId" class="row justify-content-end">
                         <div class="col-9">
                             <p>
-                                <i>{{Comment.username}} ({{CommentDate}} à {{CommentTime}})</i><br/>
+                                <i>{{Comment.username}} ({{Data.CommentDate}} à {{Data.CommentTime}})</i><br/>
                                 {{Comment.comment}}
                             </p>
                         </div>
@@ -65,13 +65,14 @@ export default {
 
             Posts: [],
             PostId:0,
-            // PostDate:'',
-            // PostTime:'',
+            CPId:'',
+            PostDate:'',
+            PostTime:'',
 
             Comments:[],
-            CommentId:0,
-            // CommentDate:'',
-            // CommentTime:'',
+            CommentId:'',
+            CommentDate:'',
+            CommentTime:'',
             
             CHKcomment : false,
             ValueComment: false,
@@ -99,15 +100,16 @@ export default {
                 Loading: this.$store.state.Loading,
                 WallReload: this.$store.state.WallReload,
                 NoData:this.$store.state.NoData,
+
+                PostDate:this.$store.state.PostDate,
+                PostTime:this.$store.state.PostTime,
+
+                CommentDate:this.$store.state.CommentDate,
+                CommentTime:this.$store.state.CommentTime,
+
+                CurrentCommentId:this.$store.state.CurrentCommentId,
+                CommentId:this.$store.state.CommentId,
             }
-        },
-
-        PostDate(){
-            return this.$store.state.PostDate
-        },
-
-        PostTime(){
-            return this.$store.state.PostTime
         },
 
         GetEtitle(){
@@ -124,7 +126,7 @@ export default {
     // Création de la logique du module
     methods:{
         CommentVerify(){
-            let Comment = document.getElementById('comment').value;
+            let Comment = document.getElementById('CP'+this.PostId).value;
 
             if(Comment !=''){
                 this.ValueComment = true;
@@ -144,14 +146,14 @@ export default {
                     }
                 );
 
-            let comment = document.getElementById('comment').value;
+            let comment = document.getElementById('CP'+this.PostId).value;
             console.log(comment);
             axios.post(this.urlAPI+"/api/messages/comment/"+this.PostId+"/new/",{
                 comment : comment
             })
             .then(res =>{
                 // Sucess
-                document.getElementById('comment').value = '';
+                document.getElementById('CP'+this.PostId).value = '';
                 this.ValueComment = false;
                 this.subOkay = true;
                 this.subCompleted = true;
@@ -172,9 +174,9 @@ export default {
         SetCommentId(){
             // Récupérer le PostID, pour l'éditer, le supprimer ou le modérer.
             let OverId = document.getElementById("CommentDeleteButton").parentNode.id;
-            this.CommentId = OverId;
-            console.log("Mouse Over! - CommentID :" + this.CommentId);
-            this.$store.commit('setCurrentCommentId',this.CommentId);
+            let CurrentCID = this.Data.CurrentCommentId = OverId.split('C')[1];
+            console.log("Mouse Over! - CommentID :" + CurrentCID);
+            this.$store.commit('setCurrentCommentId',CurrentCID);
         },
         DeleteComment(){
             //WIP
@@ -189,7 +191,7 @@ export default {
                     }
                 );
                 if(this.Data.isAdmin){
-                    axios.delete(this.urlAPI+"/api/messages/comment/"+this.PostId+"/"+this.CommentId+"/moderate/")
+                    axios.delete(this.urlAPI+"/api/messages/comment/"+this.PostId+"/"+this.Data.CurrentCommentId+"/moderate/")
                     .then(res=>{
                         console.log(res);
                         console.log('commentaire supprimé');
@@ -202,7 +204,7 @@ export default {
                     });
 
                 } else {
-                    axios.delete(this.urlAPI+"/api/messages/comment/"+this.PostId+"/"+this.CommentId)
+                    axios.delete(this.urlAPI+"/api/messages/comment/"+this.PostId+"/"+this.Data.CurrentCommentId)
                     .then(res=>{
                         console.log(res);
                         console.log('commentaire supprimé');
@@ -343,22 +345,66 @@ export default {
         .then(res =>{
             // Récupération des messages & likes liées
             this.Posts = res.data;
-            console.log("Numbers of Posts: "+this.Posts);
+            console.log("Numbers of Posts: "+this.Posts.length);
             for(let i=0; i < this.Posts.length; i++){
                 this.PostId = this.Posts[i].id;
+                console.log("PID :"+this.PostId);
+                this.CPId = "CP"+this.PostId;
+                console.log("CPID :"+this.CPId);
                 this.LikeCounter = this.Posts[i].likes;
                 // Récupération de la date & l'heure du Post
                 let date= this.Posts[i].createdAt.split('T')[0];
                 this.$store.commit('setPostDate',date);
-                console.log(date);
+                console.log("PostDate : "+this.$store.state.PostDate);
                 let time= this.Posts[i].createdAt.split('T')[1];
                 let PTime = time.replace('.000Z','');
                 this.$store.commit('setPostTime',PTime);
-                console.log(PTime);
+                console.log("PostTime : "+this.$store.state.PostTime);
+
                 if(res.data[i].User.username == this.$store.state.userName){
                     this.$store.commit('setOwnMessage',true);
                     console.log("OwnMessage : "+this.Data.ownMessage);
                 }
+
+                axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+                .then(res =>{
+                    console.log(res);
+                    // Récupération des commentaires liées
+                    this.Comments = res.data;
+                    console.log("Numbers of Comments: "+this.Comments.length);
+                    for(let i=0; i < this.Comments.length; i++){
+                        console.log("Current PostID : "+ this.Comments[i].messageId);
+                        if(this.Comments[i].messageId == this.PostId){
+                            console.log(this.Comments[i].messageId, this.PostId);
+                            this.CommentId = "P"+this.PostId+"C"+this.Comments[i].id;
+                            this.$store.commit('setCommentId',"P"+this.PostId+"C"+this.Comments[i].id);
+                            console.log("Comment : "+this.$store.state.CommentId);
+                            // Récupération de la date & l'heure du message
+                            let date= this.Comments[i].createdAt.split('T')[0];
+                            this.$store.commit('setCommentDate',date);
+                            console.log("CommentDate : "+this.$store.state.CommentDate);
+                            this.CommentDate = date;
+                            let time= this.Comments[i].createdAt.split('T')[1];
+                            let CTime = time.replace('.000Z','');
+                            this.$store.commit('setCommentTime',CTime);
+                            console.log("CommentTime : "+this.$store.state.CommentTime);
+
+                            if(res.data[i].username == this.$store.state.userName){
+                                this.$store.commit('setOwnComment',true);
+                                console.log("OwnComment : "+this.Data.ownComment);
+                            }
+                        }
+                    }
+
+                    this.$store.commit('setLoading',false);
+                    console.log(this.Data.Loading);
+
+                })
+                .catch(err =>{
+                    console.log(err);
+                    this.$store.commit('setLoading',false);
+                    console.log(this.Data.Loading);
+                });
             }
 
             if(this.Posts !=""){
@@ -375,36 +421,6 @@ export default {
             this.$store.commit('setLoading',false);
             console.log(this.Data.Loading);
         });
-
-        axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
-            .then(res =>{
-                // Récupération des commentaires liées
-                this.Comments = res.data;
-                console.log("Numbers of Comments: "+this.Comments);
-                for(let i=0; i < this.Comments.length; i++){
-                    this.CommentId = this.Comments[i].id;
-                    // console.log(this.CommentId);
-                    // Récupération de la date & l'heure du message
-                    let date= this.Comments[i].createdAt.split('T')[0];
-                    this.CommentDate = date;
-                    let time= this.Comments[i].createdAt.split('T')[1];
-                    this.CommentTime = time.replace('.000Z','');
-
-                    if(res.data[i].username == this.$store.state.userName){
-                        this.$store.commit('setOwnComment',true);
-                        console.log("OwnComment : "+this.Data.ownComment);
-                    }
-                }
-
-                this.$store.commit('setLoading',false);
-                console.log(this.Data.Loading);
-
-            })
-            .catch(err =>{
-                console.log(err);
-                this.$store.commit('setLoading',false);
-                console.log(this.Data.Loading);
-            });
     },
     updated(){
         if(this.Data.WallReload == true){
@@ -414,35 +430,73 @@ export default {
             .then(res =>{
                 // Récupération des messages & likes liées
                 this.Posts = res.data;
-                console.log("Numbers of Posts: "+this.Posts);
+                console.log("Numbers of Posts: "+this.Posts.length);
                 for(let i=0; i < this.Posts.length; i++){
                     this.PostId = this.Posts[i].id;
+                    console.log("PID :"+this.PostId);
+                    this.CPId = "CP"+this.PostId;
+                    console.log("CPID :"+this.CPId);
                     this.LikeCounter = this.Posts[i].likes;
                     // Récupération de la date & l'heure du Post
                     let date= this.Posts[i].createdAt.split('T')[0];
                     this.$store.commit('setPostDate',date);
-                    console.log(date);
+                    console.log("PostDate : "+this.$store.state.PostDate);
                     let time= this.Posts[i].createdAt.split('T')[1];
                     let PTime = time.replace('.000Z','');
                     this.$store.commit('setPostTime',PTime);
-                    console.log(PTime);
+                    console.log("PostTime : "+this.$store.state.PostTime);
                     if(res.data[i].User.username == this.$store.state.userName){
                         this.$store.commit('setOwnMessage',true);
                         console.log("OwnMessage : "+this.Data.ownMessage);
                     }
+
+                    axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+                    .then(res =>{
+                        console.log(res);
+                        // Récupération des commentaires liées
+                        this.Comments = res.data;
+                        console.log("Numbers of Comments: "+this.Comments.length);
+                        for(let i=0; i < this.Comments.length; i++){
+                            console.log("Current PostID : "+ this.Comments[i].messageId);
+                            if(this.Comments[i].messageId == this.PostId){
+                                console.log(this.Comments[i].messageId, this.PostId);
+                                this.CommentId = "P"+this.PostId+"C"+this.Comments[i].id;
+                                this.$store.commit('setCommentId',"P"+this.PostId+"C"+this.Comments[i].id);
+                                console.log("Comment : "+this.$store.state.CommentId);
+                                // Récupération de la date & l'heure du message
+                                let date= this.Comments[i].createdAt.split('T')[0];
+                                this.CommentDate = date;
+                                console.log(this.CommentDate);
+                                let time= this.Comments[i].createdAt.split('T')[1];
+                                this.CommentTime = time.replace('.000Z','');
+                                console.log(this.CommentTime);
+
+                                if(res.data[i].username == this.$store.state.userName){
+                                    this.$store.commit('setOwnComment',true);
+                                    console.log("OwnComment : "+this.Data.ownComment);
+                                }
+                            }
+                        }
+
+                        this.$store.commit('setLoading',false);
+                        console.log(this.Data.Loading);
+
+                    })
+                    .catch(err =>{
+                        console.log(err);
+                        this.$store.commit('setLoading',false);
+                        console.log(this.Data.Loading);
+                    });
                 }
 
                 if(this.Posts !=""){
                     this.$store.commit('setNoData', false);
                     console.log("NoData : "+this.Data.NoData);
-                } else {
-                    this.$store.commit('setNoData', true);
-                    console.log("NoData : "+this.Data.NoData);
                 }
 
                 this.$store.commit('setLoading',false);
                 console.log(this.Data.Loading);
-                this.$store.commit('setWallReload', false);
+                this.$store.commit('setWallReload',false);
                 console.log(this.Data.WallReload);
                 
             })
@@ -450,43 +504,7 @@ export default {
                 console.log(err);
                 this.$store.commit('setLoading',false);
                 console.log(this.Data.Loading);
-                this.$store.commit('setWallReload', false);
-                console.log(this.Data.WallReload);
             });
-
-            axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
-                .then(res =>{
-                    // Récupération des commentaires liées
-                    this.Comments = res.data;
-                    console.log("Numbers of Comments: "+this.Comments);
-                    for(let i=0; i < this.Comments.length; i++){
-                        this.CommentId = this.Comments[i].id;
-                        // console.log(this.CommentId);
-                        // Récupération de la date & l'heure du message
-                        let date= this.Comments[i].createdAt.split('T')[0];
-                        this.CommentDate = date;
-                        let time= this.Comments[i].createdAt.split('T')[1];
-                        this.CommentTime = time.replace('.000Z','');
-
-                        if(res.data[i].username == this.$store.state.userName){
-                            this.$store.commit('setOwnComment',true);
-                            console.log("OwnComment : "+this.Data.ownComment);
-                        }
-                    }
-
-                    this.$store.commit('setLoading',false);
-                    console.log(this.Data.Loading);
-                    this.$store.commit('setWallReload', false);
-                    console.log(this.Data.WallReload);
-
-                })
-                .catch(err =>{
-                    console.log(err);
-                    this.$store.commit('setLoading',false);
-                    console.log(this.Data.Loading);
-                    this.$store.commit('setWallReload', false);
-                    console.log(this.Data.WallReload);
-                });
         }
     }
 }

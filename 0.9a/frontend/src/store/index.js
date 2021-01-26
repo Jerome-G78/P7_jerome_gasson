@@ -36,7 +36,8 @@ export default createStore({
     Econtent:'',
 
     // Delete Comments
-    CurrentCommentId:0,
+    CommentId:0,
+    CurrentCommentId:'',
 
     // Likes
     LikesCounter : 0,
@@ -47,6 +48,9 @@ export default createStore({
     NoData:true,
     PostDate:'',
     PostTime:'',
+
+    CommentDate:'',
+    CommentTime:'',
 
   },
   getters:{
@@ -153,8 +157,20 @@ export default createStore({
       state.PostDate = newValue;
     },
 
+    setCommentTime(state, newValue){
+      state.CommentTime = newValue;
+    },
+
     setCommentDate(state, newValue){
-      state.PostDate = newValue;
+      state.CommentDate = newValue;
+    },
+
+    setCommentForPost(state, newValue){
+      state.CommentForPost = newValue;
+    },
+
+    setCommentId(state, newValue){
+      state.CommentId = newValue;
     },
 
     // Reload
