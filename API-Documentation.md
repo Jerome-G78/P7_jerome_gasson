@@ -7,7 +7,7 @@
 	2.	POST /api/users/login/ ---------: Permet de vous authentifiés sur le site
     3.	GET /api/users/me/ -------------: Permet d'acceder a votre profil
     4.	PUT /api/users/me/ -------------: Permet de modifier votre profil
-    5.	DELETE /api/users/unsubscribe/ -: Permet de vous déinscrire
+    5.	DELETE /api/users/unsubscribe/ -: Permet de vous désinscrire
 
 ## II - MESSAGES
 
@@ -90,9 +90,20 @@
     - Authorization : Bearer TOKEN
     ----------------------------
     > Body | x-www-form-urlencoded
-    - bio : requis
+    - bio - requis
 
 - Réponse JSON : ` |"id" | "bio" | "updatedAt" | `
+---------------------------
+
+5.	DELETE /api/users/unsubscribe/
+> POST http://NomDuSite.com/api/users/unsubscribe/
+- Permet de vous désinscrire
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+
+- Réponse JSON : ` "Message": "unsubscribe sucess" `
 ---------------------------
 
 ## [MESSAGES]
