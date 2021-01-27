@@ -39,4 +39,33 @@
 	2.	PUT /api/users/add/ --: Permet d'accorder les droits administrateur a un utilisateur (via son nom)
     3.	PUT /api/users/remove/: Permet de retirer les droits administrateur a un utilisateur (via son nom)
 ---------------------------
+
+## [UTILISATEUR]
+1.	POST /api/users/register/
+> POST http://NomDuSite.com/api/users/register/
+Permet de vous inscrire sur le site
+
+- Attendu : 
+    > BODY - 
+    > x-www-form-urlencoded
+
+    Puis renseignez les propriétés (avec les valeurs) :
+
+    >email - poppy2@lol.com
+    >username - Poopy
+    >password - azerty78
+    >bio (optionnel)
+
+- Réponse JSON : `"userId": 1`
+
+## [MESSAGES]
+
+## [LIKE/DISLIKE]
+
+## [COMMENTAIRES]
+
+## [MODERATION]
+
+## [ADMINISTRATION]
+
 WIP ...
