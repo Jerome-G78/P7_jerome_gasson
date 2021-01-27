@@ -58,6 +58,21 @@
 
 - Réponse JSON : `"userId": 1`
 
+2.	POST /api/users/register/
+> POST http://NomDuSite.com/api/users/login/
+- Permet de vous authentifiés sur le site
+
+- Attendu : 
+    > BODY 
+    > x-www-form-urlencoded
+
+    Puis renseignez les propriétés (avec les valeurs) :
+
+    - email - requis
+    - password - requis
+
+- Réponse JSON : `"userId": 1 | "token": "GeneratedToken"`
+
 ## [MESSAGES]
 
 ## [LIKE/DISLIKE]
