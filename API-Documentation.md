@@ -25,7 +25,7 @@
 
 	1.	GET /messages/comment/ -------------------------: Permet de récupérer les commentaires liés aux messages
 	2.	POST /messages/comment/:messageId/new/ ---------: Permet de poster un nouveau commentaire
-    3.	DELETE /messages/comment/:messageId/:commentId/ : Permet de supprimer votre message
+    3.	DELETE /messages/comment/:messageId/:commentId/ : Permet de supprimer votre commentaire
 
 ## V - MODERATION (droits modérateur requis, donné par un administrateur)
 
@@ -171,7 +171,7 @@
 
 ## [LIKE/DISLIKE]
 1.	POST /api/messages/:messageId/vote/like/
-> POST http://NomDuSite.com//api/messages/:messageId/vote/like/
+> POST http://NomDuSite.com/api/messages/:messageId/vote/like/
 - Permet d'aimer un message du mur
 
 - Attendu : 
@@ -193,7 +193,31 @@
 ---------------------------
 
 ## [COMMENTAIRES]
+1.	GET /messages/comment/
+> GET http://NomDuSite.com/messages/comment/
+- Permet de récupérer les commentaires liés aux messages
 
+- Attendu : 
+
+    > PARAMS | Défaut (cf. commentCtrl.js l.83 - 89)
+    - fields - id, username,comment ... (optionnel)
+
+- Réponse JSON : ` | "id" | "username" | "comment" | `
+---------------------------
+
+2.	POST /messages/comment/:messageId/new/
+> POST http://NomDuSite.com/messages/:messageId/new/
+- Permet de poster un nouveau commentaire
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+    ---------------------------
+    > BODY | x-www-form-urlencoded
+    - comment - requis
+
+- Réponse JSON : ` | "id" | "UserId" | "messageId" | "username" | "comment" | "createdAt" | "updatedAt" | `
+---------------------------
 ## [MODERATION]
 
 ## [ADMINISTRATION]
