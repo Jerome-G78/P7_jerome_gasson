@@ -43,7 +43,7 @@
 ## [UTILISATEUR]
 1.	POST /api/users/register/
 > POST http://NomDuSite.com/api/users/register/
-Permet de vous inscrire sur le site
+- Permet de vous inscrire sur le site
 
 - Attendu : 
     > BODY 
