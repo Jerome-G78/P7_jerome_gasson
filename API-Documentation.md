@@ -13,7 +13,7 @@
 
 	1.	GET /api/messages/ --------------: Permet de récupérer les messages (paramètrage possible)
 	2.	POST /api/messages/new/----------: Permet de poster un nouveau message (avec ou sans photo)
-    3.	PUT /api/messages/:messageId/ ---: permet de modifier votre message
+    3.	PUT /api/messages/:messageId/ ---: Permet de modifier votre message
     4.	DELETE /api/messages/:messageId/ : Permet de supprimer votre message
 
 ## III - LIKE/DISLIKE
@@ -141,7 +141,56 @@
 - Réponse JSON : `| "id" | "title" | "content" | "attachment" | "UserId" | "updatedAt" | "createdAt" |`
 ---------------------------
 
+3.	PUT /api/messages/:messageId/ ...WIP
+> PUT http://NomDuSite.com/api/messages/:messageId/
+- Permet de modifier votre message
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+    ----------------------------
+    > Body | form-data
+    - title - requis
+    - content - requis
+    - image - optionnel
+    - attachment - optionnel [1]
+
+- Réponse JSON : `| "id" | "title" | "content" | "attachment" | "UserId" | "updatedAt" | "createdAt" |`
+---------------------------
+
+4.	DELETE /api/messages/:messageId/
+> DELETE http://NomDuSite.com/api/messages/:messageId/
+- Permet de supprimer votre message
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+
+- Réponse JSON : ` "message": "message deleted successfully" `
+---------------------------
+
 ## [LIKE/DISLIKE]
+1.	POST /api/messages/:messageId/vote/like/
+> POST http://NomDuSite.com//api/messages/:messageId/vote/like/
+- Permet d'aimer un message du mur
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+
+- Réponse JSON : ` | "id" | "title" | "content" | "attachment" | "likes" | "createdAt" | "updatedAt" | "UserId" | `
+---------------------------
+
+2.	POST /api/messages/:messageId/vote/dislike/
+> POST http://NomDuSite.com/api/messages/:messageId/vote/dislike/
+- Permet d'annuler (dislike) un message du mur
+
+- Attendu :
+    > Headers 
+    - Authorization : Bearer TOKEN
+
+- Réponse JSON : ` | "id" | "title" | "content" | "attachment" | "likes" | "createdAt" | "updatedAt" | "UserId" | `
+---------------------------
 
 ## [COMMENTAIRES]
 
