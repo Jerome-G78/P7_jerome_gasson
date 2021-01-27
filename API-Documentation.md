@@ -7,20 +7,20 @@
 	2.	POST /api/users/login/ ---------: Permet de vous authentifiés sur le site
     3.	GET /api/users/me --------------: Permet d'acceder a votre profil
     4.	PUT /api/users/me --------------: Permet de modifier votre profil
-    5.  DELETE /api/users/unsubscribe/ -: Permet de vous déinscrire
+    5.	DELETE /api/users/unsubscribe/ -: Permet de vous déinscrire
 
 ## II - MESSAGES
 
 	1.	GET /api/messages/ --------------: Permet de récupérer les messages (paramètrage possible)
 	2.	POST /api/messages/new ----------: Permet de poster un nouveau message (avec ou sans photo)
-    3.  PUT /api/messages/:messageId/ ---: permet de modifier votre message
-    4.  DELETE /api/messages/:messageId/ : Permet de supprimer votre message
+    3.	PUT /api/messages/:messageId/ ---: permet de modifier votre message
+    4.	DELETE /api/messages/:messageId/ : Permet de supprimer votre message
 
 ## III - COMMENTAIRES
 
 	1.	GET /messages/comment/ -------------------------: Permet de récupérer les commentaires liés aux messages
 	2.	POST /messages/comment/:messageId/new/ ---------: Permet de poster un nouveau commentaire
-    3.  DELETE /messages/comment/:messageId/:commentId/ : Permet de supprimer votre message
+    3.	DELETE /messages/comment/:messageId/:commentId/ : Permet de supprimer votre message
 
 ## IV - LIKE/DISLIKE
 
@@ -31,12 +31,12 @@
 
     1.	PUT /messages/:messageId/moderate/ --------------------------: Permet de modifier un post utilisateur
 	2.	DELETE /api/messages/:messageId/moderate/ -------------------: Permet de supprimer un post utilisateur
-    3.  DELETE /api/messages/comment/:messageId/:commentId/moderate/ : Permet de supprimer un commentaire utilisateur
+    3.	DELETE /api/messages/comment/:messageId/:commentId/moderate/ : Permet de supprimer un commentaire utilisateur
 
 ## VI - ADMINISTRATION
 
     1.	GET /users/ ----------: Permet de récupérer les informations d'un profil utilisateur
 	2.	PUT /api/users/add/ --: Permet d'accorder les droits administrateur a un utilisateur (via son nom)
-    3.  PUT /api/users/remove : Permet de retirer les droits administrateur a un utilisateur (via son nom)
+    3.	PUT /api/users/remove : Permet de retirer les droits administrateur a un utilisateur (via son nom)
 ---------------------------
 WIP ...
