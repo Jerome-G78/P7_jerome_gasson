@@ -107,6 +107,22 @@
 ---------------------------
 
 ## [MESSAGES]
+1.	POST /api/users/register/
+> POST http://NomDuSite.com/api/users/register/
+- Permet de vous inscrire sur le site
+
+- Attendu : 
+    > BODY | x-www-form-urlencoded
+
+    Puis renseignez les propriétés (avec les valeurs) :
+
+    - email - requis
+    - username - requis
+    - password - requis
+    - bio - optionnel
+
+- Réponse JSON : ` | "userId" | `
+---------------------------
 
 ## [LIKE/DISLIKE]
 
