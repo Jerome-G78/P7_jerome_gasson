@@ -3,7 +3,7 @@
 ---------------------------
 ## I - UTILISATEUR
 
-	1.	POST /api/users/register/ -------: Permet de vous inscrire sur le site
+	1.	POST /api/users/register/ ------: Permet de vous inscrire sur le site
 	2.	POST /api/users/login/ ---------: Permet de vous authentifiés sur le site
     3.	GET /api/users/me --------------: Permet d'acceder a votre profil
     4.	PUT /api/users/me --------------: Permet de modifier votre profil
