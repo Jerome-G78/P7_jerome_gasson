@@ -16,16 +16,16 @@
     3.	PUT /api/messages/:messageId/ ---: permet de modifier votre message
     4.	DELETE /api/messages/:messageId/ : Permet de supprimer votre message
 
-## III - COMMENTAIRES
+## III - LIKE/DISLIKE
+
+	1.	POST /api/messages/:messageId/vote/like --------: Permet d'aimer un message du mur
+	2.	POST /api/messages/:messageId/vote/dislike -----: Permet d'annuler (dislike) un message du mur
+
+## IV - COMMENTAIRES
 
 	1.	GET /messages/comment/ -------------------------: Permet de récupérer les commentaires liés aux messages
 	2.	POST /messages/comment/:messageId/new/ ---------: Permet de poster un nouveau commentaire
     3.	DELETE /messages/comment/:messageId/:commentId/ : Permet de supprimer votre message
-
-## IV - LIKE/DISLIKE
-
-	1.	POST /api/messages/:messageId/vote/like --------: Permet d'aimer un message du mur
-	2.	POST /api/messages/:messageId/vote/dislike -----: Permet d'annuler (dislike) un message du mur
 
 ## V - MODERATION (droits modérateur requis, donné par un administrateur)
 
