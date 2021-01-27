@@ -1,3 +1,6 @@
+// Activation du mode STRICT de Javascript
+"use strict";
+
 // Imports
 let models = require('../models');
 let asyncLib = require('async');
@@ -169,7 +172,7 @@ module.exports = {
         ], function(moderateMessage){
             if(moderateMessage){
                 // put du message OK
-                return res.status(201).json({'Message':'Moderate message number ' + moderateMessage});
+                return res.status(201).json({'message':'moderate message number ' + moderateMessage});
             } else {
                 // Le message n'est pas passé.
                 return res.status(500).json({'error':'cannot put message'});
@@ -442,7 +445,7 @@ module.exports = {
         function(putMessage){
             if(putMessage){
                 // post du message OK
-                return res.status(201).json({'Message':'Modified message number : ' + putMessage});
+                return res.status(201).json({'message':'modified message number : ' + putMessage});
             } else {
                 // Le message n'est pas passé.
                 return res.status(500).json({'error':'cannot put message'});

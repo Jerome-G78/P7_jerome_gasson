@@ -122,7 +122,7 @@ export default {
 
             // Initialisation de la promesse vers l'API via AXIOS
             axios.put(this.urlAPI+'/api/messages/'+this.Data.PostId,{
-                title: TitleEdit,
+                title : TitleEdit,
                 content : Content
                 })
             .then(res =>{

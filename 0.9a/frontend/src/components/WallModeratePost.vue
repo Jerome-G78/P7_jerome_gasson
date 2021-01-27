@@ -129,7 +129,7 @@ export default {
             // Initialisation de la promesse vers l'API via AXIOS
             if(this.Data.isAdmin){
                 axios.put(this.urlAPI+'/api/messages/'+this.Data.PostId+'/moderate',{
-                title: TitleMod,
+                title : TitleMod,
                 content : ContentMod
                 })
                 .then(res =>{

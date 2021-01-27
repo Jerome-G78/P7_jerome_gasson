@@ -1,3 +1,6 @@
+// Activation du mode STRICT de Javascript
+"use strict";
+
 // Imports
 let models = require('../models')
 let jwtUtils = require('../utils/jwt.utils');

@@ -1,3 +1,6 @@
+// Activation du mode STRICT de Javascript
+"use strict";
+
 // Imports
 let bcrypt = require('bcrypt');
 let jwtUtils = require('../utils/jwt.utils');
@@ -374,7 +377,7 @@ module.exports = {
           where: { id : userId }
         })
         .then(function(){
-          return res.status(201).json({'Message':'unsubscribe sucess'});
+          return res.status(201).json({'message':'unsubscribe sucess'});
         })
         .catch(function(err){
           return res.status(500).json({'error':'faillure to unsubscribe!' + err});
@@ -451,7 +454,7 @@ module.exports = {
     ], function(done){
         if(done){
           // OK
-          return res.status(201).json({'Message':'User Found' + done});
+          return res.status(201).json({'message':'user found' + done});
         } else {
           // Erreur.
           return res.status(500).json({'error':'cannot find user'});
