@@ -49,7 +49,7 @@ Il contient :
     > npm run serve
     - Le serveur est en ecoute par défaut sur le port 8080. (http://localhost:8080)
 
-- Option 2 : Vous disposez d'un serveur apache (ou WAMP), compilez le programme via la commande :
+- Option 2 : Vous disposez d'un serveur apache (ou WAMP) :
     Verifiez dans le fichier frontend\src\store\index.js ligne 5 : 
     > urlAPI: 'http://adresseDubackend:3000/'
     Verifiez le fichier frontend\vue.config.js ligne 3 :
