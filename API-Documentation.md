@@ -107,21 +107,21 @@
 ---------------------------
 
 ## [MESSAGES]
-1.	POST /api/users/register/
-> POST http://NomDuSite.com/api/users/register/
-- Permet de vous inscrire sur le site
+1.	GET /api/messages/
+> POST http://NomDuSite.com/api/messages/
+- Permet de récupérer les messages (paramètrage possible)
 
 - Attendu : 
     > BODY | x-www-form-urlencoded
 
-    Puis renseignez les propriétés (avec les valeurs) :
+    - limit - optionnel
+    - offset - optionnel
+    ---------------------------
 
-    - email - requis
-    - username - requis
-    - password - requis
-    - bio - optionnel
+    > PARAMS | Défaut (cf. messagesCtrl.js l.190 - 196)
+    - fields - id,title,content etc... (optionnel)
 
-- Réponse JSON : ` | "userId" | `
+- Réponse JSON : ` [ Tableau de messages ] `
 ---------------------------
 
 ## [LIKE/DISLIKE]
