@@ -218,6 +218,17 @@
 
 - Réponse JSON : ` | "id" | "UserId" | "messageId" | "username" | "comment" | "createdAt" | "updatedAt" | `
 ---------------------------
+
+3.	DELETE /messages/comment/:messageId/:commentId/
+> DELETE http://NomDuSite.com/messages/comment/:messageId/:commentId/
+- Permet de supprimer votre commentaire
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+
+- Réponse JSON : ` "message": "comment deleted successfully" `
+---------------------------
 ## [MODERATION]
 
 ## [ADMINISTRATION]
