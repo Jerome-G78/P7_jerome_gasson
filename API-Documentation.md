@@ -64,9 +64,6 @@
 
 - Attendu : 
     > BODY | x-www-form-urlencoded
-
-    Puis renseignez les propriétés (avec les valeurs) :
-
     - email - requis
     - password - requis
 
@@ -93,9 +90,6 @@
     - Authorization : Bearer TOKEN
 
     > Body | x-www-form-urlencoded
-
-    Puis renseignez les propriétés (avec les valeurs) :
-
     - bio : requis
 
 - Réponse JSON : ` |"id" | "bio" | "updatedAt" | `
