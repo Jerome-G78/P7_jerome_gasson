@@ -81,7 +81,7 @@
 
 - Attendu : 
     > Headers 
-    - Authorization : Bearer <TOKEN>
+    - Authorization : Bearer TOKEN
 
 - Réponse JSON : ` |"id" | "email" | "userName" | "bio" | `
 ---------------------------
