@@ -57,8 +57,7 @@
     - bio - optionnel
 
 - Réponse JSON : `"userId": 1`
-
->
+---------------------------
 
 2.	POST /api/users/register/
 > POST http://NomDuSite.com/api/users/login/
@@ -74,6 +73,7 @@
     - password - requis
 
 - Réponse JSON : `"userId": 1 | "token": "GeneratedToken"`
+---------------------------
 
 ## [MESSAGES]
 
