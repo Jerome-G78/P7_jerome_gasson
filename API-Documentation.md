@@ -56,7 +56,7 @@
     - password - requis
     - bio - optionnel
 
-- Réponse JSON : `"userId": 1`
+- Réponse JSON : ` | "userId" | `
 ---------------------------
 
 2.	POST /api/users/register/
@@ -72,7 +72,7 @@
     - email - requis
     - password - requis
 
-- Réponse JSON : `"userId": 1 | "token": "GeneratedToken"`
+- Réponse JSON : ` |"isAdmin" | "email" | "userName" | "userId" | "token" | `
 ---------------------------
 
 ## [MESSAGES]
