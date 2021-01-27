@@ -25,8 +25,8 @@ Il contient :
 [Local]
 - Pour faire fonctionner ce projet en local (frontend & Backend), il vous faut :
     > Node.js 14+ & NPM (yarn ou d'autres outils fonctionnent aussi) avec les modules suivants : 
-    > Backend : express, body-parser, jsonwebtoken, cors, bcrypt, sequelize-cli (ORM), mysql2, async, multer, fs
-    > Frontend : installez Vue.js 3+ (intégrez VueX)
+- > Backend : express, body-parser, jsonwebtoken, cors, bcrypt, sequelize-cli (ORM), mysql2, async, multer, fs
+- > Frontend : installez Vue.js 3+ (intégrez VueX)
 - Une base de données MySQL (WAMP ou autres)
 
 - i- Le fichier : \backend\config.json, doit être modifié pour correspondre a vos bases
