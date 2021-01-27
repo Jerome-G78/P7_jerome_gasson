@@ -12,14 +12,14 @@
 ## II - MESSAGES
 
 	1.	GET /api/messages/ --------------: Permet de récupérer les messages (paramètrage possible)
-	2.	POST /api/messages/new ----------: Permet de poster un nouveau message (avec ou sans photo)
+	2.	POST /api/messages/new/----------: Permet de poster un nouveau message (avec ou sans photo)
     3.	PUT /api/messages/:messageId/ ---: permet de modifier votre message
     4.	DELETE /api/messages/:messageId/ : Permet de supprimer votre message
 
 ## III - LIKE/DISLIKE
 
-	1.	POST /api/messages/:messageId/vote/like --------: Permet d'aimer un message du mur
-	2.	POST /api/messages/:messageId/vote/dislike -----: Permet d'annuler (dislike) un message du mur
+	1.	POST /api/messages/:messageId/vote/like/ -------: Permet d'aimer un message du mur
+	2.	POST /api/messages/:messageId/vote/dislike/ ----: Permet d'annuler (dislike) un message du mur
 
 ## IV - COMMENTAIRES
 
@@ -37,6 +37,6 @@
 
     1.	GET /users/ ----------: Permet de récupérer les informations d'un profil utilisateur
 	2.	PUT /api/users/add/ --: Permet d'accorder les droits administrateur a un utilisateur (via son nom)
-    3.	PUT /api/users/remove : Permet de retirer les droits administrateur a un utilisateur (via son nom)
+    3.	PUT /api/users/remove/: Permet de retirer les droits administrateur a un utilisateur (via son nom)
 ---------------------------
 WIP ...
