@@ -61,7 +61,7 @@ Il contient :
 
 [Utilisation]
 - Une fois le backend/frontend chargés et disponible
-> Depuis votre navigateur internet veuillez vous rendre sur le site suivant : 
+    > Depuis votre navigateur internet veuillez vous rendre sur le site suivant : 
    - Option 1 : http://localhost:8080/
    - Option 2 : http://Chemin/DuServeur/Vers/LeDossier/dist
 
