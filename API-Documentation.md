@@ -95,7 +95,7 @@
     - Authorization : Bearer TOKEN
 
     > Body
-    > x-www-form-urlencoded
+    - x-www-form-urlencoded
 
     Puis renseignez les propriétés (avec les valeurs) :
 
