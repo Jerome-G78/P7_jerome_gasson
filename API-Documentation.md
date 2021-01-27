@@ -41,8 +41,8 @@
 ---------------------------
 
 ## [UTILISATEUR]
-1.	POST /api/users/register/
-> POST http://NomDuSite.com/api/users/register/
+1.	POST /users/register/
+> POST http://NomDuSite.com/users/register/
 - Permet de vous inscrire sur le site
 
 - Attendu : 
@@ -58,8 +58,8 @@
 - Réponse JSON : ` | "userId" | `
 ---------------------------
 
-2.	POST /api/users/register/
-> POST http://NomDuSite.com/api/users/login/
+2.	POST /users/register/
+> POST http://NomDuSite.com/users/login/
 - Permet de vous authentifiés sur le site
 
 - Attendu : 
@@ -70,8 +70,8 @@
 - Réponse JSON : ` | "isAdmin" | "email" | "userName" | "userId" | "token" | `
 ---------------------------
 
-3.	GET /api/users/me/
-> GET http://NomDuSite.com/api/users/me/
+3.	GET /users/me/
+> GET http://NomDuSite.com/users/me/
 - Permet d'acceder a votre profil
 
 - Attendu : 
@@ -81,8 +81,8 @@
 - Réponse JSON : ` | "id" | "email" | "userName" | "bio" | `
 ---------------------------
 
-4.	PUT /api/users/me/
-> POST http://NomDuSite.com/api/users/me/
+4.	PUT /users/me/
+> POST http://NomDuSite.com/users/me/
 - Permet de modifier votre profil
 
 - Attendu : 
@@ -95,8 +95,8 @@
 - Réponse JSON : ` | "id" | "bio" | "updatedAt" | `
 ---------------------------
 
-5.	DELETE /api/users/unsubscribe/
-> POST http://NomDuSite.com/api/users/unsubscribe/
+5.	DELETE /users/unsubscribe/
+> POST http://NomDuSite.com/users/unsubscribe/
 - Permet de vous désinscrire
 
 - Attendu : 
@@ -107,8 +107,8 @@
 ---------------------------
 
 ## [MESSAGES]
-1.	GET /api/messages/
-> POST http://NomDuSite.com/api/messages/
+1.	GET /messages/
+> POST http://NomDuSite.com/messages/
 - Permet de récupérer les messages (paramètrage possible)
 
 - Attendu : 
@@ -124,8 +124,8 @@
 - Réponse JSON : ` [ Tableau de messages ] `
 ---------------------------
 
-2.	POST /api/messages/new/
-> POST http://NomDuSite.com/api/messages/new/
+2.	POST /messages/new/
+> POST http://NomDuSite.com/messages/new/
 - Permet de poster un nouveau message (avec ou sans photo)
 
 - Attendu : 
@@ -141,8 +141,8 @@
 - Réponse JSON : `| "id" | "title" | "content" | "attachment" | "UserId" | "updatedAt" | "createdAt" |`
 ---------------------------
 
-3.	PUT /api/messages/:messageId/ ...WIP
-> PUT http://NomDuSite.com/api/messages/:messageId/
+3.	PUT /messages/:messageId/ ...WIP
+> PUT http://NomDuSite.com/messages/:messageId/
 - Permet de modifier votre message
 
 - Attendu : 
@@ -158,8 +158,8 @@
 - Réponse JSON : `| "id" | "title" | "content" | "attachment" | "UserId" | "updatedAt" | "createdAt" |`
 ---------------------------
 
-4.	DELETE /api/messages/:messageId/
-> DELETE http://NomDuSite.com/api/messages/:messageId/
+4.	DELETE /messages/:messageId/
+> DELETE http://NomDuSite.com/messages/:messageId/
 - Permet de supprimer votre message
 
 - Attendu : 
@@ -170,8 +170,8 @@
 ---------------------------
 
 ## [LIKE/DISLIKE]
-1.	POST /api/messages/:messageId/vote/like/
-> POST http://NomDuSite.com/api/messages/:messageId/vote/like/
+1.	POST /messages/:messageId/vote/like/
+> POST http://NomDuSite.com/messages/:messageId/vote/like/
 - Permet d'aimer un message du mur
 
 - Attendu : 
@@ -181,8 +181,8 @@
 - Réponse JSON : ` | "id" | "title" | "content" | "attachment" | "likes" | "createdAt" | "updatedAt" | "UserId" | `
 ---------------------------
 
-2.	POST /api/messages/:messageId/vote/dislike/
-> POST http://NomDuSite.com/api/messages/:messageId/vote/dislike/
+2.	POST /messages/:messageId/vote/dislike/
+> POST http://NomDuSite.com/messages/:messageId/vote/dislike/
 - Permet d'annuler (dislike) un message du mur
 
 - Attendu :
@@ -246,8 +246,8 @@
 - Réponse JSON : ` "Message": "Moderate message number 0" `
 ---------------------------
 
-2.	DELETE /api/messages/:messageId/moderate/
-> DELETE http://NomDuSite.com/api/messages/:messageId/moderate/
+2.	DELETE /messages/:messageId/moderate/
+> DELETE http://NomDuSite.com/messages/:messageId/moderate/
 - Permet de supprimer un post utilisateur
 
 - Attendu : 
@@ -257,8 +257,8 @@
 - Réponse JSON : ` "message": "message deleted successfully" `
 ---------------------------
 
-3.	DELETE /api/messages/comment/:messageId/:commentId/moderate/
-> DELETE http://NomDuSite.com/api/messages/comment/:messageId/:commentId/moderate/
+3.	DELETE /messages/comment/:messageId/:commentId/moderate/
+> DELETE http://NomDuSite.com/messages/comment/:messageId/:commentId/moderate/
 - Permet de supprimer un commentaire utilisateur
 
 - Attendu : 
