@@ -58,6 +58,8 @@
 
 - Réponse JSON : `"userId": 1`
 
+>
+
 2.	POST /api/users/register/
 > POST http://NomDuSite.com/api/users/login/
 - Permet de vous authentifiés sur le site
