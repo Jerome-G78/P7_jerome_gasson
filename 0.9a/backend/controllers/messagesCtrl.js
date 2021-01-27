@@ -169,7 +169,7 @@ module.exports = {
         ], function(moderateMessage){
             if(moderateMessage){
                 // put du message OK
-                return res.status(201).json({'Message':'Moderate message number' + moderateMessage});
+                return res.status(201).json({'Message':'Moderate message number ' + moderateMessage});
             } else {
                 // Le message n'est pas passé.
                 return res.status(500).json({'error':'cannot put message'});

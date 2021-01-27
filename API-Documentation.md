@@ -229,7 +229,44 @@
 
 - Réponse JSON : ` "message": "comment deleted successfully" `
 ---------------------------
+
 ## [MODERATION]
+1.	PUT /messages/:messageId/moderate/
+> PUT http://NomDuSite.com/messages/:messageId/moderate/
+- Permet de modifier un post utilisateur
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+    ---------------------------
+    > Body | x-www-form-urlencoded
+    - title - requis
+    - content - requis
+
+- Réponse JSON : ` "Message": "Moderate message number 0" `
+---------------------------
+
+2.	DELETE /api/messages/:messageId/moderate/
+> DELETE http://NomDuSite.com/api/messages/:messageId/moderate/
+- Permet de supprimer un post utilisateur
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+
+- Réponse JSON : ` "message": "message deleted successfully" `
+---------------------------
+
+3.	DELETE /api/messages/comment/:messageId/:commentId/moderate/
+> DELETE http://NomDuSite.com/api/messages/comment/:messageId/:commentId/moderate/
+- Permet de supprimer un commentaire utilisateur
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+
+- Réponse JSON : ` "message": "comment deleted successfully" `
+---------------------------
 
 ## [ADMINISTRATION]
 
