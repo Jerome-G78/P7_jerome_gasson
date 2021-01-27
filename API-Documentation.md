@@ -51,10 +51,10 @@ Permet de vous inscrire sur le site
 
     Puis renseignez les propriétés (avec les valeurs) :
 
-    >email - poppy2@lol.com
-    >username - Poopy
-    >password - azerty78
-    >bio (optionnel)
+    > email - poppy2@lol.com
+    > username - Poopy
+    > password - azerty78
+    > bio (optionnel)
 
 - Réponse JSON : `"userId": 1`
 
