@@ -124,6 +124,23 @@
 - Réponse JSON : ` [ Tableau de messages ] `
 ---------------------------
 
+2.	POST /api/messages/new/
+> POST http://NomDuSite.com/api/messages/new/
+- Permet de poster un nouveau message (avec ou sans photo)
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+    ----------------------------
+    > Body | form-data
+    - title - requis
+    - content - requis
+    - image - optionnel
+    - attachment - optionnel [1]
+
+- Réponse JSON : `| "id" | "title" | "content" | "attachment" | "UserId" | "updatedAt" | "createdAt" |`
+---------------------------
+
 ## [LIKE/DISLIKE]
 
 ## [COMMENTAIRES]
