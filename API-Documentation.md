@@ -46,6 +46,7 @@
 - Permet de vous inscrire sur le site
 
 - Attendu : 
+
     > BODY | x-www-form-urlencoded
 
     Puis renseignez les propriétés (avec les valeurs) :
