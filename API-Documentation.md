@@ -67,7 +67,7 @@
     - email - requis
     - password - requis
 
-- Réponse JSON : ` |"isAdmin" | "email" | "userName" | "userId" | "token" | `
+- Réponse JSON : ` | "isAdmin" | "email" | "userName" | "userId" | "token" | `
 ---------------------------
 
 3.	GET /api/users/me/
@@ -78,7 +78,7 @@
     > Headers 
     - Authorization : Bearer TOKEN
 
-- Réponse JSON : ` |"id" | "email" | "userName" | "bio" | `
+- Réponse JSON : ` | "id" | "email" | "userName" | "bio" | `
 ---------------------------
 
 4.	PUT /api/users/me/
@@ -92,7 +92,7 @@
     > Body | x-www-form-urlencoded
     - bio - requis
 
-- Réponse JSON : ` |"id" | "bio" | "updatedAt" | `
+- Réponse JSON : ` | "id" | "bio" | "updatedAt" | `
 ---------------------------
 
 5.	DELETE /api/users/unsubscribe/
