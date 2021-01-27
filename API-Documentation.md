@@ -75,6 +75,17 @@
 - Réponse JSON : ` |"isAdmin" | "email" | "userName" | "userId" | "token" | `
 ---------------------------
 
+3.	GET /api/users/me/
+> GET http://NomDuSite.com/api/users/me/
+- Permet d'acceder a votre profil
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer <TOKEN>
+
+- Réponse JSON : ` |"id" | "email" | "userName" | "bio" | `
+---------------------------
+
 ## [MESSAGES]
 
 ## [LIKE/DISLIKE]
