@@ -86,6 +86,24 @@
 - Réponse JSON : ` |"id" | "email" | "userName" | "bio" | `
 ---------------------------
 
+4.	PUT /api/users/me/
+> POST http://NomDuSite.com/api/users/me/
+- Permet de modifier votre profil
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+
+    > Body
+    > x-www-form-urlencoded
+
+    Puis renseignez les propriétés (avec les valeurs) :
+
+    - bio : requis
+
+- Réponse JSON : ` |"id" | "bio" | "updatedAt" | `
+---------------------------
+
 ## [MESSAGES]
 
 ## [LIKE/DISLIKE]
