@@ -3,46 +3,46 @@
 ---------------------------
 ## I - UTILISATEUR
 
-	1.	POST /users/register/ ------: Permet de vous inscrire sur le site
-	2.	POST /users/login/ ---------: Permet de vous authentifiés sur le site
-    3.	GET /users/me/ -------------: Permet d'acceder a votre profil
-    4.	PUT /users/me/ -------------: Permet de modifier votre profil
-    5.	DELETE /users/unsubscribe/ -: Permet de vous désinscrire
+	1.	POST /api/users/register/ ------: Permet de vous inscrire sur le site
+	2.	POST /api/users/login/ ---------: Permet de vous authentifiés sur le site
+    3.	GET /api/users/me/ -------------: Permet d'acceder a votre profil
+    4.	PUT /api/users/me/ -------------: Permet de modifier votre profil
+    5.	DELETE /api/users/unsubscribe/ -: Permet de vous désinscrire
 
 ## II - MESSAGES
 
-	1.	GET /messages/ --------------: Permet de récupérer les messages (paramètrage possible)
-	2.	POST /messages/new/----------: Permet de poster un nouveau message (avec ou sans photo)
-    3.	PUT /messages/:messageId/ ---: Permet de modifier votre message
-    4.	DELETE /messages/:messageId/ : Permet de supprimer votre message
+	1.	GET /api/messages/ --------------: Permet de récupérer les messages (paramètrage possible)
+	2.	POST /api/messages/new/----------: Permet de poster un nouveau message (avec ou sans photo)
+    3.	PUT /api/messages/:messageId/ ---: Permet de modifier votre message
+    4.	DELETE /api/messages/:messageId/ : Permet de supprimer votre message
 
 ## III - LIKE/DISLIKE
 
-	1.	POST /messages/:messageId/vote/like/ -------: Permet d'aimer un message du mur
-	2.	POST /messages/:messageId/vote/dislike/ ----: Permet d'annuler (dislike) un message du mur
+	1.	POST /api/messages/:messageId/vote/like/ -------: Permet d'aimer un message du mur
+	2.	POST /api/messages/:messageId/vote/dislike/ ----: Permet d'annuler (dislike) un message du mur
 
 ## IV - COMMENTAIRES
 
-	1.	GET /messages/comment/ -------------------------: Permet de récupérer les commentaires liés aux messages
-	2.	POST /messages/comment/:messageId/new/ ---------: Permet de poster un nouveau commentaire
-    3.	DELETE /messages/comment/:messageId/:commentId/ : Permet de supprimer votre commentaire
+	1.	GET /api/messages/comment/ -------------------------: Permet de récupérer les commentaires liés aux messages
+	2.	POST /api/messages/comment/:messageId/new/ ---------: Permet de poster un nouveau commentaire
+    3.	DELETE /api/messages/comment/:messageId/:commentId/ : Permet de supprimer votre commentaire
 
 ## V - MODERATION (droits modérateur requis, donné par un administrateur)
 
-    1.	PUT /messages/:messageId/moderate/ --------------------------: Permet de modifier un post utilisateur
-	2.	DELETE /messages/:messageId/moderate/ -------------------: Permet de supprimer un post utilisateur
-    3.	DELETE /messages/comment/:messageId/:commentId/moderate/ : Permet de supprimer un commentaire utilisateur
+    1.	PUT /api/messages/:messageId/moderate/ --------------------------: Permet de modifier un post utilisateur
+	2.	DELETE /api/messages/:messageId/moderate/ -------------------: Permet de supprimer un post utilisateur
+    3.	DELETE /api/messages/comment/:messageId/:commentId/moderate/ : Permet de supprimer un commentaire utilisateur
 
 ## VI - ADMINISTRATION
 
-    1.	POST /users/ -----: Permet de récupérer les informations d'un profil utilisateur
-	2.	PUT /users/add/ --: Permet d'accorder les droits administrateur a un utilisateur (via son nom)
-    3.	PUT /users/remove/: Permet de retirer les droits administrateur a un utilisateur (via son nom)
+    1.	POST /api/users/ -----: Permet de récupérer les informations d'un profil utilisateur
+	2.	PUT /api/users/add/ --: Permet d'accorder les droits administrateur a un utilisateur (via son nom)
+    3.	PUT /api/users/remove/: Permet de retirer les droits administrateur a un utilisateur (via son nom)
 ---------------------------
 
 ## [UTILISATEUR]
-1.	POST /users/register/
-> POST http://NomDuSite.com/users/register/
+1.	POST /api/users/register/
+> POST http://NomDuSite.com/api/users/register/
 - Permet de vous inscrire sur le site
 
 - Attendu : 
@@ -58,8 +58,8 @@
 - Réponse JSON : ` | "userId" | `
 ---------------------------
 
-2.	POST /users/register/
-> POST http://NomDuSite.com/users/login/
+2.	POST /api/users/register/
+> POST http://NomDuSite.com/api/users/login/
 - Permet de vous authentifiés sur le site
 
 - Attendu : 
@@ -70,8 +70,8 @@
 - Réponse JSON : ` | "isAdmin" | "email" | "userName" | "userId" | "token" | `
 ---------------------------
 
-3.	GET /users/me/
-> GET http://NomDuSite.com/users/me/
+3.	GET /api/users/me/
+> GET http://NomDuSite.com/api/users/me/
 - Permet d'acceder a votre profil
 
 - Attendu : 
@@ -81,8 +81,8 @@
 - Réponse JSON : ` | "id" | "email" | "userName" | "bio" | `
 ---------------------------
 
-4.	PUT /users/me/
-> POST http://NomDuSite.com/users/me/
+4.	PUT /api/users/me/
+> POST http://NomDuSite.com/api/users/me/
 - Permet de modifier votre profil
 
 - Attendu : 
@@ -95,8 +95,8 @@
 - Réponse JSON : ` | "id" | "bio" | "updatedAt" | `
 ---------------------------
 
-5.	DELETE /users/unsubscribe/
-> POST http://NomDuSite.com/users/unsubscribe/
+5.	DELETE /api/users/unsubscribe/
+> POST http://NomDuSite.com/api/users/unsubscribe/
 - Permet de vous désinscrire
 
 - Attendu : 
@@ -107,8 +107,8 @@
 ---------------------------
 
 ## [MESSAGES]
-1.	GET /messages/
-> POST http://NomDuSite.com/messages/
+1.	GET /api/messages/
+> POST http://NomDuSite.com/api/messages/
 - Permet de récupérer les messages (paramètrage possible)
 
 - Attendu : 
@@ -124,8 +124,8 @@
 - Réponse JSON : ` [ Tableau de messages ] `
 ---------------------------
 
-2.	POST /messages/new/
-> POST http://NomDuSite.com/messages/new/
+2.	POST /api/messages/new/
+> POST http://NomDuSite.com/api/messages/new/
 - Permet de poster un nouveau message (avec ou sans photo)
 
 - Attendu : 
@@ -141,8 +141,8 @@
 - Réponse JSON : `| "id" | "title" | "content" | "attachment" | "UserId" | "updatedAt" | "createdAt" |`
 ---------------------------
 
-3.	PUT /messages/:messageId/ ...WIP
-> PUT http://NomDuSite.com/messages/:messageId/
+3.	PUT /api/messages/:messageId/ ...WIP
+> PUT http://NomDuSite.com/api/messages/:messageId/
 - Permet de modifier votre message
 
 - Attendu : 
@@ -158,8 +158,8 @@
 - Réponse JSON : `| "id" | "title" | "content" | "attachment" | "UserId" | "updatedAt" | "createdAt" |`
 ---------------------------
 
-4.	DELETE /messages/:messageId/
-> DELETE http://NomDuSite.com/messages/:messageId/
+4.	DELETE /api/messages/:messageId/
+> DELETE http://NomDuSite.com/api/messages/:messageId/
 - Permet de supprimer votre message
 
 - Attendu : 
@@ -170,8 +170,8 @@
 ---------------------------
 
 ## [LIKE/DISLIKE]
-1.	POST /messages/:messageId/vote/like/
-> POST http://NomDuSite.com/messages/:messageId/vote/like/
+1.	POST /api/messages/:messageId/vote/like/
+> POST http://NomDuSite.com/api/messages/:messageId/vote/like/
 - Permet d'aimer un message du mur
 
 - Attendu : 
@@ -181,8 +181,8 @@
 - Réponse JSON : ` | "id" | "title" | "content" | "attachment" | "likes" | "createdAt" | "updatedAt" | "UserId" | `
 ---------------------------
 
-2.	POST /messages/:messageId/vote/dislike/
-> POST http://NomDuSite.com/messages/:messageId/vote/dislike/
+2.	POST /api/messages/:messageId/vote/dislike/
+> POST http://NomDuSite.com/api/messages/:messageId/vote/dislike/
 - Permet d'annuler (dislike) un message du mur
 
 - Attendu :
@@ -193,8 +193,8 @@
 ---------------------------
 
 ## [COMMENTAIRES]
-1.	GET /messages/comment/
-> GET http://NomDuSite.com/messages/comment/
+1.	GET /api/messages/comment/
+> GET http://NomDuSite.com/api/messages/comment/
 - Permet de récupérer les commentaires liés aux messages
 
 - Attendu : 
@@ -205,8 +205,8 @@
 - Réponse JSON : ` | "id" | "username" | "comment" | `
 ---------------------------
 
-2.	POST /messages/comment/:messageId/new/
-> POST http://NomDuSite.com/messages/:messageId/new/
+2.	POST /api/messages/comment/:messageId/new/
+> POST http://NomDuSite.com/api/messages/:messageId/new/
 - Permet de poster un nouveau commentaire
 
 - Attendu : 
@@ -219,8 +219,8 @@
 - Réponse JSON : ` | "id" | "UserId" | "messageId" | "username" | "comment" | "createdAt" | "updatedAt" | `
 ---------------------------
 
-3.	DELETE /messages/comment/:messageId/:commentId/
-> DELETE http://NomDuSite.com/messages/comment/:messageId/:commentId/
+3.	DELETE /api/messages/comment/:messageId/:commentId/
+> DELETE http://NomDuSite.com/api/messages/comment/:messageId/:commentId/
 - Permet de supprimer votre commentaire
 
 - Attendu : 
@@ -231,8 +231,8 @@
 ---------------------------
 
 ## [MODERATION]
-1.	PUT /messages/:messageId/moderate/
-> PUT http://NomDuSite.com/messages/:messageId/moderate/
+1.	PUT /api/messages/:messageId/moderate/
+> PUT http://NomDuSite.com/api/messages/:messageId/moderate/
 - Permet de modifier un post utilisateur
 
 - Attendu : 
@@ -246,8 +246,8 @@
 - Réponse JSON : ` "Message": "Moderate message number 0" `
 ---------------------------
 
-2.	DELETE /messages/:messageId/moderate/
-> DELETE http://NomDuSite.com/messages/:messageId/moderate/
+2.	DELETE /api/messages/:messageId/moderate/
+> DELETE http://NomDuSite.com/api/messages/:messageId/moderate/
 - Permet de supprimer un post utilisateur
 
 - Attendu : 
@@ -257,8 +257,8 @@
 - Réponse JSON : ` "message": "message deleted successfully" `
 ---------------------------
 
-3.	DELETE /messages/comment/:messageId/:commentId/moderate/
-> DELETE http://NomDuSite.com/messages/comment/:messageId/:commentId/moderate/
+3.	DELETE /api/messages/comment/:messageId/:commentId/moderate/
+> DELETE http://NomDuSite.com/api/messages/comment/:messageId/:commentId/moderate/
 - Permet de supprimer un commentaire utilisateur
 
 - Attendu : 
@@ -269,8 +269,8 @@
 ---------------------------
 
 ## [ADMINISTRATION]
-1.	POST /users/
-> POST http://NomDuSite.com/users/
+1.	POST /api/users/
+> POST http://NomDuSite.com/api/users/
 - Permet de récupérer les informations d'un profil utilisateur
 
 - Attendu : 
@@ -283,8 +283,8 @@
 - Réponse JSON : ` | "id" | "username" | "isAdmin" | `
 ---------------------------
 
-2.	PUT /users/add/
-> PUT http://NomDuSite.com/users/add/
+2.	PUT /api/users/add/
+> PUT http://NomDuSite.com/api/users/add/
 - Permet d'accorder les droits administrateur a un utilisateur (via son nom)
 
 - Attendu : 
@@ -297,8 +297,8 @@
 - Réponse JSON : ` | "id" | "username" | "isAdmin" | "updatedAt" | `
 ---------------------------
 
-3.	PUT /users/remove/
-> PUT http://NomDuSite.com/users/remove/
+3.	PUT /api/users/remove/
+> PUT http://NomDuSite.com/api/users/remove/
 - Permet de retirer les droits administrateur a un utilisateur (via son nom)
 
 - Attendu : 
