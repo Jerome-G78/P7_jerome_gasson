@@ -62,8 +62,8 @@ Il contient :
 [Utilisation]
 - Une fois le backend/frontend chargés et disponible
 > Depuis votre navigateur internet veuillez vous rendre sur le site suivant : 
-    Option 1 : http://localhost:8080/
-    Option 2 : http://Chemin/DuServeur/Vers/LeDossier/dist
+   - Option 1 : http://localhost:8080/
+   - Option 2 : http://Chemin/DuServeur/Vers/LeDossier/dist
 
 - Arrivé sur le site, vous devez avoir une barre de navigation avec un lien d'inscription & de connexion.
-(i - les Messages & commentaires sont accessibles sans vous inscrire)
+- (i - les Messages & commentaires sont accessibles sans vous inscrire)
