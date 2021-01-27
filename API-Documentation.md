@@ -46,7 +46,6 @@
 - Permet de vous inscrire sur le site
 
 - Attendu : 
-
     > BODY | x-www-form-urlencoded
 
     Puis renseignez les propriétés (avec les valeurs) :
@@ -89,7 +88,7 @@
 - Attendu : 
     > Headers 
     - Authorization : Bearer TOKEN
-
+    ----------------------------
     > Body | x-www-form-urlencoded
     - bio : requis
 
