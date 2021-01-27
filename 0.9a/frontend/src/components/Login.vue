@@ -123,29 +123,29 @@ export default {
             })
             .then(res =>{
                 // Récupération des information du compte de l'utilisateur
-                console.log(res);
+                // console.log(res);
                 this.subOkay = true;
                 this.subCompleted = true;
                 this.$store.commit('setConnected', true);
                 localStorage.setItem("Connected", true);
-                console.log("Connected : "+ this.$store.state.Connected);
+                // console.log("Connected : "+ this.$store.state.Connected);
                 this.$store.commit('setEmail', res.data.email);
                 localStorage.setItem("Email", this.$store.state.email);
-                console.log(this.$store.state.email);
+                // console.log(this.$store.state.email);
                 document.getElementById('Lemail').value = '';
                 document.getElementById('Lpwd').value = '';
                 this.$store.commit('setUserName', res.data.userName);
                 localStorage.setItem("userName", this.$store.state.userName);
-                console.log("userName : "+this.$store.state.userName);
+                // console.log("userName : "+this.$store.state.userName);
                 this.$store.commit('setUserID', res.data.userId);
                 localStorage.setItem("userId", this.$store.state.userId);
-                console.log(this.$store.state.userId);
+                // console.log(this.$store.state.userId);
                 this.$store.commit('setToken', res.data.token);
                 localStorage.setItem("Token", this.$store.state.Token);
-                console.log("User Token : "+this.$store.state.Token);
+                // console.log("User Token : "+this.$store.state.Token);
                 this.$store.commit('setIsAdmin', res.data.isAdmin);
                 localStorage.setItem("isAdmin", this.$store.state.isAdmin);
-                console.log("User is Admin : "+this.$store.state.isAdmin);
+                // console.log("User is Admin : "+this.$store.state.isAdmin);
                 this.$store.commit('setLoading',this.Loading = false);
                 console.log(this.Loading);
 

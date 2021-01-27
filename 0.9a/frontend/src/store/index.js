@@ -2,7 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    urlAPI:'http://localhost:3000',
+    urlAPI:'http://shadsoft.fr:3000',
     footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
     Connected: false,
@@ -15,7 +15,7 @@ export default createStore({
     userId:0,
     userName:'',
     email:'',
-    bio:'',
+    bio:'Non renseigné',
     BioEdit : false,
 
     // SignIn
@@ -28,7 +28,7 @@ export default createStore({
     Ntitle:'',
     Ncontent:'',
     Nattachment: 0,
-    Npicture:'',
+    Npicture:'', // Bug Chrome : impossible de charger un fichier image local - d:\fakepath... 
 
     // Edit, Delete & Moderate Posts
     CurrentPostId:0,
