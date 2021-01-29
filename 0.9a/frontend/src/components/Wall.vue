@@ -445,6 +445,7 @@ export default {
                     let PTime = time.replace('.000Z','');
                     this.$store.commit('setPostTime',PTime);
                     console.log("PostTime : "+this.$store.state.PostTime);
+
                     if(res.data[i].User.username == this.$store.state.userName){
                         this.$store.commit('setOwnMessage',true);
                         console.log("OwnMessage : "+this.Data.ownMessage);
@@ -465,11 +466,13 @@ export default {
                                 console.log("Comment : "+this.$store.state.CommentId);
                                 // Récupération de la date & l'heure du message
                                 let date= this.Comments[i].updatedAt.split('T')[0];
+                                this.$store.commit('setCommentDate',date);
+                                console.log("CommentDate : "+this.$store.state.CommentDate);
                                 this.CommentDate = date;
-                                console.log(this.CommentDate);
                                 let time= this.Comments[i].updatedAt.split('T')[1];
-                                this.CommentTime = time.replace('.000Z','');
-                                console.log(this.CommentTime);
+                                let CTime = time.replace('.000Z','');
+                                this.$store.commit('setCommentTime',CTime);
+                                console.log("CommentTime : "+this.$store.state.CommentTime);
 
                                 if(res.data[i].username == this.$store.state.userName){
                                     this.$store.commit('setOwnComment',true);
