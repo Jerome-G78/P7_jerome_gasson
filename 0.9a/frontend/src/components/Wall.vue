@@ -1,56 +1,57 @@
 <template>
-    <button @click="WallReload">Recharger...</button>
-	<div v-if="Data.Loading" class="spinner-border text-primary text-center" id="WallLoad">
-        <p>Chargement des messages... </p>
-    </div>
-    <div v-if="!Data.Loading && Data.Connected && Data.NoData" class="spinner-border text-primary text-center" id="WallLoad">
-        <p>Aucuns messages a charger ... a vous de jouer! :D </p>
-    </div>
-    <!--POST START-->
-    <div v-for="Post in Posts" :key="Post">
-        <br/>
-        <div class="row justify-content-center">
-            <div class="col-11 col-sm-9 col-md-6 bg-info text-white media border p-4 m-0">
-                <div :id="Post.id" class="media-body">
-                    <h4>{{Post.User.username}} <small><i>(Créer le {{Data.PostDate}} à {{Data.PostTime}})</i></small></h4>
-                    <hr/>
-                    <h5><i>{{Post.title}}</i></h5>
-                    <img class="rounded img-fluid d-flex" :src="Post.attachment"/>
-                    <p>{{Post.content}}</p><br/>
-                    <hr v-if="Data.Connected">
-                    <div id="Buttons" @mouseover.stop="SetPostId" class="row justify-content-center">
-                        <button @click.stop="Like" v-if="Data.Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
-                        <button @click="EditPost" v-if="Data.Connected && Data.ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
-                        <button @click="EditPost" v-if="Data.Connected && Data.isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
-                        <button @click.stop="DeletePost" v-if="Data.Connected && (Data.isAdmin || Data.ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
-                    </div>
-                    <hr v-if="Data.Connected"/>
-                    <div v-if="Data.Connected" class="row justify-content-start">
-                        <div v-if="Data.Connected" class="col-9 form-group">
-                            <label for="comment">Commentaire</label>
-                            <input :id="CPId" @keyup="CommentVerify" type="text" class="form-control" placeholder="Commentez!" name="comment"/>
+    <div>
+        <div v-if="Data.Loading" class="spinner-border text-primary text-center" id="WallLoad">
+            <p>Chargement des messages... </p>
+        </div>
+        <div v-if="!Data.Loading && Data.Connected && Data.NoData" class="spinner-border text-primary text-center" id="WallLoad">
+            <p>Aucuns messages a charger ... a vous de jouer! :D </p>
+        </div>
+        <!--POST START-->
+        <div v-for="Post in Posts" :key="Post">
+            <br/>
+            <div class="row justify-content-center">
+                <div class="col-11 col-sm-9 col-md-6 bg-info text-white media border p-4 m-0">
+                    <div :id="Post.id" class="media-body">
+                        <h4>{{Post.User.username}} <small><i>(Créer le {{Data.PostDate}} à {{Data.PostTime}})</i></small></h4>
+                        <hr/>
+                        <h5><i>{{Post.title}}</i></h5>
+                        <img class="rounded img-fluid d-flex" :src="Post.attachment"/>
+                        <p>{{Post.content}}</p><br/>
+                        <hr v-if="Data.Connected">
+                        <div id="Buttons" @mouseover.stop="SetPostId" class="row justify-content-center">
+                            <button @click.stop="Like" v-if="Data.Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
+                            <button @click="EditPost" v-if="Data.Connected && Data.ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
+                            <button @click="EditPost" v-if="Data.Connected && Data.isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
+                            <button @click.stop="DeletePost" v-if="Data.Connected && (Data.isAdmin || Data.ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                         </div>
-                        <div class="col-3 align-items-center">
-                            <button @click="Submit" v-if="ValueComment" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
+                        <hr v-if="Data.Connected"/>
+                        <div v-if="Data.Connected" class="row justify-content-start">
+                            <div v-if="Data.Connected" class="col-9 form-group">
+                                <label for="comment">Commentaire</label>
+                                <input :id="CPId" @keyup="CommentVerify" type="text" class="form-control" placeholder="Commentez!" name="comment"/>
+                            </div>
+                            <div class="col-3 align-items-center">
+                                <button @click="Submit" v-if="ValueComment" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
+                            </div>
                         </div>
-                    </div>
-                    <hr>
-                    <div v-for="Comment in Comments" :key="Comment" :id="Data.CommentId" class="row justify-content-end">
-                        <div class="col-9">
-                            <p>
-                                <i>{{Comment.username}} ({{Data.CommentDate}} à {{Data.CommentTime}})</i><br/>
-                                {{Comment.comment}}
-                            </p>
-                        </div>
-                        <div @mouseover="SetCommentId" id="CommentDeleteButton" class="col-3">
-                            <button @click="DeleteComment" v-if="Data.Connected && (Data.isAdmin || Data.ownComment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                        <hr>
+                        <div v-for="Comment in Comments" :key="Comment" :id="Data.CommentId" class="row justify-content-end">
+                            <div class="col-9">
+                                <p>
+                                    <i>{{Comment.username}} ({{Data.CommentDate}} à {{Data.CommentTime}})</i><br/>
+                                    {{Comment.comment}}
+                                </p>
+                            </div>
+                            <div @mouseover="SetCommentId" id="CommentDeleteButton" class="col-3">
+                                <button @click="DeleteComment" v-if="Data.Connected && (Data.isAdmin || Data.ownComment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- POST END -->
     </div>
-    <!-- POST END -->
 </template>
 
 <script>
@@ -340,7 +341,7 @@ export default {
     mounted(){
         // Lors du chargement du composant, appeler les messages dans la BDD
         // Initialisation de la promesse vers l'API via AXIOS
-        axios.get(this.urlAPI+'/api/messages/?order=id:ASC')
+        axios.get(this.urlAPI+'/api/messages/?order=updatedAt:DESC')
         .then(res =>{
             // Récupération des messages & likes liées
             this.Posts = res.data;
@@ -352,10 +353,10 @@ export default {
                 console.log("CPID :"+this.CPId);
                 this.LikeCounter = this.Posts[i].likes;
                 // Récupération de la date & l'heure du Post
-                let date= this.Posts[i].createdAt.split('T')[0];
+                let date= this.Posts[i].updatedAt.split('T')[0];
                 this.$store.commit('setPostDate',date);
                 console.log("PostDate : "+this.$store.state.PostDate);
-                let time= this.Posts[i].createdAt.split('T')[1];
+                let time= this.Posts[i].updatedAt.split('T')[1];
                 let PTime = time.replace('.000Z','');
                 this.$store.commit('setPostTime',PTime);
                 console.log("PostTime : "+this.$store.state.PostTime);
@@ -365,7 +366,7 @@ export default {
                     console.log("OwnMessage : "+this.Data.ownMessage);
                 }
 
-                axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+                axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
                 .then(res =>{
                     console.log(res);
                     // Récupération des commentaires liées
@@ -379,11 +380,11 @@ export default {
                             this.$store.commit('setCommentId',"P"+this.PostId+"C"+this.Comments[i].id);
                             console.log("Comment : "+this.$store.state.CommentId);
                             // Récupération de la date & l'heure du message
-                            let date= this.Comments[i].createdAt.split('T')[0];
+                            let date= this.Comments[i].updatedAt.split('T')[0];
                             this.$store.commit('setCommentDate',date);
                             console.log("CommentDate : "+this.$store.state.CommentDate);
                             this.CommentDate = date;
-                            let time= this.Comments[i].createdAt.split('T')[1];
+                            let time= this.Comments[i].updatedAt.split('T')[1];
                             let CTime = time.replace('.000Z','');
                             this.$store.commit('setCommentTime',CTime);
                             console.log("CommentTime : "+this.$store.state.CommentTime);
@@ -425,7 +426,7 @@ export default {
         if(this.Data.WallReload == true){
             // Lors du chargement du composant, appeler les messages dans la BDD
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.get(this.urlAPI+'/api/messages/?order=id:ASC')
+            axios.get(this.urlAPI+'/api/messages/?order=updatedAt:DESC')
             .then(res =>{
                 // Récupération des messages & likes liées
                 this.Posts = res.data;
@@ -437,10 +438,10 @@ export default {
                     console.log("CPID :"+this.CPId);
                     this.LikeCounter = this.Posts[i].likes;
                     // Récupération de la date & l'heure du Post
-                    let date= this.Posts[i].createdAt.split('T')[0];
+                    let date= this.Posts[i].updatedAt.split('T')[0];
                     this.$store.commit('setPostDate',date);
                     console.log("PostDate : "+this.$store.state.PostDate);
-                    let time= this.Posts[i].createdAt.split('T')[1];
+                    let time= this.Posts[i].updatedAt.split('T')[1];
                     let PTime = time.replace('.000Z','');
                     this.$store.commit('setPostTime',PTime);
                     console.log("PostTime : "+this.$store.state.PostTime);
@@ -449,7 +450,7 @@ export default {
                         console.log("OwnMessage : "+this.Data.ownMessage);
                     }
 
-                    axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt')
+                    axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
                     .then(res =>{
                         console.log(res);
                         // Récupération des commentaires liées
@@ -463,10 +464,10 @@ export default {
                                 this.$store.commit('setCommentId',"P"+this.PostId+"C"+this.Comments[i].id);
                                 console.log("Comment : "+this.$store.state.CommentId);
                                 // Récupération de la date & l'heure du message
-                                let date= this.Comments[i].createdAt.split('T')[0];
+                                let date= this.Comments[i].updatedAt.split('T')[0];
                                 this.CommentDate = date;
                                 console.log(this.CommentDate);
-                                let time= this.Comments[i].createdAt.split('T')[1];
+                                let time= this.Comments[i].updatedAt.split('T')[1];
                                 this.CommentTime = time.replace('.000Z','');
                                 console.log(this.CommentTime);
 

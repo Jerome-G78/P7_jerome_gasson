@@ -63,7 +63,7 @@ module.exports = {
                         title : title,
                         content : content,
                         attachment : mediaUrl,
-                        like : 0,
+                        likes : 0,
                         UserId : userFound.id
                     })
                     .then(function(newMessage){
@@ -356,14 +356,15 @@ module.exports = {
         let messageId = parseInt(req.params.messageId);
         let title = req.body.title;
         let content = req.body.content;
-        let image = req.body.image;
-        let attachment = req.body.attachment;
-        let mediaUrl = "";
-        
+        // let image = req.body.image;
+        // let attachment = req.body.attachment;
+        // let mediaUrl = "";
+        /*
         if(attachment == 1){
             // Renseigner le chemin du stockage de l'image
             mediaUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
         }
+        */
 
         // Verification de données non null & cohérente
         if (title == null || content == null){
@@ -424,7 +425,7 @@ module.exports = {
                     messageId.update({
                         title : (title? title : userFound.title),
                         content : (content? content : userFound.content),
-                        attachment : (mediaUrl? mediaUrl : mediaUrl)
+                        // attachment : (mediaUrl? mediaUrl : mediaUrl)
                     })
                     .then(function(putMessage){
                         // Si tout c'est bien passé, le message est envoyé.
