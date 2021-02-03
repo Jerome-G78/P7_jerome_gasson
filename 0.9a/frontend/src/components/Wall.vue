@@ -10,13 +10,13 @@
         <div v-for="Post in Posts" :key="Post.id">
             <br/>
             <div class="row justify-content-center">
-                <div class="col-11 col-sm-9 col-md-6 bg-info text-white media border p-4 m-0">
+                <div class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
                     <div :id="Post.id" class="media-body">
-                        <h4>{{Post.User.username}} <small :key="'DT'+Post.id"><i>({{Data.PostDate}} à {{Data.PostTime}})</i></small></h4>
+                        <h4>{{Post.User.username}} <span class="inf"><small :key="'DT'+Post.id"><i>(Edité le {{Data.PostDate}} à {{Data.PostTime}})</i></small></span></h4>
                         <hr/>
                         <h5><i>{{Post.title}}</i></h5>
-                        <img class="rounded img-fluid d-flex" :src="Post.attachment"/>
-                        <p>{{Post.content}}</p><br/>
+                        <img class="justify-content-center rounded img-fluid d-flex" :src="Post.attachment"/>
+                        <p class="Content">{{Post.content}}</p><br/>
                         <hr v-if="Data.Connected">
                         <div id="Buttons" @mouseover.stop="SetPostId" class="row justify-content-center" :key="'Buttons'+Post.id">
                             <button @click.stop="Like" v-if="Data.Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
@@ -26,19 +26,25 @@
                         </div>
                         <hr v-if="Data.Connected"/>
                         <div v-if="Data.Connected" class="row justify-content-start">
-                            <div v-if="Data.Connected" class="col-9 form-group">
+                            <div v-if="Data.Connected" class="CommentEdit col-9 form-group">
                                 <label for="comment">Commentaire</label>
-                                <input :id="CPId" @keyup="CommentVerify" type="text" class="form-control" placeholder="Commentez!" name="comment"/>
+                                <input :id="CPId" @keyup="CommentVerify" type="text" class="form-control" placeholder="Commentez!" name="comment" maxlength="255"/>
                             </div>
-                            <div class="col-3 align-items-center">
+                            <div v-if="Data.Connected" class="col-3 align-items-center">
                                 <button @click="Submit" v-if="ValueComment" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
                             </div>
                         </div>
                         <hr>
                         <div v-for="Comment in Comments" :key="Comment.id" :id="Data.CommentId" class="row justify-content-end">
-                            <div class="col-9">
-                                <p>
-                                    <i>{{Comment.username}} ({{Data.CommentDate}} à {{Data.CommentTime}})</i><br/>
+                            <div v-if="Data.Connected && Data.ownComment" class="col-9">
+                                <p class="Comment">
+                                    {{Comment.username}} <span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span><br/>
+                                    {{Comment.comment}}
+                                </p>
+                            </div>
+                            <div v-if="!Data.Connected" class="col-12">
+                                <p class="Comment">
+                                    {{Comment.username}} <span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span><br/>
                                     {{Comment.comment}}
                                 </p>
                             </div>
@@ -49,6 +55,7 @@
                     </div>
                 </div>
             </div>
+            <br/>
         </div>
         <!-- POST END -->
     </div>

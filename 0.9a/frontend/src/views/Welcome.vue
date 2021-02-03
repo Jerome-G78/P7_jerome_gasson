@@ -23,7 +23,7 @@ import Wall from '@/components/Wall.vue'
 import WallEditPost from '@/components/WallEditPost.vue'
 import WallModeratePost from '@/components/WallModeratePost.vue'
 import Footer from '@/components/Footer.vue'
-import { computed } from 'vue'
+// import { computed } from 'vue'
 // import router from '@/router/index.js'
 
 export default {
@@ -49,6 +49,7 @@ export default {
           isAdmin: this.$store.state.isAdmin,
           BioEdit: this.$store.state.BioEdit,
           Token: this.$store.state.Token,
+          WallReload: this.$store.state.WallReload,
         }
     },
   },
@@ -67,8 +68,61 @@ export default {
       this.$store.commit('setToken', localStorage.getItem("Token"));
       this.$store.commit('setIsAdmin', localStorage.getItem("isAdmin"));
       this.$store.commit('setLoading', false);
-      this.ReLoadWall;
+      // Rechargement du mur de messages
+      this.$store.commit('setWallReload', true);
     }
   }
 }
 </script>
+
+<style>
+
+@font-face 
+{
+    font-family: 'Trueno';
+    src: url('../fonts/TruenoLt.woff') format('woff');
+}
+
+#app
+{
+  font-family: 'Trueno';
+}
+
+.alert
+{
+  font-size: 14px;
+}
+
+h5, .Comment, .Content
+{
+  text-align: left;
+}
+
+h5
+{
+  text-decoration: underline;
+}
+
+.inf
+{
+  text-align: right;
+  font-size: 13px;
+}
+
+.CommentEdit
+{
+  text-align: left;
+}
+
+.Mbody
+{
+  box-shadow:0 0 16px #d2515b;
+}
+
+img
+{
+  margin: auto;
+}
+
+
+</style>
