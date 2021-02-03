@@ -42,7 +42,7 @@
                                     {{Comment.comment}}
                                 </p>
                             </div>
-                            <div v-if="!Data.Connected" class="col-12">
+                            <div v-if="!Data.ownComment" class="col-12">
                                 <p class="Comment">
                                     {{Comment.username}} <span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span><br/>
                                     {{Comment.comment}}
