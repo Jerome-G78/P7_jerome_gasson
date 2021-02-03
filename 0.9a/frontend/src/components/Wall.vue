@@ -36,13 +36,13 @@
                         </div>
                         <hr>
                         <div v-for="Comment in Comments" :key="Comment.id" :id="Data.CommentId" class="row justify-content-end">
-                            <div v-if="Data.Connected && Data.ownComment" class="col-9">
+                            <div v-if="Data.Connected && (Data.ownComment || Data.isAdmin)" class="col-9">
                                 <p class="Comment">
                                     {{Comment.username}} <span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span><br/>
                                     {{Comment.comment}}
                                 </p>
                             </div>
-                            <div v-if="!Data.ownComment" class="col-12">
+                            <div v-if="!Data.Connected || (!Data.ownComment && !Data.isAdmin)" class="col-12">
                                 <p class="Comment">
                                     {{Comment.username}} <span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span><br/>
                                     {{Comment.comment}}
