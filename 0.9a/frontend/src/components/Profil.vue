@@ -8,7 +8,7 @@
                     <button @click="ResetStats" type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
                 </div>
         
-                <div class="modal-body">
+                <div class="labelsAlign modal-body">
                     <p> 
                         <strong> Nom : </strong>{{Data.userName}}<br/>
                         <strong> E-mail : </strong>{{Data.email}}<br/>

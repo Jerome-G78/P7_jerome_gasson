@@ -109,7 +109,7 @@ h5
   font-size: 13px;
 }
 
-.CommentEdit
+.labelsAlign
 {
   text-align: left;
 }

@@ -9,7 +9,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form action="/action_page.php">
+                    <form class="labelsAlign" action="/action_page.php">
 
                         <div class="form-group">
                             <label for="Lemail">Email <span class ="text-danger"> * </span>:</label>

@@ -11,7 +11,7 @@
         
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <form action="/action_page.php">
+                    <form class="labelsAlign" action="/action_page.php">
                         <div class="form-group">
                             <label for="Semail">Email <span class ="text-danger"> * </span>:</label>
                             <input @keyup="SingInVerify" type="email" class="form-control" id="Semail" placeholder="Tom@centuryFlop.com" name="email"><br/>
@@ -19,7 +19,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="Sname">Nom d'utilisateur/Pseudo (entre 5 et 15 caractères) <span class ="text-danger"> * </span>:</label>
+                            <label for="Sname">Pseudonyme (entre 5 et 15 caractères) <span class ="text-danger"> * </span>:</label>
                             <input @keyup="SingInVerify" type="text" class="form-control" id="Sname" placeholder="Ex. Lewis" name="name" maxlength="15"><br/>
                             <span class="alert alert-info" v-if="!CHKuserName"><strong><i class="fas fa-info-circle"></i></strong> {{username}}</span>
                         </div>
@@ -89,8 +89,8 @@ export default {
 
             // Messages
             email: "Veuillez renseigner un e-mail",
-            username: "Veuillez renseigner un nom d'utilisateur / Pseudo",
-            Mdp: "Celui-ci doit contenir : 1 Majuscule, 1 Minuscule, 1 Nombre",
+            username: "Veuillez renseigner un Pseudonyme",
+            Mdp: "Requis : 1 Majuscule, 1 Minuscule, 1 Nombre",
             MDPFail: "Les mots de passes ne sont pas identiques",
             subOK: "Votre inscription a bien été prise en compte",
             subFail: "Une erreur est survenue lors de l'inscription!"

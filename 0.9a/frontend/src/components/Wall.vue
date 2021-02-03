@@ -26,7 +26,7 @@
                         </div>
                         <hr v-if="Data.Connected"/>
                         <div v-if="Data.Connected" class="row justify-content-start">
-                            <div v-if="Data.Connected" class="CommentEdit col-9 form-group">
+                            <div v-if="Data.Connected" class="labelsAlign col-9 form-group">
                                 <label for="comment">Commentaire</label>
                                 <input :id="CPId" @keyup="CommentVerify" type="text" class="form-control" placeholder="Commentez!" name="comment" maxlength="255"/>
                             </div>

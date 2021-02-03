@@ -8,7 +8,7 @@
                     <button @click="ResetStats" type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
                 </div>
         
-                <div class="modal-body">
+                <div class="labelsAlign modal-body">
 
                     <div class="form-group">
                         <label for="title">Titre (Minimum 3 Caractères) <span class ="text-danger"> * </span>:</label>
