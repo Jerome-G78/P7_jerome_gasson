@@ -82,7 +82,7 @@
 ---------------------------
 
 4.	PUT /api/users/me/
-> POST http://NomDuSite.com/api/users/me/
+> PUT http://NomDuSite.com/api/users/me/
 - Permet de modifier votre profil
 
 - Attendu : 
@@ -96,7 +96,7 @@
 ---------------------------
 
 5.	DELETE /api/users/unsubscribe/
-> POST http://NomDuSite.com/api/users/unsubscribe/
+> DELETE http://NomDuSite.com/api/users/unsubscribe/
 - Permet de vous désinscrire
 
 - Attendu : 
@@ -108,7 +108,7 @@
 
 ## [MESSAGES]
 1.	GET /api/messages/
-> POST http://NomDuSite.com/api/messages/
+> GET http://NomDuSite.com/api/messages/
 - Permet de récupérer les messages (paramètrage possible)
 
 - Attendu : 

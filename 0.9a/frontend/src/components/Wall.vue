@@ -7,18 +7,18 @@
             <p>Aucuns messages a charger ... a vous de jouer! :D </p>
         </div>
         <!--POST START-->
-        <div v-for="Post in Posts" :key="Post">
+        <div v-for="Post in Posts" :key="Post.id">
             <br/>
             <div class="row justify-content-center">
                 <div class="col-11 col-sm-9 col-md-6 bg-info text-white media border p-4 m-0">
                     <div :id="Post.id" class="media-body">
-                        <h4>{{Post.User.username}} <small><i>(Créer le {{Data.PostDate}} à {{Data.PostTime}})</i></small></h4>
+                        <h4>{{Post.User.username}} <small :key="'DT'+Post.id"><i>({{Data.PostDate}} à {{Data.PostTime}})</i></small></h4>
                         <hr/>
                         <h5><i>{{Post.title}}</i></h5>
                         <img class="rounded img-fluid d-flex" :src="Post.attachment"/>
                         <p>{{Post.content}}</p><br/>
                         <hr v-if="Data.Connected">
-                        <div id="Buttons" @mouseover.stop="SetPostId" class="row justify-content-center">
+                        <div id="Buttons" @mouseover.stop="SetPostId" class="row justify-content-center" :key="'Buttons'+Post.id">
                             <button @click.stop="Like" v-if="Data.Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
                             <button @click="EditPost" v-if="Data.Connected && Data.ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
                             <button @click="EditPost" v-if="Data.Connected && Data.isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         <hr>
-                        <div v-for="Comment in Comments" :key="Comment" :id="Data.CommentId" class="row justify-content-end">
+                        <div v-for="Comment in Comments" :key="Comment.id" :id="Data.CommentId" class="row justify-content-end">
                             <div class="col-9">
                                 <p>
                                     <i>{{Comment.username}} ({{Data.CommentDate}} à {{Data.CommentTime}})</i><br/>
