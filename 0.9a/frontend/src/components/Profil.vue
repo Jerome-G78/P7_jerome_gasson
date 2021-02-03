@@ -58,8 +58,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button @click="GoOut" type="button" title="Déconnexion" class="btn btn-primary" data-dismiss="modal">Déconnexion</button>
                     <button @click="Unsubscribe" type="button" title="Désinscription" class="btn btn-danger" data-dismiss="modal">Désinscription</button>
+                    <button @click="GoOut" type="button" title="Déconnexion" class="btn btn-primary" data-dismiss="modal">Déconnexion</button>
                 </div>
         
             </div>
