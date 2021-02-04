@@ -98,11 +98,6 @@ h5, .Comment, .Content
   text-align: left;
 }
 
-h5
-{
-  text-decoration: underline;
-}
-
 .inf
 {
   text-align: right;

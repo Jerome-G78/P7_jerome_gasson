@@ -12,9 +12,9 @@
             <div class="row justify-content-center">
                 <div class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
                     <div :id="Post.id" class="media-body">
-                        <h4>{{Post.User.username}} <span class="inf"><small :key="'DT'+Post.id"><i>(Edité le {{Data.PostDate}} à {{Data.PostTime}})</i></small></span></h4>
+                        <h4 class="UserBackground">{{Post.User.username}} <span class="inf"><span :key="'DT'+Post.id"><i>(Edité le {{Data.PostDate}} à {{Data.PostTime}})</i></span></span></h4>
+                        <h5 class="TitleBackground"><i>{{Post.title}}</i></h5>
                         <hr/>
-                        <h5><i>{{Post.title}}</i></h5>
                         <img class="justify-content-center rounded img-fluid d-flex" :src="Post.attachment"/>
                         <p class="Content">{{Post.content}}</p><br/>
                         <hr v-if="Data.Connected">
@@ -38,13 +38,13 @@
                         <div v-for="Comment in Comments" :key="Comment.id" :id="Data.CommentId" class="row justify-content-end">
                             <div v-if="Data.Connected && (Data.ownComment || Data.isAdmin)" class="col-9">
                                 <p class="Comment">
-                                    {{Comment.username}} <span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span><br/>
+                                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span></span><br/>
                                     {{Comment.comment}}
                                 </p>
                             </div>
                             <div v-if="!Data.Connected || (!Data.ownComment && !Data.isAdmin)" class="col-12">
                                 <p class="Comment">
-                                    {{Comment.username}} <span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span><br/>
+                                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span></span><br/>
                                     {{Comment.comment}}
                                 </p>
                             </div>
@@ -344,6 +344,94 @@ export default {
             console.log(this.Data.WallReload);
         }
     },
+    beforeMount(){
+        if(this.Data.WallReload == true){
+            // Lors du chargement du composant, appeler les messages dans la BDD
+            // Initialisation de la promesse vers l'API via AXIOS
+            axios.get(this.urlAPI+'/api/messages/?order=updatedAt:DESC')
+            .then(res =>{
+                // Récupération des messages & likes liées
+                this.Posts = res.data;
+                console.log("Numbers of Posts: "+this.Posts.length);
+                for(let i=0; i < this.Posts.length; i++){
+                    this.PostId = this.Posts[i].id;
+                    console.log("PID :"+this.PostId);
+                    this.CPId = "CP"+this.PostId;
+                    console.log("CPID :"+this.CPId);
+                    this.LikeCounter = this.Posts[i].likes;
+                    // Récupération de la date & l'heure du Post
+                    let date= this.Posts[i].updatedAt.split('T')[0];
+                    this.$store.commit('setPostDate',date);
+                    console.log("PostDate : "+this.$store.state.PostDate);
+                    let time= this.Posts[i].updatedAt.split('T')[1];
+                    let PTime = time.replace('.000Z','');
+                    this.$store.commit('setPostTime',PTime);
+                    console.log("PostTime : "+this.$store.state.PostTime);
+
+                    if(res.data[i].User.username == this.$store.state.userName){
+                        this.$store.commit('setOwnMessage',true);
+                        console.log("OwnMessage : "+this.Data.ownMessage);
+                    }
+
+                    axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
+                    .then(res =>{
+                        console.log(res);
+                        // Récupération des commentaires liées
+                        this.Comments = res.data;
+                        console.log("Numbers of Comments: "+this.Comments.length);
+                        for(let i=0; i < this.Comments.length; i++){
+                            console.log("Current PostID : "+ this.Comments[i].messageId);
+                            if(this.Comments[i].messageId == this.PostId){
+                                console.log(this.Comments[i].messageId, this.PostId);
+                                this.CommentId = "P"+this.PostId+"C"+this.Comments[i].id;
+                                this.$store.commit('setCommentId',"P"+this.PostId+"C"+this.Comments[i].id);
+                                console.log("Comment : "+this.$store.state.CommentId);
+                                // Récupération de la date & l'heure du message
+                                let date= this.Comments[i].updatedAt.split('T')[0];
+                                this.$store.commit('setCommentDate',date);
+                                console.log("CommentDate : "+this.$store.state.CommentDate);
+                                this.CommentDate = date;
+                                let time= this.Comments[i].updatedAt.split('T')[1];
+                                let CTime = time.replace('.000Z','');
+                                this.$store.commit('setCommentTime',CTime);
+                                console.log("CommentTime : "+this.$store.state.CommentTime);
+
+                                if(res.data[i].username == this.$store.state.userName){
+                                    this.$store.commit('setOwnComment',true);
+                                    console.log("OwnComment : "+this.Data.ownComment);
+                                }
+                            }
+                        }
+
+                        this.$store.commit('setLoading',false);
+                        console.log(this.Data.Loading);
+
+                    })
+                    .catch(err =>{
+                        console.log(err);
+                        this.$store.commit('setLoading',false);
+                        console.log(this.Data.Loading);
+                    });
+                }
+
+                if(this.Posts !=""){
+                    this.$store.commit('setNoData', false);
+                    console.log("NoData : "+this.Data.NoData);
+                }
+
+                this.$store.commit('setLoading',false);
+                console.log(this.Data.Loading);
+                this.$store.commit('setWallReload',false);
+                console.log(this.Data.WallReload);
+                
+            })
+            .catch(err =>{
+                console.log(err);
+                this.$store.commit('setLoading',false);
+                console.log(this.Data.Loading);
+            });
+        }
+    },
 
     mounted(){
         // Lors du chargement du composant, appeler les messages dans la BDD
@@ -519,3 +607,32 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+/* Design du Post */
+.UserBackground
+{
+    background-image:url(../assets/PostDesign/Background-PostUser.png);
+    background-position:right bottom;
+    background-repeat:no-repeat;
+    opacity: 0.8;
+}
+
+.TitleBackground
+{
+    background:-webkit-linear-gradient(to right, #d2515b 30%, #2f3855);
+	background:-moz-linear-gradient(to right, #d2515b 30%, #2f3855);
+	background:-o-linear-gradient(to right, #d2515b 30%, #2f3855);
+	background:linear-gradient(to right, #d2515b 30%, #2f3855);
+    opacity: 0.8;
+}
+
+.CommentBackground
+{
+    background:-webkit-linear-gradient(to right, #424241 60%,#2f3855);
+	background:-moz-linear-gradient(to right, #424241 60%,#2f3855);
+	background:-o-linear-gradient(to right, #424241 60%,#2f3855);
+	background:linear-gradient(to right, #424241 60%,#2f3855);
+    opacity: 0.8;
+}
+</style>

@@ -3,7 +3,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
         
-                <div class="modal-header">
+                <div class="modal-header Titlebackground">
                     <h4 class="modal-title"><i class="far fa-newspaper"></i> Poster un message </h4>
                     <button @click="ResetStats" type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
                 </div>
