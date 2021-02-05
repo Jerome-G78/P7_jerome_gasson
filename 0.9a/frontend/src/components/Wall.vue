@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         <hr>
-                        <div v-for="Comment in Comments" :key="Comment.id" :id="SetPostCommentIds(PostId,Comment.id)" class="row justify-content-end">
+                        <div v-for="Comment in Comments" :key="Comment.id" :id="'P'+Comment.messageId+'C'+Comment.id" class="row justify-content-end">
                             <div v-if="Data.Connected && (Data.ownComment || Data.isAdmin)" class="col-9">
                                 <p class="Comment">
                                     <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
@@ -339,16 +339,6 @@ export default {
                 return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
             }
         },
-        SetPostCommentIds(PostId, CommentId){
-            console.log('IN SetPID');
-            for(let i=0; i < this.Comments.length; i++){
-                console.log("Current PostID : "+ PostId);
-                if(this.Comments[i].messageId == PostId){
-                    console.log(this.Comments[i].messageId, this.PostId);
-                    return "P"+PostId+"C"+CommentId;
-                }
-            }
-        }
     },
 
     mounted(){
