@@ -46,12 +46,6 @@ export default createStore({
     Loading:false,
     WallReload:false,
     NoData:true,
-    PostDate:'',
-    PostTime:'',
-
-    CommentDate:'',
-    CommentTime:'',
-
   },
   getters:{
     // Role similaire à computed pour VueX
@@ -149,21 +143,6 @@ export default createStore({
     },
 
     // Wall Load
-    setPostTime(state, newValue){
-      state.PostTime = newValue;
-    },
-
-    setPostDate(state, newValue){
-      state.PostDate = newValue;
-    },
-
-    setCommentTime(state, newValue){
-      state.CommentTime = newValue;
-    },
-
-    setCommentDate(state, newValue){
-      state.CommentDate = newValue;
-    },
 
     setCommentForPost(state, newValue){
       state.CommentForPost = newValue;

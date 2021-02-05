@@ -12,7 +12,7 @@
             <div class="row justify-content-center">
                 <div class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
                     <div :id="Post.id" class="media-body">
-                        <h4 class="UserBackground">{{Post.User.username}} <span class="inf"><span :key="'DT'+Post.id"><i>(Edité le {{Data.PostDate}} à {{Data.PostTime}})</i></span></span></h4>
+                        <h4 class="UserBackground">{{Post.User.username}} <span class="inf"><span><i>(Edité le {{FormatDateTime(Post.updatedAt)}})</i></span></span></h4>
                         <h5 class="TitleBackground"><i>{{Post.title}}</i></h5>
                         <hr/>
                         <img class="justify-content-center rounded img-fluid d-flex" :src="Post.attachment"/>
@@ -28,23 +28,23 @@
                         <div v-if="Data.Connected" class="row justify-content-start">
                             <div v-if="Data.Connected" class="labelsAlign col-9 form-group">
                                 <label for="comment">Commentaire</label>
-                                <input :id="CPId" @keyup="CommentVerify" type="text" class="form-control" placeholder="Commentez!" name="comment" maxlength="255"/>
+                                <input :id="'CP'+Post.id" @keyup="CommentVerify" type="text" class="form-control" placeholder="Commentez!" name="comment" maxlength="255"/>
                             </div>
                             <div v-if="Data.Connected" class="col-3 align-items-center">
                                 <button @click="Submit" v-if="ValueComment" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
                             </div>
                         </div>
                         <hr>
-                        <div v-for="Comment in Comments" :key="Comment.id" :id="Data.CommentId" class="row justify-content-end">
+                        <div v-for="Comment in Comments" :key="Comment.id" :id="SetPostCommentIds(PostId,Comment.id)" class="row justify-content-end">
                             <div v-if="Data.Connected && (Data.ownComment || Data.isAdmin)" class="col-9">
                                 <p class="Comment">
-                                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span></span><br/>
+                                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
                                     {{Comment.comment}}
                                 </p>
                             </div>
                             <div v-if="!Data.Connected || (!Data.ownComment && !Data.isAdmin)" class="col-12">
                                 <p class="Comment">
-                                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{Data.CommentDate}} à {{Data.CommentTime}})</i></span></span><br/>
+                                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
                                     {{Comment.comment}}
                                 </p>
                             </div>
@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 
 export default {
     name: 'Wall',
@@ -69,18 +70,12 @@ export default {
         return {
             // Variables Local
             urlAPI: this.$store.state.urlAPI,
-            // NoData:true,
 
             Posts: [],
             PostId:0,
-            CPId:'',
-            PostDate:'',
-            PostTime:'',
 
             Comments:[],
             CommentId:'',
-            CommentDate:'',
-            CommentTime:'',
             
             CHKcomment : false,
             ValueComment: false,
@@ -108,12 +103,6 @@ export default {
                 Loading: this.$store.state.Loading,
                 WallReload: this.$store.state.WallReload,
                 NoData:this.$store.state.NoData,
-
-                PostDate:this.$store.state.PostDate,
-                PostTime:this.$store.state.PostTime,
-
-                CommentDate:this.$store.state.CommentDate,
-                CommentTime:this.$store.state.CommentTime,
 
                 CurrentCommentId:this.$store.state.CurrentCommentId,
                 CommentId:this.$store.state.CommentId,
@@ -342,165 +331,42 @@ export default {
         WallReload(){
             this.$store.commit('setWallReload', true);
             console.log(this.Data.WallReload);
-        }
-    },
-    beforeMount(){
-        if(this.Data.WallReload == true){
-            // Lors du chargement du composant, appeler les messages dans la BDD
-            // Initialisation de la promesse vers l'API via AXIOS
-            axios.get(this.urlAPI+'/api/messages/?order=updatedAt:DESC')
-            .then(res =>{
-                // Récupération des messages & likes liées
-                this.Posts = res.data;
-                console.log("Numbers of Posts: "+this.Posts.length);
-                for(let i=0; i < this.Posts.length; i++){
-                    this.PostId = this.Posts[i].id;
-                    console.log("PID :"+this.PostId);
-                    this.CPId = "CP"+this.PostId;
-                    console.log("CPID :"+this.CPId);
-                    this.LikeCounter = this.Posts[i].likes;
-                    // Récupération de la date & l'heure du Post
-                    let date= this.Posts[i].updatedAt.split('T')[0];
-                    this.$store.commit('setPostDate',date);
-                    console.log("PostDate : "+this.$store.state.PostDate);
-                    let time= this.Posts[i].updatedAt.split('T')[1];
-                    let PTime = time.replace('.000Z','');
-                    this.$store.commit('setPostTime',PTime);
-                    console.log("PostTime : "+this.$store.state.PostTime);
-
-                    if(res.data[i].User.username == this.$store.state.userName){
-                        this.$store.commit('setOwnMessage',true);
-                        console.log("OwnMessage : "+this.Data.ownMessage);
-                    }
-
-                    axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
-                    .then(res =>{
-                        console.log(res);
-                        // Récupération des commentaires liées
-                        this.Comments = res.data;
-                        console.log("Numbers of Comments: "+this.Comments.length);
-                        for(let i=0; i < this.Comments.length; i++){
-                            console.log("Current PostID : "+ this.Comments[i].messageId);
-                            if(this.Comments[i].messageId == this.PostId){
-                                console.log(this.Comments[i].messageId, this.PostId);
-                                this.CommentId = "P"+this.PostId+"C"+this.Comments[i].id;
-                                this.$store.commit('setCommentId',"P"+this.PostId+"C"+this.Comments[i].id);
-                                console.log("Comment : "+this.$store.state.CommentId);
-                                // Récupération de la date & l'heure du message
-                                let date= this.Comments[i].updatedAt.split('T')[0];
-                                this.$store.commit('setCommentDate',date);
-                                console.log("CommentDate : "+this.$store.state.CommentDate);
-                                this.CommentDate = date;
-                                let time= this.Comments[i].updatedAt.split('T')[1];
-                                let CTime = time.replace('.000Z','');
-                                this.$store.commit('setCommentTime',CTime);
-                                console.log("CommentTime : "+this.$store.state.CommentTime);
-
-                                if(res.data[i].username == this.$store.state.userName){
-                                    this.$store.commit('setOwnComment',true);
-                                    console.log("OwnComment : "+this.Data.ownComment);
-                                }
-                            }
-                        }
-
-                        this.$store.commit('setLoading',false);
-                        console.log(this.Data.Loading);
-
-                    })
-                    .catch(err =>{
-                        console.log(err);
-                        this.$store.commit('setLoading',false);
-                        console.log(this.Data.Loading);
-                    });
+        },
+        // Paramètrages d'affichage et d'unicité des Comment IDs
+        FormatDateTime(DateTime){
+            // Mise à jour du format de la date
+            if (DateTime) {
+                return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
+            }
+        },
+        SetPostCommentIds(PostId, CommentId){
+            console.log('IN SetPID');
+            for(let i=0; i < this.Comments.length; i++){
+                console.log("Current PostID : "+ PostId);
+                if(this.Comments[i].messageId == PostId){
+                    console.log(this.Comments[i].messageId, this.PostId);
+                    return "P"+PostId+"C"+CommentId;
                 }
-
-                if(this.Posts !=""){
-                    this.$store.commit('setNoData', false);
-                    console.log("NoData : "+this.Data.NoData);
-                }
-
-                this.$store.commit('setLoading',false);
-                console.log(this.Data.Loading);
-                this.$store.commit('setWallReload',false);
-                console.log(this.Data.WallReload);
-                
-            })
-            .catch(err =>{
-                console.log(err);
-                this.$store.commit('setLoading',false);
-                console.log(this.Data.Loading);
-            });
+            }
         }
     },
 
     mounted(){
         // Lors du chargement du composant, appeler les messages dans la BDD
         // Initialisation de la promesse vers l'API via AXIOS
-        axios.get(this.urlAPI+'/api/messages/?order=updatedAt:DESC')
-        .then(res =>{
-            // Récupération des messages & likes liées
-            this.Posts = res.data;
+
+        axios.all([
+            axios.get(this.urlAPI+'/api/messages/?order=updatedAt:DESC'),
+            axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
+        ])
+        .then(responseArr => {
+
+            this.$store.commit('setLoading',true);
+            console.log(this.Data.Loading);
+            this.Posts = responseArr[0].data;
             console.log("Numbers of Posts: "+this.Posts.length);
-            for(let i=0; i < this.Posts.length; i++){
-                this.PostId = this.Posts[i].id;
-                console.log("PID :"+this.PostId);
-                this.CPId = "CP"+this.PostId;
-                console.log("CPID :"+this.CPId);
-                this.LikeCounter = this.Posts[i].likes;
-                // Récupération de la date & l'heure du Post
-                let date= this.Posts[i].updatedAt.split('T')[0];
-                this.$store.commit('setPostDate',date);
-                console.log("PostDate : "+this.$store.state.PostDate);
-                let time= this.Posts[i].updatedAt.split('T')[1];
-                let PTime = time.replace('.000Z','');
-                this.$store.commit('setPostTime',PTime);
-                console.log("PostTime : "+this.$store.state.PostTime);
-
-                if(res.data[i].User.username == this.$store.state.userName){
-                    this.$store.commit('setOwnMessage',true);
-                    console.log("OwnMessage : "+this.Data.ownMessage);
-                }
-
-                axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
-                .then(res =>{
-                    console.log(res);
-                    // Récupération des commentaires liées
-                    this.Comments = res.data;
-                    console.log("Numbers of Comments: "+this.Comments.length);
-                    for(let i=0; i < this.Comments.length; i++){
-                        console.log("Current PostID : "+ this.Comments[i].messageId);
-                        if(this.Comments[i].messageId == this.PostId){
-                            console.log(this.Comments[i].messageId, this.PostId);
-                            this.CommentId = "P"+this.PostId+"C"+this.Comments[i].id;
-                            this.$store.commit('setCommentId',"P"+this.PostId+"C"+this.Comments[i].id);
-                            console.log("Comment : "+this.$store.state.CommentId);
-                            // Récupération de la date & l'heure du message
-                            let date= this.Comments[i].updatedAt.split('T')[0];
-                            this.$store.commit('setCommentDate',date);
-                            console.log("CommentDate : "+this.$store.state.CommentDate);
-                            this.CommentDate = date;
-                            let time= this.Comments[i].updatedAt.split('T')[1];
-                            let CTime = time.replace('.000Z','');
-                            this.$store.commit('setCommentTime',CTime);
-                            console.log("CommentTime : "+this.$store.state.CommentTime);
-
-                            if(res.data[i].username == this.$store.state.userName){
-                                this.$store.commit('setOwnComment',true);
-                                console.log("OwnComment : "+this.Data.ownComment);
-                            }
-                        }
-                    }
-
-                    this.$store.commit('setLoading',false);
-                    console.log(this.Data.Loading);
-
-                })
-                .catch(err =>{
-                    console.log(err);
-                    this.$store.commit('setLoading',false);
-                    console.log(this.Data.Loading);
-                });
-            }
+            this.Comments = responseArr[1].data;
+            console.log("Numbers of Comments: "+this.Comments.length);
 
             if(this.Posts !=""){
                 this.$store.commit('setNoData', false);
@@ -509,94 +375,41 @@ export default {
 
             this.$store.commit('setLoading',false);
             console.log(this.Data.Loading);
-            
         })
         .catch(err =>{
             console.log(err);
             this.$store.commit('setLoading',false);
             console.log(this.Data.Loading);
         });
+
     },
     updated(){
         if(this.Data.WallReload == true){
             // Lors du chargement du composant, appeler les messages dans la BDD
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.get(this.urlAPI+'/api/messages/?order=updatedAt:DESC')
-            .then(res =>{
-                // Récupération des messages & likes liées
-                this.Posts = res.data;
+            axios.all([
+                axios.get(this.urlAPI+'/api/messages/?order=updatedAt:DESC'),
+                axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
+            ])
+            .then(responseArr => {
+
+                this.$store.commit('setLoading',true);
+                console.log(this.Data.Loading);
+                this.Posts = responseArr[0].data;
                 console.log("Numbers of Posts: "+this.Posts.length);
-                for(let i=0; i < this.Posts.length; i++){
-                    this.PostId = this.Posts[i].id;
-                    console.log("PID :"+this.PostId);
-                    this.CPId = "CP"+this.PostId;
-                    console.log("CPID :"+this.CPId);
-                    this.LikeCounter = this.Posts[i].likes;
-                    // Récupération de la date & l'heure du Post
-                    let date= this.Posts[i].updatedAt.split('T')[0];
-                    this.$store.commit('setPostDate',date);
-                    console.log("PostDate : "+this.$store.state.PostDate);
-                    let time= this.Posts[i].updatedAt.split('T')[1];
-                    let PTime = time.replace('.000Z','');
-                    this.$store.commit('setPostTime',PTime);
-                    console.log("PostTime : "+this.$store.state.PostTime);
-
-                    if(res.data[i].User.username == this.$store.state.userName){
-                        this.$store.commit('setOwnMessage',true);
-                        console.log("OwnMessage : "+this.Data.ownMessage);
-                    }
-
-                    axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
-                    .then(res =>{
-                        console.log(res);
-                        // Récupération des commentaires liées
-                        this.Comments = res.data;
-                        console.log("Numbers of Comments: "+this.Comments.length);
-                        for(let i=0; i < this.Comments.length; i++){
-                            console.log("Current PostID : "+ this.Comments[i].messageId);
-                            if(this.Comments[i].messageId == this.PostId){
-                                console.log(this.Comments[i].messageId, this.PostId);
-                                this.CommentId = "P"+this.PostId+"C"+this.Comments[i].id;
-                                this.$store.commit('setCommentId',"P"+this.PostId+"C"+this.Comments[i].id);
-                                console.log("Comment : "+this.$store.state.CommentId);
-                                // Récupération de la date & l'heure du message
-                                let date= this.Comments[i].updatedAt.split('T')[0];
-                                this.$store.commit('setCommentDate',date);
-                                console.log("CommentDate : "+this.$store.state.CommentDate);
-                                this.CommentDate = date;
-                                let time= this.Comments[i].updatedAt.split('T')[1];
-                                let CTime = time.replace('.000Z','');
-                                this.$store.commit('setCommentTime',CTime);
-                                console.log("CommentTime : "+this.$store.state.CommentTime);
-
-                                if(res.data[i].username == this.$store.state.userName){
-                                    this.$store.commit('setOwnComment',true);
-                                    console.log("OwnComment : "+this.Data.ownComment);
-                                }
-                            }
-                        }
-
-                        this.$store.commit('setLoading',false);
-                        console.log(this.Data.Loading);
-
-                    })
-                    .catch(err =>{
-                        console.log(err);
-                        this.$store.commit('setLoading',false);
-                        console.log(this.Data.Loading);
-                    });
-                }
+                this.Comments = responseArr[1].data;
+                console.log("Numbers of Comments: "+this.Comments.length);
 
                 if(this.Posts !=""){
                     this.$store.commit('setNoData', false);
                     console.log("NoData : "+this.Data.NoData);
                 }
 
-                this.$store.commit('setLoading',false);
-                console.log(this.Data.Loading);
                 this.$store.commit('setWallReload',false);
                 console.log(this.Data.WallReload);
-                
+
+                this.$store.commit('setLoading',false);
+                console.log(this.Data.Loading);
             })
             .catch(err =>{
                 console.log(err);
@@ -606,6 +419,8 @@ export default {
         }
     }
 }
+
+                
 </script>
 
 <style scoped>
