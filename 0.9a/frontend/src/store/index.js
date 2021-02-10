@@ -36,7 +36,6 @@ export default createStore({
     Econtent:'',
 
     // Delete Comments
-    CommentId:0,
     CurrentCommentId:'',
 
     // Likes
@@ -146,10 +145,6 @@ export default createStore({
 
     setCommentForPost(state, newValue){
       state.CommentForPost = newValue;
-    },
-
-    setCommentId(state, newValue){
-      state.CommentId = newValue;
     },
 
     // Reload

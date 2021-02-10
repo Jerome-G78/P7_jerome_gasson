@@ -8,6 +8,7 @@
         </div>
         <!--POST START-->
         <div v-for="Post in Posts" :key="Post.id">
+            <span v-show="SetOwnMessage(Post.User.username)"></span>
             <br/>
             <div class="row justify-content-center">
                 <div class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
@@ -18,7 +19,7 @@
                         <img class="justify-content-center rounded img-fluid d-flex" :src="Post.attachment"/>
                         <p class="Content">{{Post.content}}</p><br/>
                         <hr v-if="Data.Connected">
-                        <div id="Buttons" @mouseover.stop="SetPostId" class="row justify-content-center" :key="'Buttons'+Post.id">
+                        <div @mouseover.stop="SetPostId" class="Buttons row justify-content-center">
                             <button @click.stop="Like" v-if="Data.Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
                             <button @click="EditPost" v-if="Data.Connected && Data.ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
                             <button @click="EditPost" v-if="Data.Connected && Data.isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
@@ -26,30 +27,31 @@
                         </div>
                         <hr v-if="Data.Connected"/>
                         <div v-if="Data.Connected" class="row justify-content-start">
-                            <div v-if="Data.Connected" class="labelsAlign col-9 form-group">
+                            <div v-if="Data.Connected" class="labelsAlign col-11 form-group">
                                 <label for="comment">Commentaire</label>
                                 <input :id="'CP'+Post.id" @keyup="CommentVerify" type="text" class="form-control" placeholder="Commentez!" name="comment" maxlength="255"/>
                             </div>
-                            <div v-if="Data.Connected" class="col-3 align-items-center">
+                            <div v-if="Data.Connected" class="col-1 align-items-center">
                                 <button @click="Submit" v-if="ValueComment" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
                             </div>
                         </div>
                         <hr>
-                        <div v-for="Comment in Comments" :key="Comment.id" :id="'P'+Comment.messageId+'C'+Comment.id" class="row justify-content-end">
-                            <div v-if="Data.Connected && (Data.ownComment || Data.isAdmin)" class="col-9">
+                        <div v-for="Comment in Comments" :key="Comment.id" :id="'P'+Comment.messageId+'C'+Comment.id+'U'+Comment.username" class="row justify-content-end">
+                            <span v-show="SetOwnComment(Comment.username)"></span>
+                            <div @mouseover="SetCommentId" v-if="Data.Connected && (Data.isAdmin || Data.ownComment)" class="CommentDeleteButton col-11">
                                 <p class="Comment">
                                     <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
                                     {{Comment.comment}}
                                 </p>
                             </div>
-                            <div v-if="!Data.Connected || (!Data.ownComment && !Data.isAdmin)" class="col-12">
+                            <div class="col-1" v-if="Data.Connected && (Data.isAdmin || Data.ownComment)">
+                                <button @click="DeleteComment" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                            </div>
+                            <div v-else class="col-12">
                                 <p class="Comment">
                                     <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
                                     {{Comment.comment}}
                                 </p>
-                            </div>
-                            <div @mouseover="SetCommentId" id="CommentDeleteButton" class="col-3">
-                                <button @click="DeleteComment" v-if="Data.Connected && (Data.isAdmin || Data.ownComment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                             </div>
                         </div>
                     </div>
@@ -70,12 +72,12 @@ export default {
         return {
             // Variables Local
             urlAPI: this.$store.state.urlAPI,
+            ko:0,
 
             Posts: [],
             PostId:0,
 
             Comments:[],
-            CommentId:'',
             
             CHKcomment : false,
             ValueComment: false,
@@ -105,7 +107,6 @@ export default {
                 NoData:this.$store.state.NoData,
 
                 CurrentCommentId:this.$store.state.CurrentCommentId,
-                CommentId:this.$store.state.CommentId,
             }
         },
 
@@ -169,11 +170,22 @@ export default {
             });
         },
         SetCommentId(){
-            // Récupérer le PostID, pour l'éditer, le supprimer ou le modérer.
-            let OverId = document.getElementById("CommentDeleteButton").parentNode.id;
-            let CurrentCID = this.Data.CurrentCommentId = OverId.split('C')[1];
-            console.log("Mouse Over! - CommentID :" + CurrentCID);
-            this.$store.commit('setCurrentCommentId',CurrentCID);
+            // Récupérer le Comment ID, pour le supprimer.
+            let OverId = document.getElementsByClassName("CommentDeleteButton");
+            for(let i=0 ; i < OverId.length ; i++){
+                // console.log('CloG-P' + OverId[i].parentNode.id.split('C')[0].split('P')[1]);
+                this.PostId = OverId[i].parentNode.id.split('C')[0].split('P')[1];
+                if(this.Posts[i].id == OverId[i].parentNode.id.split('C')[0].split('P')[1]){
+                    // console.log('CloG-C' + OverId[i].parentNode.id.split('C')[1].split('U')[0]);
+                    this.$store.commit('setCurrentCommentId',OverId[i].parentNode.id.split('C')[1].split('U')[0]);
+                    // console.log(this.Data.CurrentCommentId);
+                }
+                if(OverId[i].parentNode.id.split('C')[1].split('U')[1] == localStorage.getItem('userName')){
+                    this.Data.ownComment = true;
+                    console.log("Own Comment!");
+                }
+            }
+            console.log("Mouse Over! - CommentID :" + this.$store.state.CurrentCommentId);
         },
         DeleteComment(){
             // Configuration de l'en-tete AXIOS (intégration du token)
@@ -216,10 +228,14 @@ export default {
         },
         SetPostId(){
             // Récupérer le PostID, pour l'éditer, le supprimer ou le modérer.
-            let OverId = document.getElementById("Buttons").parentNode.id;
-            this.PostId = OverId;
-            this.$store.commit('setCurrentPostId',this.PostId);
-            console.log("Mouse Over! - PostID : " + this.PostId);
+            let OverId = document.getElementsByClassName("Buttons");
+            for(let i=0 ; i < OverId.length ; i++){
+                if(this.Posts[i].id == OverId[i].parentNode.id){
+                    this.PostId = OverId[i].parentNode.id;
+                    break;
+                }
+            }
+            console.log("Mouse Over! - PostID :" + this.PostId);
         },
         Like(){
             // Configuration de l'en-tete AXIOS (intégration du token)
@@ -339,6 +355,36 @@ export default {
                 return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
             }
         },
+        SetOwnComment(Username){
+            console.log('Methode - SetOwnComment : '+ Username);
+            if(Username == this.Data.userName){
+                console.log(this.Data.userName);
+                this.Data.ownComment = true;
+                console.log("Own Comment!");
+                return Username;
+
+            } else {
+                console.log(this.Data.userName);
+                this.Data.ownComment = false;
+                console.log("No Own Comment");
+                return Username;
+            }
+        },
+        SetOwnMessage(Username){
+            console.log('Methode - SetOwnMessage : '+ Username);
+            if(Username == this.Data.userName){
+                console.log(this.Data.userName);
+                this.Data.ownMessage = true;
+                console.log("Own Message!");
+                return Username;
+
+            } else {
+                console.log(this.Data.userName);
+                this.Data.ownMessage = false;
+                console.log("No Own Message");
+                return Username;
+            }
+        }
     },
 
     mounted(){
@@ -355,8 +401,10 @@ export default {
             console.log(this.Data.Loading);
             this.Posts = responseArr[0].data;
             console.log("Numbers of Posts: "+this.Posts.length);
+            console.log(this.Posts);
             this.Comments = responseArr[1].data;
             console.log("Numbers of Comments: "+this.Comments.length);
+            console.log(this.Comments);
 
             if(this.Posts !=""){
                 this.$store.commit('setNoData', false);
