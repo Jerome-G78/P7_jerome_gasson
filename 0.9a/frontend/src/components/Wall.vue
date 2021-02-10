@@ -72,7 +72,6 @@ export default {
         return {
             // Variables Local
             urlAPI: this.$store.state.urlAPI,
-            ko:0,
 
             Posts: [],
             PostId:0,
