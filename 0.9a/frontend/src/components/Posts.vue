@@ -1,25 +1,48 @@
 <template>
     <div>
-        <div v-if="Data.Loading" class="spinner-border text-primary text-center" id="WallLoad">
-            <p>Chargement des messages... </p>
+        <div v-for="Post in Posts" :key="Post.id" :id="Post.id" class="Space row justify-content-center">
+            <div class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
+                <div class="media-body">
+                    <span v-show="SetOwnMessage(Post.User.username)"></span>
+                    <h4 class="UserBackground">{{Post.User.username}} <span class="inf"><span><i>(Edité le {{FormatDateTime(Post.updatedAt)}})</i></span></span></h4>
+                    <h5 class="TitleBackground"><i>{{Post.title}}</i></h5>
+                    <hr/>
+                    <img class="justify-content-center rounded img-fluid d-flex" :src="Post.attachment"/>
+                    <p class="Content">{{Post.content}}</p><br/>
+                    <hr v-if="Data.Connected">
+                    <div class="Buttons row justify-content-center">
+                        <button @click.stop="Like(Post.id)" v-if="Data.Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
+                        <button @click="EditPost(Post.id)" v-if="Data.Connected && Data.ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
+                        <button @click="EditPost(Post.id)" v-if="Data.Connected && Data.isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
+                        <button @click.stop="DeletePost(Post.id)" v-if="Data.Connected && (Data.isAdmin || Data.ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                    </div>
+                    <hr v-if="Data.Connected"/>
+                    <div v-if="Data.Connected" class="row justify-content-start">
+                        <div v-if="Data.Connected" class="labelsAlign col-10 form-group">
+                            <label for="comment">Commentaire</label>
+                            <input :id="'CP'+Post.id" @keyup="CommentVerify(Post.id)" type="text" class="form-control" placeholder="Commentez!" name="comment" maxlength="255"/>
+                        </div>
+                        <div v-if="Data.Connected" class="col-2 align-items-center">
+                            <button @click="Submit(Post)" v-if="ValueComment" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                    <hr>
+                    <Comments/>
+                </div>
+            </div>
         </div>
-        <div v-if="!Data.Loading && Data.Connected && Data.NoData" class="spinner-border text-primary text-center" id="WallLoad">
-            <p>Aucuns messages a charger ... a vous de jouer! :D </p>
-        </div>
-        <!--POST START-->
-        <PostS/>
-        <!--POST END-->
     </div>
 </template>
 
 <script>
 import moment from 'moment'
-import PostS from '@/components/Posts.vue'
+import Comments from '@/components/Comments.vue'
 
 export default {
-    name: 'Wall',
+    name: 'PostS',
+
     components: {
-        PostS
+        Comments
     },
 
     data(){
@@ -29,8 +52,8 @@ export default {
 
             Posts: this.$store.state.Posts,
             Comments: this.$store.state.Comments,
-            
-            CHKcomment: false,
+
+            CHKcomment : false,
             ValueComment: false,
 
             ownMessage: false,
@@ -38,10 +61,9 @@ export default {
             Liked: false,
 
             LikeCounter:this.$store.state.LikeCounter,
-
         }
     },
-    
+
     computed:{
         Data(){
             return {
@@ -68,7 +90,7 @@ export default {
             return this.$store.state.Econtent;
         },
     },
-    
+
     // Création de la logique du module
     methods:{
         CommentVerify(PostId){
@@ -116,46 +138,6 @@ export default {
                 this.subCompleted = true;
                 this.chkOK = false;
             });
-        },
-        DeleteComment(Post,Comment){
-            console.log(Post,Comment);
-            // Configuration de l'en-tete AXIOS (intégration du token)
-                axios.interceptors.request.use(
-                    config => {
-                        config.headers.authorization = `Bearer ${this.Data.Token}`;
-                        return config;
-                    },
-                    error => {
-                        return Promise.reject(error);
-                    }
-                );
-                if(this.Data.isAdmin){
-                    axios.delete(this.urlAPI+"/api/messages/comment/"+Comment.id+"/"+Post.id+"/moderate/")
-                    .then(res=>{
-                        console.log(res);
-                        console.log('commentaire supprimé');
-                        // Rechargement du mur après opération
-                        this.$store.commit('setWallReload', true);
-                        console.log(this.Data.WallReload);
-                    })
-                    .catch(err =>{
-                        console.log(err);
-                    });
-
-                } else {
-                    axios.delete(this.urlAPI+"/api/messages/comment/"+Comment.id+"/"+Post.id)
-                    .then(res=>{
-                        console.log(res);
-                        console.log('commentaire supprimé');
-                        // Rechargement du mur après opération
-                        this.$store.commit('setWallReload', true);
-                        console.log(this.Data.WallReload);
-
-                    })
-                    .catch(err =>{
-                        console.log(err);
-                    });
-                }
         },
         Like(PostId){
             // Configuration de l'en-tete AXIOS (intégration du token)
@@ -268,26 +250,11 @@ export default {
             this.$store.commit('setWallReload', true);
             console.log(this.Data.WallReload);
         },
-        // Paramètrages d'affichage et d'unicité des Comment IDs
+        // Paramètrages d'affichage et d'unicité des Posts
         FormatDateTime(DateTime){
             // Mise à jour du format de la date
             if (DateTime) {
                 return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
-            }
-        },
-        SetOwnComment(Username){
-            console.log('Methode - SetOwnComment : '+ Username);
-            if(Username == this.Data.userName){
-                console.log(this.Data.userName);
-                this.Data.ownComment = true;
-                console.log("Own Comment!");
-                return Username;
-
-            } else {
-                console.log(this.Data.userName);
-                this.Data.ownComment = false;
-                console.log("No Own Comment");
-                return Username;
             }
         },
         SetOwnMessage(Username){
@@ -341,6 +308,7 @@ export default {
         });
 
     },
+
     updated(){
         if(this.Data.WallReload == true){
             // Lors du chargement du composant, appeler les messages dans la BDD
@@ -377,6 +345,30 @@ export default {
         }
     }
 }
-
-                
 </script>
+
+<style scoped>
+/* Design du Post */
+
+.Space{
+    margin-top:1em;
+    margin-bottom:1em;
+}
+
+.UserBackground
+{
+    background-image:url(../assets/PostDesign/Background-PostUser.png);
+    background-position:right bottom;
+    background-repeat:no-repeat;
+    opacity: 0.8;
+}
+
+.TitleBackground
+{
+    background:-webkit-linear-gradient(to right, #d2515b 30%, #2f3855);
+	background:-moz-linear-gradient(to right, #d2515b 30%, #2f3855);
+	background:-o-linear-gradient(to right, #d2515b 30%, #2f3855);
+	background:linear-gradient(to right, #d2515b 30%, #2f3855);
+    opacity: 0.8;
+}
+</style>

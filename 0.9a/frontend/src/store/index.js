@@ -2,7 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    urlAPI:'http://shadsoft.fr:3000',
+    urlAPI:'http://localhost:3000',
     footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
     Connected: false,
@@ -30,13 +30,14 @@ export default createStore({
     Nattachment: 0,
     Npicture:'', // Bug Chrome : impossible de charger un fichier image local - d:\fakepath... 
 
+    // Posts & Comments
+    Posts:[],
+    Comments:[],
+
     // Edit, Delete & Moderate Posts
     CurrentPostId:0,
     Etitle:'',
     Econtent:'',
-
-    // Delete Comments
-    CurrentCommentId:'',
 
     // Likes
     LikesCounter : 0,
@@ -142,7 +143,6 @@ export default createStore({
     },
 
     // Wall Load
-
     setCommentForPost(state, newValue){
       state.CommentForPost = newValue;
     },
@@ -161,6 +161,14 @@ export default createStore({
       state.ownComment = newValue;
     },
 
+    // Set Posts & Comments Table
+    setPosts(state, newValue){
+      state.Posts = newValue;
+    },
+
+    setComments(state, newValue){
+      state.Comments = newValue;
+    },
 
   },
   actions: {
