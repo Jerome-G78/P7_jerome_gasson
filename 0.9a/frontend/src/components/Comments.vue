@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div v-for="Comment in Comments" :key="Comment.id" :id="'P'+Comment.messageId+'C'+Comment.id+'U'+Comment.username" class="row justify-content-end">
-            <span v-show="SetOwnComment(Comment.username)"></span>
+        <div v-for="Comment in Comments" :key="Comment.id" class="row justify-content-end">
             <!-- Verifier la correspondance du PostId pour affichage -->
-            <!-- <div v-if="Comment.messageId == Post.id"> -->
+            <!-- <div v-if="Comment.messageId == Data.PostId"> -->
+                <span v-show="SetOwnComment(Comment)"></span>
                 <div v-if="Data.Connected && (Data.isAdmin || Data.ownComment)" class="CommentDeleteButton col-10">
                     <p class="Comment">
                         <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
@@ -30,6 +30,10 @@ import moment from 'moment'
 
 export default {
     name: 'Comments',
+
+    props:[
+        'Posts'
+    ],
 
     data(){
         return {
@@ -66,6 +70,8 @@ export default {
                 Loading: this.$store.state.Loading,
                 WallReload: this.$store.state.WallReload,
                 NoData:this.$store.state.NoData,
+
+                PostId:this.$store.state.PostId,
             }
         }
     },
@@ -123,19 +129,20 @@ export default {
                 return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
             }
         },
-        SetOwnComment(Username){
-            console.log('Methode - SetOwnComment : '+ Username);
-            if(Username == this.Data.userName){
+        SetOwnComment(Comment){
+            console.log(Comment, this.Data.PostId);
+            console.log('Methode - SetOwnComment : '+ Comment.username);
+            if(Comment.username == this.Data.userName){
                 console.log(this.Data.userName);
                 this.Data.ownComment = true;
                 console.log("Own Comment!");
-                return Username;
+                return Comment.username;
 
             } else {
                 console.log(this.Data.userName);
                 this.Data.ownComment = false;
                 console.log("No Own Comment");
-                return Username;
+                return Comment.username;
             }
         },
     },

@@ -15,25 +15,25 @@
                         <div class="form-group">
                             <label for="Semail">Email <span class ="text-danger"> * </span>:</label>
                             <input @keyup="SingInVerify" type="email" class="form-control" id="Semail" placeholder="Tom@centuryFlop.com" name="email"><br/>
-                            <span class="alert alert-info" v-if="!CHKeMail"><strong><i class="fas fa-info-circle"></i></strong> {{email}}</span>
+                            <span class="alert alert-info" v-if="!Data.CHKeMail"><strong><i class="fas fa-info-circle"></i></strong> {{email}}</span>
                         </div>
 
                         <div class="form-group">
                             <label for="Sname">Pseudonyme (entre 5 et 15 caractères) <span class ="text-danger"> * </span>:</label>
                             <input @keyup="SingInVerify" type="text" class="form-control" id="Sname" placeholder="Ex. Lewis" name="name" maxlength="15"><br/>
-                            <span class="alert alert-info" v-if="!CHKuserName"><strong><i class="fas fa-info-circle"></i></strong> {{username}}</span>
+                            <span class="alert alert-info" v-if="!Data.CHKuserName"><strong><i class="fas fa-info-circle"></i></strong> {{username}}</span>
                         </div>
 
                         <div class="form-group">
                             <label for="Spwd">Mot de Passe (au moins 8 caractères) <span class ="text-danger"> * </span>:</label>
                             <input @keyup="SingInVerify" type="password" class="form-control" id="Spwd" placeholder="Renseignez un mot de passe" name="pswd"><br/>
-                            <span class="alert alert-info" v-if="!CHKpassword"><strong><i class="fas fa-info-circle"></i></strong> {{Mdp}}</span>
+                            <span class="alert alert-info" v-if="!Data.CHKpassword"><strong><i class="fas fa-info-circle"></i></strong> {{Mdp}}</span>
                         </div>
 
                         <div class="form-group">
                             <label for="SpwdC">Confirmez le Mot de Passe <span class ="text-danger"> * </span>:</label>
                             <input @keyup="SingInVerify" type="password" class="form-control" id="SpwdC" placeholder="Confirmez le mot de passe" name="pswdC"><br/>
-                            <span class="alert alert-warning" v-if="ComparePwds"><strong><i class="fas fa-info-circle"></i></strong> {{MDPFail}}</span>
+                            <span class="alert alert-warning" v-if="Data.ComparePwds"><strong><i class="fas fa-info-circle"></i></strong> {{MDPFail}}</span>
                         </div>
                         
                         <div class="form-group">
@@ -47,7 +47,7 @@
         
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button @click="Subscribe" v-if="CHKeMail && CHKuserName && CHKpassword && !subOkay && !subFailure" type="submit" title="M'inscrire" class="btn btn-primary">M'inscrire...</button>
+                    <button @click="Subscribe" v-if="Data.CHKeMail && Data.CHKuserName && Data.CHKpassword && !subOkay && !subFailure" type="submit" title="M'inscrire" class="btn btn-primary">M'inscrire...</button>
                 </div>
                 <div v-if="subOkay" class="alert alert-success">
                     {{subOK}}
@@ -72,16 +72,6 @@ export default {
     name: 'SignIn',
     data(){
         return {
-            // Récupération des variables globales dans vue X
-            urlAPI:this.$store.state.urlAPI,
-            userName: this.$store.state.userName,
-            Connected: this.$store.state.Connected,
-            CHKeMail: this.$store.state.CHKeMail,
-            CHKpassword: this.$store.state.CHKpassword,
-            ComparePwds: this.$store.state.ComparePwds,
-            CHKuserName: this.$store.state.CHKuserName,
-            Loading: this.$store.state.Loading,
-
             // Variables locales
             subOkay: false,
             subFailure: false,
@@ -94,7 +84,21 @@ export default {
             MDPFail: "Les mots de passes ne sont pas identiques",
             subOK: "Votre inscription a bien été prise en compte",
             subFail: "Une erreur est survenue lors de l'inscription!"
+        }
+    },
 
+    computed:{
+        Data(){
+            return {
+                urlAPI:this.$store.state.urlAPI,
+                userName: this.$store.state.userName,
+                Connected: this.$store.state.Connected,
+                CHKeMail: this.$store.state.CHKeMail,
+                CHKpassword: this.$store.state.CHKpassword,
+                ComparePwds: this.$store.state.ComparePwds,
+                CHKuserName: this.$store.state.CHKuserName,
+                Loading: this.$store.state.Loading,
+            }
         }
     },
     // Création de la logique du module
@@ -108,39 +112,39 @@ export default {
 
 
             if(Email !=''){
-                this.$store.commit('setCHKeMail',this.CHKeMail = true);
+                this.$store.commit('setCHKeMail',true);
 
             } else {
-                this.$store.commit('setCHKeMail',this.CHKeMail = false);
+                this.$store.commit('setCHKeMail',false);
             }
 
             if(Name !=''){
-                this.$store.commit('setCHKuserName', this.CHKuserName = true);
+                this.$store.commit('setCHKuserName', true);
             } else {
-                this.$store.commit('setCHKuserName', this.CHKuserName = false);
+                this.$store.commit('setCHKuserName', false);
             }
 
             if(Pwd !='' && PwdC !='' && (Pwd == PwdC)){
-                this.$store.commit('setComparePwds', this.ComparePwds = false);
-                this.$store.commit('setCHKpassword', this.CHKpassword = true);
+                this.$store.commit('setComparePwds', false);
+                this.$store.commit('setCHKpassword', true);
             }
             if(Pwd !='' && PwdC !='' && (Pwd != PwdC)){
-                this.$store.commit('setComparePwds', this.ComparePwds = true);
+                this.$store.commit('setComparePwds', true);
             }
             if(Pwd=='' || PwdC=='') {
-                this.$store.commit('setCHKpassword', this.CHKpassword = false);
+                this.$store.commit('setCHKpassword', false);
             }
         },
         Subscribe(){
-            this.$store.commit('setLoading',this.Loading = true);
-            console.log(this.Loading);
+            this.$store.commit('setLoading', true);
+            console.log(this.Data.Loading);
             let Email = document.getElementById('Semail').value;
             let Pwd = document.getElementById('Spwd').value;
             let Name = document.getElementById('Sname').value;
             let Bio = document.getElementById('SBio').value;
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.post(this.urlAPI+'/api/users/register/', {
+            axios.post(this.Data.urlAPI+'/api/users/register/', {
                 email : Email,
                 username : Name,
                 password : Pwd,
@@ -157,8 +161,8 @@ export default {
 
                 // Completed
                 this.subCompleted = true;
-                this.$store.commit('setLoading',this.Loading = false);
-                console.log(this.Loading);
+                this.$store.commit('setLoading', false);
+                console.log(this.Data.Loading);
 
                 // Masquer la fenêtre Modal
                 $('#registrationModal').modal('hide');
@@ -171,12 +175,12 @@ export default {
             // Cleaning
             document.getElementById('Spwd').value = '';
             document.getElementById('SpwdC').value = '';
-            this.$store.commit('setLoading',this.Loading = false);
+            this.$store.commit('setLoading', false);
 
             // Completed
             this.subCompleted = true;
-            this.$store.commit('setLoading',this.Loading = false);
-            console.log(this.Loading);
+            this.$store.commit('setLoading', false);
+            console.log(this.Data.Loading);
             });
         },
         ResetStats(){

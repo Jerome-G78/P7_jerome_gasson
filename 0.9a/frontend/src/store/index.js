@@ -43,6 +43,7 @@ export default createStore({
     LikesCounter : 0,
 
     // Loading
+    PostId:0,
     Loading:false,
     WallReload:false,
     NoData:true,
@@ -117,9 +118,10 @@ export default createStore({
     },
 
     // Edit & Moderate Posts
-    setCurrentPostId(state, newValue){
-      state.CurrentPostId = newValue;
+    setPostId(state, newValue){
+      state.PostId = newValue;
     },
+    
     setCurrentEtitle(state, newValue){
       state.Etitle = newValue;
     },

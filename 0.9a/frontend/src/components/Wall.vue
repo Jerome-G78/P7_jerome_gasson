@@ -7,7 +7,7 @@
             <p>Aucuns messages a charger ... a vous de jouer! :D </p>
         </div>
         <!--POST START-->
-        <PostS/>
+        <PostS :Post="Posts" />
         <!--POST END-->
     </div>
 </template>

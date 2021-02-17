@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-for="Post in Posts" :key="Post.id" :id="Post.id" class="Space row justify-content-center">
+        <div v-for="Post in Posts" :key="Post.id" class="Space row justify-content-center">
             <div class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
                 <div class="media-body">
                     <span v-show="SetOwnMessage(Post.User.username)"></span>
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <hr>
-                    <Comments/>
+                    <Comments :Post="Posts"/>
                 </div>
             </div>
         </div>
@@ -44,6 +44,10 @@ export default {
     components: {
         Comments
     },
+
+    props:[
+        'Posts'
+    ],
 
     data(){
         return {
@@ -271,7 +275,11 @@ export default {
                 console.log("No Own Message");
                 return Username;
             }
-        }
+        },
+        SetPostId(Post){
+            console.log("Current PID: "+Post.id);
+            this.$store.commit('setPostId', Post.id);
+        },
     },
 
     mounted(){
