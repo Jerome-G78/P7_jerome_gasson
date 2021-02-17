@@ -23,16 +23,6 @@
 <script>
 export default {
     name: 'HeaderNav',
-    // el:'#NavBar',
-    data(){
-        return {
-            // Variables locales
-            urlAPI:this.$store.state.urlAPI,
-            Connected:this.$store.state.Connected,
-
-            // Messages
-        }
-    },
 
     computed:{
         Data(){
@@ -65,7 +55,7 @@ export default {
                     }
                 );
             // Initialisation de la promesse vers l'API via AXIOS
-                axios.get(this.urlAPI+'/api/users/me')
+                axios.get(this.Data.urlAPI+'/api/users/me')
                 .then(res =>{
                     console.log(res)
                     // Sucess

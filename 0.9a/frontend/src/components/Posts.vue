@@ -71,6 +71,8 @@ export default {
     computed:{
         Data(){
             return {
+                urlAPI: this.$store.state.urlAPI,
+
                 userName: this.$store.state.userName,
                 isAdmin: this.$store.state.isAdmin,
                 Token: this.$store.state.Token,
@@ -81,6 +83,8 @@ export default {
                 Loading: this.$store.state.Loading,
                 WallReload: this.$store.state.WallReload,
                 NoData:this.$store.state.NoData,
+
+                PostId:this.$store.state.PostId,
             }
         },
 
@@ -229,12 +233,13 @@ export default {
         },
         EditPost(PostId){
             let Counter = 0;
+            this.$store.commit('setPostId',PostId);
+            console.log("Edit: "+PostId);
             // Chargement du post (Axios)
-            axios.get(this.urlAPI+"/api/messages/?fields=id,title,content")
+            axios.get(this.Data.urlAPI+"/api/messages/?fields=id,title,content")
             .then(res =>{
                 console.log(res);
                 // console.log(res.data.length);
-                console.log(this.PostId);
                 Counter = res.data.length;
                 for(let i=0; i < Counter; i++){
                     // console.log('B-For');

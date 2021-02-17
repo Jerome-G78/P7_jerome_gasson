@@ -7,10 +7,12 @@
 <script>
 export default {
     name: 'Footer',
-    data(){
-        return {
-            footer:this.$store.state.footer
+
+    computed:{
+        footer(){
+        return this.$store.state.footer
         }
-    }
+    },
+    
 }
 </script>

@@ -46,14 +46,6 @@ export default {
     name: 'WallModeratePost',
     data(){
         return {
-            urlAPI: this.$store.state.urlAPI,
-            isAdmin: this.$store.state.isAdmin,
-            Connected: this.$store.state.Connected,
-            PostId: this.$store.state.CurrentPostId,
-
-            EditTitle: this.$store.state.Etitle,
-            EditContent: this.$store.state.Econtent,
-
             // Variables locales
             CHKtitle: false,
             CHKcontent: false,
@@ -82,7 +74,7 @@ export default {
 
             EditTitle: this.$store.state.Etitle,
             EditContent: this.$store.state.Econtent,
-            PostId:this.$store.state.CurrentPostId,
+            PostId:this.$store.state.PostId,
             }
         },
     },
@@ -113,7 +105,6 @@ export default {
         Submit(){
             let TitleMod = document.getElementById('TitleMod').value;
             let ContentMod = document.getElementById('ContentMod').value;
-            console.log(this.PostId);
 
             // Configuration de l'en-tete AXIOS (intégration du token)
             axios.interceptors.request.use(
@@ -128,7 +119,7 @@ export default {
 
             // Initialisation de la promesse vers l'API via AXIOS
             if(this.Data.isAdmin){
-                axios.put(this.urlAPI+'/api/messages/'+this.Data.PostId+'/moderate',{
+                axios.put(this.Data.urlAPI+'/api/messages/'+this.Data.PostId+'/moderate',{
                 title : TitleMod,
                 content : ContentMod
                 })
@@ -161,17 +152,15 @@ export default {
                     console.log(err);
                     this.subFailure = true;
                     this.subCompleted = true;
-                    this.Loading = false;
                     this.$store.commit('setLoading',false);
-                    console.log(this.Loading);
+                    console.log(this.Data.Loading);
                 });
 
             } else {
                 this.subFailure = true;
                 this.subCompleted = true;
-                this.Loading = false;
                 this.$store.commit('setLoading',false);
-                console.log(this.Loading);
+                console.log(this.Data.Loading);
             }
             
         },

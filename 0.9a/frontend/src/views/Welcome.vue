@@ -23,19 +23,11 @@ import Wall from '@/components/Wall.vue'
 import WallEditPost from '@/components/WallEditPost.vue'
 import WallModeratePost from '@/components/WallModeratePost.vue'
 import Footer from '@/components/Footer.vue'
-// import { computed } from 'vue'
-// import router from '@/router/index.js'
 
 export default {
   name: 'Welcome',
   components: {
     HeaderNav, SignIn, Login, NewMessage, Profil, Wall, WallEditPost, WallModeratePost, Footer
-  },
-  data(){
-    return{
-      // Variables local
-      urlAPI:this.$store.state.urlAPI,
-    }
   },
 
   computed:{
