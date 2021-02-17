@@ -2,7 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    urlAPI:'http://localhost:3000',
+    urlAPI:'http://shadsoft.no-ip.org:3000',
     footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
     Connected: false,

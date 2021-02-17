@@ -8,7 +8,7 @@
         </div>
         <!--POST START-->
         <PostS/>
-        <!--POST END--> 
+        <!--POST END-->
     </div>
 </template>
 
