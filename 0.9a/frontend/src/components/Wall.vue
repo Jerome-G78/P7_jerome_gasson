@@ -15,11 +15,12 @@
 <script>
 import moment from 'moment'
 import PostS from '@/components/Posts.vue'
+import Comments from '@/components/Comments.vue'
 
 export default {
     name: 'Wall',
     components: {
-        PostS
+        PostS, Comments
     },
 
     data(){

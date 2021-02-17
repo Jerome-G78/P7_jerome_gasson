@@ -1,10 +1,9 @@
 <template>
     <div>
         <div v-for="Comment in Comments" :key="Comment.id" :id="'P'+Comment.messageId+'C'+Comment.id+'U'+Comment.username" class="row justify-content-end">
-            <p v-if="Comment.length < 0"> Aucuns commentaires a afficher</p>
             <span v-show="SetOwnComment(Comment.username)"></span>
             <!-- Verifier la correspondance du PostId pour affichage -->
-            <!-- <div v-if="Comment.messageId == Post.id"> -->
+            <div v-if="Comment.messageId == Post.id">
                 <div v-if="Data.Connected && (Data.isAdmin || Data.ownComment)" class="CommentDeleteButton col-10">
                     <p class="Comment">
                         <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
@@ -20,8 +19,9 @@
                         {{Comment.comment}}
                     </p>
                 </div>
-            <!-- </div> -->
+            </div>
         </div>
+        <span v-if="Comments.length == 0"> <i class="fas fa-comment-slash"></i> {{NoComments}} </span>
     </div>
 </template>
 
@@ -47,6 +47,9 @@ export default {
             Liked: false,
 
             LikeCounter:this.$store.state.LikeCounter,
+
+            // Messages
+            NoComments:"Aucuns commentaires à afficher"
         }
     },
 
@@ -64,17 +67,7 @@ export default {
                 WallReload: this.$store.state.WallReload,
                 NoData:this.$store.state.NoData,
             }
-        },
-
-        GetEtitle(){
-            this.EditTitle = this.$store.state.Etitle;
-            return this.$store.state.Etitle;
-        },
-
-        GetEContent(){
-            this.EditContent = this.$store.state.Econtent;
-            return this.$store.state.Econtent;
-        },
+        }
     },
 
     // Création de la logique du module
