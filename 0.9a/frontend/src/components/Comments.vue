@@ -3,7 +3,7 @@
         <div v-for="Comment in Comments" :key="Comment.id" :id="'P'+Comment.messageId+'C'+Comment.id+'U'+Comment.username" class="row justify-content-end">
             <span v-show="SetOwnComment(Comment.username)"></span>
             <!-- Verifier la correspondance du PostId pour affichage -->
-            <div v-if="Comment.messageId == Post.id">
+            <!-- <div v-if="Comment.messageId == Post.id"> -->
                 <div v-if="Data.Connected && (Data.isAdmin || Data.ownComment)" class="CommentDeleteButton col-10">
                     <p class="Comment">
                         <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
@@ -19,7 +19,7 @@
                         {{Comment.comment}}
                     </p>
                 </div>
-            </div>
+            <!-- </div> -->
         </div>
         <span v-if="Comments.length == 0"> <i class="fas fa-comment-slash"></i> {{NoComments}} </span>
     </div>
