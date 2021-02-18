@@ -208,7 +208,6 @@ export default createStore({
     // Role similaire à computed pour VueX
 
     urlAPI(state){
-      console.log(state.urlAPI);
       return state.urlAPI;
     },
 
@@ -237,6 +236,8 @@ export default createStore({
   },
 
   actions: {
+
+    // Profil
     GetProfil({commit}){
       axios.interceptors.request.use(
         config => {
@@ -321,6 +322,7 @@ export default createStore({
       });
 
     },
+
     //
   },
   modules: {
