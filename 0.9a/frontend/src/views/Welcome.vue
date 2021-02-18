@@ -30,22 +30,6 @@ export default {
     HeaderNav, SignIn, Login, NewMessage, Profil, Wall, WallEditPost, WallModeratePost, Footer
   },
 
-  computed:{
-    Data(){
-        return {
-          userName: this.$store.state.userName,
-          Connected: this.$store.state.Connected,
-          email:this.$store.state.email,
-          bio:this.$store.state.bio,
-          Loading: this.$store.state.Loading,
-          isAdmin: this.$store.state.isAdmin,
-          BioEdit: this.$store.state.BioEdit,
-          Token: this.$store.state.Token,
-          WallReload: this.$store.state.WallReload,
-        }
-    },
-  },
-
   mounted(){
     // Vérifier si l'utilisateur est déjà connécté
     let AlreadyConnected = localStorage.getItem("Connected");

@@ -48,7 +48,7 @@ export default {
         return {
             // Variables locales
 
-            // urlAPI: this.$store.state.urlAPI,
+            urlAPI: this.$store.state.urlAPI,
             
             CHKtitle: false,
             CHKcontent: false,
@@ -70,13 +70,14 @@ export default {
             // Récupération des variables dans vue X
             urlAPI: this.$store.state.urlAPI,
             Connected: this.$store.state.Connected,
+            PostId: this.$store.state.CurrentPostId,
             Loading: this.$store.state.Loading,
             WallReload: this.$store.state.WallReload,
 
             EditTitle: this.$store.state.Etitle,
             EditContent: this.$store.state.Econtent,
             Token: this.$store.state.Token,
-            PostId:this.$store.state.PostId,
+            PostId:this.$store.state.CurrentPostId,
             }
         },
     },
@@ -120,7 +121,7 @@ export default {
             );
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.put(this.Data.urlAPI+'/api/messages/'+this.Data.PostId,{
+            axios.put(this.urlAPI+'/api/messages/'+this.Data.PostId,{
                 title : TitleEdit,
                 content : Content
                 })
@@ -143,7 +144,7 @@ export default {
                 document.getElementById('TitleEdit').value = '';
                 document.getElementById('ContentEdit').value = '';
                 this.subCompleted = true;
-                this.$store.commit('setLoading', false);
+                this.$store.commit('setLoading',this.Loading = false);
                 this.ResetStats();
 
                 $('#EditModal').modal('hide');
@@ -155,15 +156,16 @@ export default {
                 console.log(err);
                 this.subFailure = true;
                 this.subCompleted = true;
-                this.$store.commit('setLoading', false);
-                console.log(this.Data.Loading);
+                this.Loading = false;
+                this.$store.commit('setLoading',this.Loading = false);
+                console.log(this.Loading);
             });
         },
         ResetStats(){
             this.EditTitle = this.$store.state.Etitle;
-            console.log(this.Data.EditTitle);
+            console.log(this.EditTitle);
             this.EditContent = this.$store.state.Econtent;
-            console.log(this.Data.EditContent);
+            console.log(this.EditContent);
             this.subFailure = false;
             this.subOkay = false;
             this.subCompleted = false;

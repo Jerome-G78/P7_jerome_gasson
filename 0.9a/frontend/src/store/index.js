@@ -1,4 +1,6 @@
 import { createStore } from 'vuex'
+import { mapGetters } from 'vuex'
+
 
 export default createStore({
   state: {
@@ -43,15 +45,25 @@ export default createStore({
     LikesCounter : 0,
 
     // Loading
-    PostId:0,
     Loading:false,
     WallReload:false,
     NoData:true,
+
+    // Status
+    subOkay: false,
+    subFailure: false,
+    subCompleted: false,
+
+    // Admin Right
+    RightAdded:false,
+    RightRemoved:false,
+
+    // FindUser
+    findUser:false,
+    findUserAdmin:false,
+    findedUser:'',
   },
-  getters:{
-    // Role similaire à computed pour VueX
-    // N'oubliez-pas, Ces données devront être appelés depuis les composants
-  },
+  
   mutations: {
     // Permet de mettre a jour les données dans le store (state)
 
@@ -118,10 +130,9 @@ export default createStore({
     },
 
     // Edit & Moderate Posts
-    setPostId(state, newValue){
-      state.PostId = newValue;
+    setCurrentPostId(state, newValue){
+      state.CurrentPostId = newValue;
     },
-    
     setCurrentEtitle(state, newValue){
       state.Etitle = newValue;
     },
@@ -172,8 +183,144 @@ export default createStore({
       state.Comments = newValue;
     },
 
+    // Admin Right
+    setRightAdded(state, newValue){
+      state.RightAdded = newValue;
+    },
+
+    setRightRemoved(state, newValue){
+      state.RightRemoved = newValue;
+    },
+
+    // UserFound
+    setfindUser(state, newValue){
+      state.findUser = newValue;
+    },
+    setfindUserAdmin(state, newValue){
+      state.findUserAdmin = newValue;
+    },
+    setfindedUser(state, newValue){
+      state.findedUser = newValue;
+    },
   },
+
+  getters:{
+    // Role similaire à computed pour VueX
+
+    urlAPI(state){
+      console.log(state.urlAPI);
+      return state.urlAPI;
+    },
+
+    // Profil
+    userName(state){
+      return state.userName;
+    },
+
+    userID(state){
+      return state.userId;
+    },
+
+    userToken(state){
+      return state.Token;
+    },
+
+    Connected(state){
+      return state.Connected;
+    },
+
+    BioEdit(state){
+      return state.BioEdit;
+    },
+
+    // N'oubliez-pas, Ces données devront être appelés depuis les composants et/ou Actions
+  },
+
   actions: {
+    GetProfil({commit}){
+      axios.interceptors.request.use(
+        config => {
+            config.headers.authorization = `Bearer ${this.state.Token}`;
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+    );
+
+    axios.get(this.state.urlAPI+'/api/users/me')
+    .then(res =>{
+        // console.log(res)
+        let UserProfil = {
+            'userID': res.data.id,
+            'UserName': res.data.username,
+            'Email': res.data.email,
+            'Bio': res.data.bio
+        };
+
+        // console.log(UserProfil);
+        // Sucess
+        commit('setUserID',UserProfil.userID);
+        commit('setUserName',UserProfil.UserName);
+        commit('setEmail',UserProfil.Email);
+        commit('setBio',UserProfil.Bio);
+        console.log('API - UserProfil : Completed!');
+    })
+    .catch(err =>{
+        console.log(err);
+        commit('setLoading', false);
+        console.log(this.state.Loading);
+    });
+    },
+
+    BioUpdate({commit}){
+      let BioArea = document.getElementById("Bio").value;
+      commit('setLoading', true);
+      commit('setBioEdit', false);
+
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+          config => {
+              config.headers.authorization = `Bearer ${this.state.Token}`;
+              return config;
+          },
+          error => {
+              return Promise.reject(error);
+          }
+      );
+
+      // Initialisation de la promesse vers l'API via AXIOS
+      axios.put(this.state.urlAPI+'/api/users/me/',{
+          bio: BioArea,
+          })
+      .then(res =>{
+          // Envoie des données en base
+          console.log(res);
+          this.bio = BioArea;
+
+          //SubOkay
+          commit('setBio', BioArea);
+          this.state.subOkay = true;
+          this.state.subCompleted = true;
+          commit('setLoading', false);
+          console.log(this.state.Loading);
+
+          // Completed
+          document.getElementById('Bio').value = '';
+          this.state.subCompleted = true;
+          commit('setLoading', false);
+          console.log(this.state.Loading);
+      })
+      .catch(err =>{
+          //WIP
+          console.log(err);
+          this.state.subFailure = true;
+          // this.subFail = err.error;
+          commit('setLoading', false);
+          console.log(this.state.Loading);
+      });
+
+    },
     //
   },
   modules: {

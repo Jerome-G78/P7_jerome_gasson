@@ -68,15 +68,16 @@
 </template>
 
 <script>
-import router from '@/router/index.js'
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'Profil',
+
     data(){
         return {
             // Variables locales
             urlAPI:this.$store.state.urlAPI,
 
-            BioEdit:false,
             findUser:false,
             findUserAdmin:false,
             findedUser:'',
@@ -97,6 +98,12 @@ export default {
     },
 
     computed:{
+        ...mapGetters([
+            'userName',
+            'Connected',
+            'BioEdit'
+        ]),
+
         Data(){
             return {
                 userName: this.$store.state.userName,
@@ -116,57 +123,13 @@ export default {
             let BioArea = document.getElementById("Bio").value;
 
             if(BioArea != ''){
-                this.$store.commit('setBioEdit',this.BioEdit = true);
+                this.$store.commit('setBioEdit', true);
             } else {
-                this.$store.commit('setBioEdit',this.BioEdit = false);
+                this.$store.commit('setBioEdit', false);
             }
         },
         updateBio(){
-            let BioArea = document.getElementById("Bio").value;
-            this.$store.commit('setLoading', true);
-            this.$store.commit('setBioEdit', false);
-
-            // Configuration de l'en-tete AXIOS (intégration du token)
-            axios.interceptors.request.use(
-                config => {
-                    config.headers.authorization = `Bearer ${this.Data.Token}`;
-                    return config;
-                },
-                error => {
-                    return Promise.reject(error);
-                }
-            );
-
-            // Initialisation de la promesse vers l'API via AXIOS
-            axios.put(this.urlAPI+'/api/users/me/',{
-                bio: BioArea,
-                })
-            .then(res =>{
-                // Envoie des données en base
-                console.log(res);
-                this.bio = BioArea;
-
-                //SubOkay
-                this.$store.commit('setBio', BioArea);
-                this.subOkay = true;
-                this.subCompleted = true;
-                this.$store.commit('setLoading', false);
-                console.log(this.$store.state.Loading);
-
-                // Completed
-                document.getElementById('Bio').value = '';
-                this.subCompleted = true;
-                this.$store.commit('setLoading', false);
-            })
-            .catch(err =>{
-                //WIP
-                console.log(err);
-                this.subFailure = true;
-                // this.subFail = err.error;
-                this.$store.commit('setLoading', false);
-                console.log(this.this.Data.Loading);
-            });
-
+            this.$store.dispatch("BioUpdate");
         },
         checkNameExist(){
             let searchName = document.getElementById("Search").value;

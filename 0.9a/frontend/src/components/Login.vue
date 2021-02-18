@@ -26,7 +26,7 @@
                 </div>
         
                 <div class="modal-footer">
-                    <button @click="LogIn" v-if="Data.CHKeMail && Data.CHKpassword && !subOkay && !subFailure" type="submit" title="M'identifier" class="btn btn-primary">M'identifer...</button>
+                    <button @click="LogIn" v-if="CHKeMail && CHKpassword && !subOkay && !subFailure" type="submit" title="M'identifier" class="btn btn-primary">M'identifer...</button>
 
                     <div v-if="subOkay" class="alert alert-success">
                         {{subOK}}
@@ -54,6 +54,13 @@ export default {
     name: 'Login',
     data(){
         return {
+            // Récupération des variables globales dans vue X
+            urlAPI:this.$store.state.urlAPI,
+            userName: this.$store.state.userName,
+            CHKeMail: this.$store.state.CHKeMail,
+            CHKpassword: this.$store.state.CHKpassword,
+            Loading: this.$store.state.Loading,
+
             // Variables locales
             subOkay: false,
             subFailure: false,
@@ -79,9 +86,6 @@ export default {
                 isAdmin: this.$store.state.isAdmin,
                 BioEdit: this.$store.state.BioEdit,
                 Token: this.$store.state.Token,
-
-                CHKeMail: this.$store.state.CHKeMail,
-                CHKpassword: this.$store.state.CHKpassword,
             }
         },
     },
@@ -94,16 +98,16 @@ export default {
 
 
             if(Email !=''){
-                this.$store.commit('setCHKeMail', true);
+                this.$store.commit('setCHKeMail',this.CHKeMail = true);
 
             } else {
-                this.$store.commit('setCHKeMail', false);
+                this.$store.commit('setCHKeMail',this.CHKeMail = false);
             }
 
             if(Pwd!='') {
-                this.$store.commit('setCHKpassword', true);
+                this.$store.commit('setCHKpassword', this.CHKpassword = true);
             } else {
-                this.$store.commit('setCHKpassword', false);
+                this.$store.commit('setCHKpassword', this.CHKpassword = false);
             }
         },
         LogIn(){
@@ -113,7 +117,7 @@ export default {
             let Pwd = document.getElementById('Lpwd').value;
 
             // Initialisation de la promesse vers l'API via AXIOS
-            axios.post(this.Data.urlAPI+'/api/users/login/', {
+            axios.post(this.urlAPI+'/api/users/login/', {
                 email: Email,
                 password: Pwd
             })
@@ -143,7 +147,7 @@ export default {
                 localStorage.setItem("isAdmin", this.$store.state.isAdmin);
                 // console.log("User is Admin : "+this.$store.state.isAdmin);
                 this.$store.commit('setLoading',this.Loading = false);
-                console.log(this.Data.Loading);
+                console.log(this.Loading);
 
                 // Completed
                 this.subOkay = false;
@@ -163,21 +167,20 @@ export default {
                 console.log(err);
                 this.subFailure = true;
                 // this.subFail = err.error;
-                this.$store.commit('setLoading', false);
-                console.log(this.Data.Loading);
+                this.Loading = false;
+                this.$store.commit('setLoading',this.Loading = false);
+                console.log(this.Loading);
             });
         },
         ResetStats(){
             document.getElementById('Lemail').value = '';
             document.getElementById('Lpwd').value = '';
-
-            this.$store.commit('setCHKeMail', false);
-            this.$store.commit('setCHKpassword', false);
-            this.chkOK = false;
-
-            this.subOkay = false;
             this.subFailure = false;
+            this.CHKeMail = false
+            this.CHKpassword = false;
+            this.subOkay = false;
             this.subCompleted = false;
+            this.chkOK = false;
         }
     },
 }

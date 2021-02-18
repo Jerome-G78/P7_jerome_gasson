@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div v-for="Comment in Comments" :key="Comment.id" class="row justify-content-end">
+        <div v-for="Comment in Comments" :key="Comment.id" :id="'P'+Comment.messageId+'C'+Comment.id+'U'+Comment.username" class="row justify-content-end">
+            <span v-show="SetOwnComment(Comment.username)"></span>
             <!-- Verifier la correspondance du PostId pour affichage -->
-            <!-- <div v-if="Comment.messageId == Data.PostId"> -->
-                <span v-show="SetOwnComment(Comment)"></span>
+            <!-- <div v-if="Comment.messageId == Post.id"> -->
                 <div v-if="Data.Connected && (Data.isAdmin || Data.ownComment)" class="CommentDeleteButton col-10">
                     <p class="Comment">
                         <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
@@ -19,7 +19,7 @@
                         {{Comment.comment}}
                     </p>
                 </div>
-            <!-- </div> -->
+            <!--</div> -->
         </div>
         <span v-if="Comments.length == 0"> <i class="fas fa-comment-slash"></i> {{NoComments}} </span>
     </div>
@@ -29,19 +29,22 @@
 import moment from 'moment'
 
 export default {
-    name: 'Comments',
+    name: 'CommentS',
 
-    props:[
-        'Posts'
-    ],
+    props:{
+        Posts:{
+            type:Array
+        },
+
+         Comments:{
+            type:Array
+        }
+    },
 
     data(){
         return {
             // Variables Local
             urlAPI: this.$store.state.urlAPI,
-
-            Posts:[],
-            Comments:[],
 
             CHKcomment : false,
             ValueComment: false,
@@ -70,8 +73,6 @@ export default {
                 Loading: this.$store.state.Loading,
                 WallReload: this.$store.state.WallReload,
                 NoData:this.$store.state.NoData,
-
-                PostId:this.$store.state.PostId,
             }
         }
     },
@@ -109,6 +110,7 @@ export default {
                         console.log(res);
                         console.log('commentaire supprimé');
                         // Rechargement du mur après opération
+                        // ctx.emit('ModifyComment', true);
                         this.$store.commit('setWallReload', true);
                         console.log(this.Data.WallReload);
 
@@ -129,20 +131,19 @@ export default {
                 return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
             }
         },
-        SetOwnComment(Comment){
-            console.log(Comment, this.Data.PostId);
-            console.log('Methode - SetOwnComment : '+ Comment.username);
-            if(Comment.username == this.Data.userName){
+        SetOwnComment(Username){
+            console.log('Methode - SetOwnComment : '+ Username);
+            if(Username == this.Data.userName){
                 console.log(this.Data.userName);
                 this.Data.ownComment = true;
                 console.log("Own Comment!");
-                return Comment.username;
+                return Username;
 
             } else {
                 console.log(this.Data.userName);
                 this.Data.ownComment = false;
                 console.log("No Own Comment");
-                return Comment.username;
+                return Username;
             }
         },
     },

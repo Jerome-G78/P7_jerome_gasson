@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-for="Post in Posts" :key="Post.id" class="Space row justify-content-center">
+        <div v-for="Post in Posts" :key="Post.id" :id="Post.id" class="Space row justify-content-center">
             <div class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
                 <div class="media-body">
                     <span v-show="SetOwnMessage(Post.User.username)"></span>
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <hr>
-                    <Comments :Post="Posts"/>
+                    <Comments :Posts="Posts" :Comments="Comments" />
                 </div>
             </div>
         </div>
@@ -41,21 +41,24 @@ import Comments from '@/components/Comments.vue'
 export default {
     name: 'PostS',
 
+    props:{
+        Posts:{
+            type:Array
+        },
+
+        Comments:{
+            type:Array
+        }
+    },
+
     components: {
         Comments
     },
-
-    props:[
-        'Posts'
-    ],
 
     data(){
         return {
             // Variables Local
             urlAPI: this.$store.state.urlAPI,
-
-            Posts: this.$store.state.Posts,
-            Comments: this.$store.state.Comments,
 
             CHKcomment : false,
             ValueComment: false,
@@ -71,8 +74,6 @@ export default {
     computed:{
         Data(){
             return {
-                urlAPI: this.$store.state.urlAPI,
-
                 userName: this.$store.state.userName,
                 isAdmin: this.$store.state.isAdmin,
                 Token: this.$store.state.Token,
@@ -83,8 +84,6 @@ export default {
                 Loading: this.$store.state.Loading,
                 WallReload: this.$store.state.WallReload,
                 NoData:this.$store.state.NoData,
-
-                PostId:this.$store.state.PostId,
             }
         },
 
@@ -110,7 +109,7 @@ export default {
                 this.ValueComment = false;
             }
         },
-        Submit(Post){
+        Submit(Post, ctx){
             // Configuration de l'en-tete AXIOS (intégration du token)
                 axios.interceptors.request.use(
                     config => {
@@ -136,8 +135,11 @@ export default {
                 this.chkOK = false;
 
                 // Rechargement du mur après opération
-                this.$store.commit('setWallReload', true);
-                console.log(this.Data.WallReload);
+                console.log('ModifyPost emiting...');
+                ctx.emit('ModifyPost', true);
+                console.log('ModifyPost emited');
+                // this.$store.commit('setWallReload', true);
+                // console.log(this.Data.WallReload);
 
             })
             .catch(err =>{
@@ -233,13 +235,12 @@ export default {
         },
         EditPost(PostId){
             let Counter = 0;
-            this.$store.commit('setPostId',PostId);
-            console.log("Edit: "+PostId);
             // Chargement du post (Axios)
-            axios.get(this.Data.urlAPI+"/api/messages/?fields=id,title,content")
+            axios.get(this.urlAPI+"/api/messages/?fields=id,title,content")
             .then(res =>{
                 console.log(res);
                 // console.log(res.data.length);
+                console.log(this.PostId);
                 Counter = res.data.length;
                 for(let i=0; i < Counter; i++){
                     // console.log('B-For');
@@ -280,11 +281,7 @@ export default {
                 console.log("No Own Message");
                 return Username;
             }
-        },
-        SetPostId(Post){
-            console.log("Current PID: "+Post.id);
-            this.$store.commit('setPostId', Post.id);
-        },
+        }
     },
 
     mounted(){

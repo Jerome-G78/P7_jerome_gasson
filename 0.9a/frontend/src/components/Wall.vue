@@ -7,7 +7,7 @@
             <p>Aucuns messages a charger ... a vous de jouer! :D </p>
         </div>
         <!--POST START-->
-        <PostS :Post="Posts" />
+        <PostS :Posts="Posts" @ModifyPost="WallReload(data)" :Comments="Comments" @ModifyComment="WallReload(data)"/>
         <!--POST END-->
     </div>
 </template>
@@ -15,12 +15,12 @@
 <script>
 import moment from 'moment'
 import PostS from '@/components/Posts.vue'
-import Comments from '@/components/Comments.vue'
+import CommentS from '@/components/Comments.vue'
 
 export default {
     name: 'Wall',
     components: {
-        PostS, Comments
+        PostS, CommentS
     },
 
     data(){
@@ -44,6 +44,7 @@ export default {
     },
     
     computed:{
+        
         Data(){
             return {
                 userName: this.$store.state.userName,
@@ -56,6 +57,9 @@ export default {
                 Loading: this.$store.state.Loading,
                 WallReload: this.$store.state.WallReload,
                 NoData:this.$store.state.NoData,
+
+                Posts: this.$store.state.Posts,
+                Comments: this.$store.state.Comments,
             }
         },
 
@@ -265,8 +269,8 @@ export default {
                 console.log(err);
             });
         },
-        WallReload(){
-            this.$store.commit('setWallReload', true);
+        WallReload(data){
+            this.$store.commit('setWallReload', data);
             console.log(this.Data.WallReload);
         },
         // Paramètrages d'affichage et d'unicité des Comment IDs
@@ -320,9 +324,11 @@ export default {
 
             this.$store.commit('setLoading',true);
             console.log(this.Data.Loading);
+            this.$store.commit('setPosts',responseArr[0].data);
             this.Posts = responseArr[0].data;
             console.log("Numbers of Posts: "+this.Posts.length);
             console.log(this.Posts);
+            this.$store.commit('setComments',responseArr[1].data);
             this.Comments = responseArr[1].data;
             console.log("Numbers of Comments: "+this.Comments.length);
             console.log(this.Comments);
@@ -354,8 +360,10 @@ export default {
 
                 this.$store.commit('setLoading',true);
                 console.log(this.Data.Loading);
+                this.$store.commit('setPosts',responseArr[0].data);
                 this.Posts = responseArr[0].data;
                 console.log("Numbers of Posts: "+this.Posts.length);
+                this.$store.commit('setComments',responseArr[1].data);
                 this.Comments = responseArr[1].data;
                 console.log("Numbers of Comments: "+this.Comments.length);
 
