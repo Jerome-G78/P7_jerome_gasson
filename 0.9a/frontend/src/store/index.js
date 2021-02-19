@@ -31,6 +31,8 @@ export default createStore({
     Ncontent:'',
     Nattachment: 0,
     Npicture:'', // Bug Chrome : impossible de charger un fichier image local - d:\fakepath... 
+    chkCompleted:false,
+    uploadFile:false,
 
     // Posts & Comments
     Posts:[],
@@ -226,7 +228,6 @@ export default createStore({
     },
 
     // Profil
-
     Connected(state){
       return state.Connected;
     },
@@ -268,6 +269,25 @@ export default createStore({
     RightRemoved(state){
       return state.RightRemoved;
     },
+
+    // New Message
+    Ntitle(state){
+      return state.Ntitle;
+
+    },
+    Ncontent(state){
+      return state.Ncontent;
+    },
+    chkCompleted(state){
+      return state.chkCompleted;
+    },
+    Nattachment(state){
+      return state.Nattachment;
+    },
+    uploadFile(state){
+      return state.uploadFile;
+    },
+
 
     // Status
     Loading(state){
@@ -771,8 +791,184 @@ export default createStore({
       .catch(err=>{
           console.log(err);
       });
-    }
+    },
 
+    // New Message
+    MsgVerify({commit}){
+      let CHKtitle = document.getElementById("Title").value;
+      let CHKContent = document.getElementById("Content").value;
+      console.log(CHKtitle, CHKContent);
+
+      if(CHKtitle !=''){
+          commit('setNtitle', CHKtitle);
+      } else {
+          commit('setNtitle', '');
+      }
+
+      if(CHKContent !=''){
+        commit('setNcontent', CHKContent);
+      } else {
+        commit('setNcontent', '');
+      }
+
+      if(CHKtitle !='' && CHKContent !=''){
+          this.state.chkCompleted = true;
+      } else {
+          this.state.chkCompleted = false;
+      }
+
+    },
+    JoinPict({commit}){
+      if(this.state.uploadFile){
+        this.state.uploadFile = false;
+        this.state.Nattachment = 0;
+        commit('setNattachment', 0);
+        commit('setNpicture','');
+        console.log(this.state.Nattachment);
+
+      } else {
+          this.state.uploadFile = true;
+          this.state.Nattachment = 1;
+          commit('setNattachment', 1);
+          console.log(this.state.Nattachment);
+      }
+    },
+    PostPict({commit, dispatch}){
+      console.log(this.state.Ntitle, this.state.Ncontent, this.state.uploadFile, this.state.Nattachment);
+      commit('setLoading', true);
+      console.log(this.state.Loading);
+
+      if(this.state.Nattachment == 1){
+          console.log('Attatched');
+          // Récupération du fichier Image
+          let formData = new FormData();
+          let imageFile = document.querySelector("#uploadFile");
+          // console.log(imageFile.value, imageFile.files[0]);
+          formData.append("image",imageFile.files[0]);
+          // Ajout des autres éléments au FormData ( title, content, attachment )
+          formData.append("title",document.getElementById("Title").value);
+          formData.append("content",document.getElementById("Content").value);
+          formData.append("attachment",1);
+          // console.log(FormData);
+
+          // Configuration de l'en-tete AXIOS (intégration du token)
+          axios.interceptors.request.use(
+              config => {
+                  config.headers = {
+                      'authorization': `Bearer ${this.state.Token}`,
+                      'Accept': 'application/json',
+                      'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
+                  }
+                  return config;
+              },
+              error => {
+                  return Promise.reject(error);
+              }
+          );
+
+          // Initialisation de la promesse vers l'API via AXIOS
+          axios.post(this.state.urlAPI+'/api/messages/new/',formData)
+          .then(res =>{
+              // Sucess
+              this.state.subOkay = true;
+              this.state.chkCompleted = false;
+
+              // Completed
+              document.getElementById("Join").checked = false;
+              document.getElementById("Title").value = '';
+              document.getElementById("Content").value ='';
+              this.state.subCompleted = true;
+              this.state.Nattachment = 0;
+              this.state.chkCompleted = false;
+              this.state.subFailure = false;
+              this.state.uploadFile = false;
+              this.state.subOkay = false;
+              this.state.subCompleted = false;
+              dispatch("ResetNewMsgStats");
+
+              commit('setLoading', false);
+              console.log(this.state.Loading);
+
+              $('#NewMessage').modal('hide');
+              commit('setWallReload', true);
+              console.log(this.state.WallReload);
+
+          })
+          .catch(err =>{
+              console.log(err);
+              this.state.subFailure = true;
+              // this.subFail = err.error;
+              commit('setLoading', false);
+              console.log(this.state.Loading);
+          });
+
+      } else {
+          console.log('NoAttatched');
+          // Configuration de l'en-tete AXIOS (intégration du token)
+          axios.interceptors.request.use(
+              config => {
+                  config.headers.authorization = `Bearer ${this.state.Token}`;
+                  return config;
+              },
+              error => {
+                  return Promise.reject(error);
+              }
+          );
+
+          // Initialisation de la promesse vers l'API via AXIOS
+          axios.post(this.state.urlAPI+'/api/messages/new/', {
+              title: document.getElementById("Title").value,
+              content: document.getElementById("Content").value
+          })
+          .then(res =>{
+              // Sucess
+              this.state.subOkay = true;
+              this.state.chkCompleted = false;
+
+              // Completed
+              document.getElementById("Join").checked = false;
+              document.getElementById("Title").value = '';
+              document.getElementById("Content").value ='';
+              this.state.subCompleted = true;
+
+              commit('setLoading', false);
+              console.log(this.state.Loading);
+              dispatch("ResetNewMsgStats");
+
+              $('#NewMessage').modal('hide');
+
+              // Recharger le mur
+              commit('setWallReload', true);
+              console.log(this.state.WallReload);
+
+          })
+          .catch(err =>{
+              console.log(err);
+              this.state.subFailure = true;
+              // this.subFail = err.error;
+              commit('setLoading', false);
+              console.log(this.state.Loading);
+          });
+
+      }      
+    },
+    ResetNewMsgStats({commit}){
+      document.getElementById('Title').value = '';
+      document.getElementById('Content').value = '';
+      console.log('Reset...');
+      commit('setNtitle', '');
+      console.log(this.state.Ntitle);
+      commit('setNcontent', '');
+      console.log(this.state.Ncontent);
+      document.getElementById("Join").checked = false;
+      this.state.Nattachment = 0,
+      this.state.chkCompleted = false;
+      this.state.subFailure = false;
+      this.state.uploadFile = false
+      this.state.subOkay = false;
+      this.state.subCompleted = false;
+      commit('setLoading',false);
+    },
     //
   },
   modules: {
