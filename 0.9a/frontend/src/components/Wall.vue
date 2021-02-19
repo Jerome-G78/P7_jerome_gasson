@@ -7,7 +7,7 @@
             <p>Aucuns messages a charger ... a vous de jouer! :D </p>
         </div>
         <!--POST START-->
-        <PostS :Posts="Posts" @ModifyPost="WallReload(data)" :Comments="Comments" @ModifyComment="WallReload(data)"/>
+        <PostS :Posts="Posts" :Comments="Comments"/>
         <!--POST END-->
     </div>
 </template>
@@ -247,6 +247,7 @@ export default {
             }
         },
         EditPost(PostId){
+            // this.$store.dispatch("EditPost", PostId);
             let Counter = 0;
             // Chargement du post (Axios)
             axios.get(this.urlAPI+"/api/messages/?fields=id,title,content")

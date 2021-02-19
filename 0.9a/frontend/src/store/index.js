@@ -43,6 +43,10 @@ export default createStore({
     Etitle:'',
     Econtent:'',
 
+    CHKtitle:false,
+    CHKcontent:false,
+    chkOK: false,
+
     // Likes
     LikesCounter : 0,
 
@@ -140,6 +144,16 @@ export default createStore({
     },
     setCurrentEcontent(state, newValue){
       state.Econtent = newValue;
+    },
+    setCheckTitle(state, newValue){
+      state.CHKtitle = newValue;
+    },
+    setCheckContent(state, newValue){
+      state.CHKcontent = newValue;
+    },
+
+    setchkOK(state, newValue){
+      state.chkOK = newValue;
     },
 
     // Delete Comments
@@ -273,7 +287,6 @@ export default createStore({
     // New Message
     Ntitle(state){
       return state.Ntitle;
-
     },
     Ncontent(state){
       return state.Ncontent;
@@ -286,6 +299,23 @@ export default createStore({
     },
     uploadFile(state){
       return state.uploadFile;
+    },
+
+    // Edit Post | Moderate post
+    EditTitle(state){
+      return state.Etitle;
+    },
+    EditContent(state){
+      return state.Econtent;
+    },
+    CHKtitle(state){
+      return state.CHKtitle;
+    },
+    CHKcontent(state){
+      return state.CHKcontent;
+    },
+    chkOK(state){
+      return state.chkOK;
     },
 
 
@@ -705,7 +735,7 @@ export default createStore({
 
     },
 
-    // Administration
+    // Profil (Administration)
     CheckNameExist(){
       let searchName = document.getElementById("Search").value;
 
@@ -969,6 +999,208 @@ export default createStore({
       this.state.subCompleted = false;
       commit('setLoading',false);
     },
+
+    // Edit Post | Moderate Post
+    WallEditPost({commit},PostId){
+      let Counter = 0;
+      // Chargement du post (Axios)
+      axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content")
+      .then(res =>{
+        console.log(res);
+        // console.log(res.data.length);
+        commit('setCurrentPostId',PostId);
+        console.log(this.state.CurrentPostId);
+        Counter = res.data.length;
+        for(let i=0; i < Counter; i++){
+          // console.log('B-For');
+          if(res.data[i].id == PostId){
+              commit('setCurrentEtitle',res.data[i].title);
+              console.log(this.state.Etitle);
+              commit('setCurrentEcontent',res.data[i].content);
+              console.log(this.state.Econtent);
+          }
+        }
+      })
+      .catch(err =>{
+          console.log(err);
+      });
+    },
+
+    EditVerify(){
+      let Title = document.getElementById('TitleEdit').value;
+      let Content = document.getElementById('ContentEdit').value;
+
+      if(Title !=''){
+          this.state.CHKtitle = true;
+      } else {
+          this.state.CHKtitle = false;
+      }
+      if(Content !=''){
+          this.state.CHKcontent = true;
+      } else {
+          this.state.CHKcontent = false;
+      }
+      if(this.state.CHKtitle && this.state.CHKcontent){
+          this.state.chkOK = true;
+      } else {
+          this.state.chkOK = false;
+      }
+    },
+    ModerateVerify(){
+      let Title = document.getElementById('TitleMod').value;
+      let Content = document.getElementById('ContentMod').value;
+
+      if(Title !=''){
+          this.state.CHKtitle = true;
+      } else {
+          this.state.CHKtitle = false;
+      }
+      if(Content !=''){
+          this.state.CHKcontent = true;
+      } else {
+          this.state.CHKcontent = false;
+      }
+      if(this.state.CHKtitle && this.state.CHKcontent){
+          this.state.chkOK = true;
+      } else {
+          this.state.chkOK = false;
+      }
+    },
+
+    EditPost({commit, dispatch}){
+      let TitleEdit = document.getElementById('TitleEdit').value;
+      let Content = document.getElementById('ContentEdit').value;
+      console.log(this.state.CurrentPostId);
+
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+          config => {
+              config.headers.authorization = `Bearer ${this.state.Token}`;
+              return config;
+          },
+          error => {
+              return Promise.reject(error);
+          }
+      );
+
+      // Initialisation de la promesse vers l'API via AXIOS
+      axios.put(this.state.urlAPI+'/api/messages/'+this.state.CurrentPostId,{
+          title : TitleEdit,
+          content : Content
+          })
+      .then(res =>{
+          // Envoie des données en base
+          console.log(res);
+
+          //SubOkay
+          this.state.subOkay = true;
+          this.state.subCompleted = true;
+          commit('setLoading', false);
+          console.log(this.state.Loading);
+
+          // Sucess
+          this.state.subOkay = true;
+          this.state.subCompleted = true;
+          this.state.chkOK = false;
+
+          // Completed
+          document.getElementById('TitleEdit').value = '';
+          document.getElementById('ContentEdit').value = '';
+          this.state.subCompleted = true;
+          commit('setLoading', false);
+          dispatch("ResetFields");
+
+          $('#EditModal').modal('hide');
+          commit('setWallReload', true);
+          console.log(this.state.WallReload);
+      })
+      .catch(err =>{
+          //WIP
+          console.log(err);
+          this.state.subFailure = true;
+          this.state.subCompleted = true;
+          commit('setLoading', false);
+          console.log(this.state.Loading);
+      });
+
+    },
+    ModeratePost({commit, dispatch}){
+      let TitleMod = document.getElementById('TitleMod').value;
+      let ContentMod = document.getElementById('ContentMod').value;
+      console.log(this.state.CurrentPostId);
+
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+          config => {
+              config.headers.authorization = `Bearer ${this.state.Token}`;
+              return config;
+          },
+          error => {
+              return Promise.reject(error);
+          }
+      );
+
+      // Initialisation de la promesse vers l'API via AXIOS
+      if(this.state.isAdmin){
+        axios.put(this.state.urlAPI+'/api/messages/'+this.state.CurrentPostId+'/moderate',{
+        title : TitleMod,
+        content : ContentMod
+        })
+        .then(res =>{
+          // Envoie des données en base
+          console.log(res);
+
+          //SubOkay
+          this.state.subOkay = true;
+          this.state.subCompleted = true;
+          commit('setLoading', false);
+          console.log(this.state.Loading);
+
+          // Sucess
+          this.state.subOkay = true;
+          this.state.subCompleted = true;
+          this.state.chkOK = false;
+
+          // Completed
+          document.getElementById('TitleMod').value = '';
+          document.getElementById('ContentMod').value = '';
+          this.state.subCompleted = true;
+          commit('setLoading', false);
+          dispatch("ResetFields");
+
+          $('#ModerateModal').modal('hide');
+          commit('setWallReload', true);
+          console.log(this.Data.WallReload);
+        })
+        .catch(err =>{
+          //WIP
+          console.log(err);
+          this.state.subFailure = true;
+          this.state.subCompleted = true;
+          commit('setLoading', false);
+          console.log(this.state.Loading);
+        });
+
+      } else {
+        this.state.subFailure = true;
+        this.state.subCompleted = true;
+        commit('setLoading',false);
+        console.log(this.state.Loading);
+      }
+
+    },
+
+    ResetFields(){
+      this.EditTitle = this.state.Etitle;
+      console.log(this.state.EditTitle);
+      this.EditContent = this.state.Econtent;
+      console.log(this.state.EditContent);
+      this.state.subFailure = false;
+      this.state.subOkay = false;
+      this.state.subCompleted = false;
+      this.state.chkOK = false;
+      return this.state.Etitle, this.state.Econtent;
+    }
     //
   },
   modules: {

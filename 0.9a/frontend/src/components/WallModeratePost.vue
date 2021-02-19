@@ -11,11 +11,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="TitleMod">Titre : (Minimum 3 Caractères)</label>
-                        <input @keyup="ModerateVerify" type="text" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod" v-model="Data.EditTitle">
+                        <input @keyup="ModerateVerify" type="text" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod" v-model="EditTitle">
                     </div>
                     <div class="form-group">
                         <label for="ContentMod">Contenue : (Minimum 5 Caractères)</label>
-                        <textarea @keyup="ModerateVerify" class="form-control" id="ContentMod" placeholder="Champ de modération" rows="3" v-model="Data.EditContent"></textarea>
+                        <textarea @keyup="ModerateVerify" class="form-control" id="ContentMod" placeholder="Champ de modération" rows="3" v-model="EditContent"></textarea>
                     </div>
                     <div v-if="subOkay && subCompleted" class="alert alert-info">
                         <strong><i class="fas fa-info-circle"></i></strong> {{OnSucess}}.
@@ -42,26 +42,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'WallModeratePost',
     data(){
         return {
-            urlAPI: this.$store.state.urlAPI,
-            isAdmin: this.$store.state.isAdmin,
-            Connected: this.$store.state.Connected,
-            PostId: this.$store.state.CurrentPostId,
-
-            EditTitle: this.$store.state.Etitle,
-            EditContent: this.$store.state.Econtent,
-
             // Variables locales
-            CHKtitle: false,
-            CHKcontent: false,
-            chkOK: false,
-            
-            subOkay: false,
-            subFailure: false,
-            subCompleted: false,
 
             // Messages
             OnError:'Une erreur est survenue',
@@ -70,127 +57,42 @@ export default {
     },
 
     computed:{
-        Data(){
-            return {
-            urlAPI:this.$store.state.urlAPI,
-            userName: this.$store.state.userName,
-            Connected: this.$store.state.Connected,
-            Loading: this.$store.state.Loading,
-            WallReload: this.$store.state.WallReload,
-            isAdmin: this.$store.state.isAdmin,
-            Token: this.$store.state.Token,
+        ...mapGetters([
+            // Edit Post
+            'EditTitle',
+            'EditContent',
+            'CHKtitle',
+            'CHKcontent',
+            'chkOK',
 
-            EditTitle: this.$store.state.Etitle,
-            EditContent: this.$store.state.Econtent,
-            PostId:this.$store.state.CurrentPostId,
-            }
-        },
+            // Status
+            'WallReload',
+            'Loading',
+            'subOkay',
+            'subFailure',
+            'subCompleted'
+        ]),
     },
 
     // Création de la logique du module
     methods:{
         ModerateVerify(){
-            let Title = document.getElementById('TitleMod').value;
-            let Content = document.getElementById('ContentMod').value;
-            console.log(Title, Content);
-
-            if(Title !=''){
-                this.CHKtitle = true;
-            } else {
-                this.CHKtitle = false;
-            }
-            if(Content !=''){
-                this.CHKcontent = true;
-            } else {
-                this.CHKcontent = false;
-            }
-            if(this.CHKtitle && this.CHKcontent){
-                this.chkOK = true;
-            } else {
-                this.chkOK = false;
-            }
+            this.$store.dispatch("ModerateVerify");
         },
         Submit(){
-            let TitleMod = document.getElementById('TitleMod').value;
-            let ContentMod = document.getElementById('ContentMod').value;
-            console.log(this.PostId);
-
-            // Configuration de l'en-tete AXIOS (intégration du token)
-            axios.interceptors.request.use(
-                config => {
-                    config.headers.authorization = `Bearer ${this.Data.Token}`;
-                    return config;
-                },
-                error => {
-                    return Promise.reject(error);
-                }
-            );
-
-            // Initialisation de la promesse vers l'API via AXIOS
-            if(this.Data.isAdmin){
-                axios.put(this.urlAPI+'/api/messages/'+this.Data.PostId+'/moderate',{
-                title : TitleMod,
-                content : ContentMod
-                })
-                .then(res =>{
-                    // Envoie des données en base
-                    console.log(res);
-
-                    //SubOkay
-                    this.subOkay = true;
-                    this.subCompleted = true;
-                    this.$store.commit('setLoading', false);
-                    console.log(this.$store.state.Loading);
-
-                    // Sucess
-                    this.subOkay = true;
-                    this.subCompleted = true;
-                    this.chkOK = false;
-
-                    // Completed
-                    this.subCompleted = true;
-                    this.$store.commit('setLoading',false);
-                    this.ResetStats();
-
-                    $('#ModerateModal').modal('hide');
-                    this.$store.commit('setWallReload', true);
-                    console.log(this.Data.WallReload);
-                })
-                .catch(err =>{
-                    //WIP
-                    console.log(err);
-                    this.subFailure = true;
-                    this.subCompleted = true;
-                    this.Loading = false;
-                    this.$store.commit('setLoading',false);
-                    console.log(this.Loading);
-                });
-
-            } else {
-                this.subFailure = true;
-                this.subCompleted = true;
-                this.Loading = false;
-                this.$store.commit('setLoading',false);
-                console.log(this.Loading);
-            }
-            
+            this.$store.dispatch("ModeratePost");
         },
-
         ResetStats(){
-            this.EditTitle = this.$store.state.Etitle;
-            console.log(this.EditTitle);
-            this.EditContent = this.$store.state.Econtent;
-            console.log(this.EditContent);
-            this.subFailure = false;
-            this.subOkay = false;
-            this.subCompleted = false;
-            this.chkOK = false;
-            return this.$store.state.Etitle, this.$store.state.Econtent;
+            this.$store.dispatch("ResetFields");
         }
     },
 
     mounted(){ 
         //
-    }
+    },
+
+    updated(){
+        //
+    },
 }
 </script>

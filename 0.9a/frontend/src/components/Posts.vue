@@ -36,6 +36,7 @@
 
 <script>
 import moment from 'moment'
+import { mapGetters } from 'vuex'
 import Comments from '@/components/Comments.vue'
 
 export default {
@@ -72,6 +73,22 @@ export default {
     },
 
     computed:{
+        ...mapGetters([
+            'EditTitle',
+            'EditContent',
+
+            // Utilisateur
+            'Connected',
+            'isAdmin',
+
+            // Status
+            'WallReload',
+            'Loading',
+            'subOkay',
+            'subFailure',
+            'subCompleted'
+        ]),
+
         Data(){
             return {
                 userName: this.$store.state.userName,
@@ -85,16 +102,6 @@ export default {
                 WallReload: this.$store.state.WallReload,
                 NoData:this.$store.state.NoData,
             }
-        },
-
-        GetEtitle(){
-            this.EditTitle = this.$store.state.Etitle;
-            return this.$store.state.Etitle;
-        },
-
-        GetEContent(){
-            this.EditContent = this.$store.state.Econtent;
-            return this.$store.state.Econtent;
         },
     },
 
@@ -234,27 +241,7 @@ export default {
             }
         },
         EditPost(PostId){
-            let Counter = 0;
-            // Chargement du post (Axios)
-            axios.get(this.urlAPI+"/api/messages/?fields=id,title,content")
-            .then(res =>{
-                console.log(res);
-                // console.log(res.data.length);
-                console.log(this.PostId);
-                Counter = res.data.length;
-                for(let i=0; i < Counter; i++){
-                    // console.log('B-For');
-                    if(res.data[i].id == PostId){
-                        this.$store.commit('setCurrentEtitle',res.data[i].title);
-                        console.log(this.$store.state.Etitle);
-                        this.$store.commit('setCurrentEcontent',res.data[i].content);
-                        console.log(this.$store.state.Econtent);
-                    }
-                }
-            })
-            .catch(err =>{
-                console.log(err);
-            });
+            this.$store.dispatch("WallEditPost", PostId);
         },
         WallReload(){
             this.$store.commit('setWallReload', true);
