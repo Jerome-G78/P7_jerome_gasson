@@ -114,14 +114,8 @@ export default {
 
     // Création de la logique du module
     methods:{
-        checkBio(){            
-            let BioArea = document.getElementById("Bio").value;
-
-            if(BioArea != ''){
-                this.$store.commit('setBioEdit', true);
-            } else {
-                this.$store.commit('setBioEdit', false);
-            }
+        checkBio(){     
+            this.$store.dispatch("checkBio");
         },
         updateBio(){
             this.$store.dispatch("BioUpdate");
@@ -139,7 +133,7 @@ export default {
             this.$store.dispatch("Unsubscribe");
         },
         ResetStats(){
-            this.$store.dispatch("ResetStats");
+            this.$store.dispatch("ResetProfilStats");
         },
         GoOut(){
             this.$store.dispatch("GoOut");

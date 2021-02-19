@@ -211,6 +211,20 @@ export default createStore({
       return state.urlAPI;
     },
 
+    //SignIn
+    CHKeMail(state){
+      return state.CHKeMail;
+    },
+    CHKpassword(state){
+      return state.CHKpassword;
+    },
+    ComparePwds(state){
+      return state.ComparePwds;
+    },
+    CHKuserName(state){
+      return state.CHKuserName;
+    },
+
     // Profil
 
     Connected(state){
@@ -277,7 +291,202 @@ export default createStore({
 
   actions: {
 
+    // Singin
+    SignInVerify({commit}){
+      let Email = document.getElementById('Semail').value;
+      let Pwd = document.getElementById('Spwd').value;
+      let PwdC = document.getElementById('SpwdC').value;
+      let Name = document.getElementById('Sname').value;
+      console.log(Email, Pwd, PwdC, Name);
+
+
+      if(Email !=''){
+          commit('setCHKeMail', true);
+
+      } else {
+          commit('setCHKeMail', false);
+      }
+
+      if(Name !=''){
+          commit('setCHKuserName', true);
+      } else {
+          commit('setCHKuserName', false);
+      }
+
+      if(Pwd !='' && PwdC !='' && (Pwd == PwdC)){
+          commit('setComparePwds', false);
+          commit('setCHKpassword', true);
+      }
+      if(Pwd !='' && PwdC !='' && (Pwd != PwdC)){
+          commit('setComparePwds', true);
+      }
+      if(Pwd=='' || PwdC=='') {
+          commit('setCHKpassword', false);
+      }
+    },
+    Subscribe({commit}){
+      commit('setLoading', true);
+      console.log(this.state.Loading);
+      let Email = document.getElementById('Semail').value;
+      let Pwd = document.getElementById('Spwd').value;
+      let Name = document.getElementById('Sname').value;
+      let Bio = document.getElementById('SBio').value;
+
+      // Initialisation de la promesse vers l'API via AXIOS
+      axios.post(this.state.urlAPI+'/api/users/register/', {
+          email : Email,
+          username : Name,
+          password : Pwd,
+          bio : Bio
+      }).then(res => {
+          console.log(res);
+          this.state.subOkay = true;
+          // Cleaning
+          document.getElementById('Semail').value = '';
+          document.getElementById('Spwd').value = '';
+          document.getElementById('SpwdC').value = '';
+          document.getElementById('Sname').value = '';
+          document.getElementById('SBio').value = '';
+
+          // Completed
+          this.state.subCompleted = true;
+          commit('setLoading', false);
+          console.log(this.state.Loading);
+
+          // Masquer la fenêtre Modal
+          $('#registrationModal').modal('hide');
+      })
+      .catch(err => {
+      //WIP
+      console.log(err);
+      this.state.subFailure = true;
+      // Cleaning
+      document.getElementById('Spwd').value = '';
+      document.getElementById('SpwdC').value = '';
+      commit('setLoading', false);
+
+      // Completed
+      this.state.subCompleted = true;
+      commit('setLoading', false);
+      console.log(this.state.Loading);
+      });
+    },
+    ResetSignInStats({commit}){
+      document.getElementById('Semail').value = '';
+      document.getElementById('Spwd').value = '';
+      document.getElementById('SpwdC').value = '';
+      document.getElementById('Sname').value = '';
+      document.getElementById('SBio').value = '';
+      this.state.subFailure = false;
+      this.state.subOkay = false;
+      this.state.subCompleted = false;
+      commit('setCHKeMail', false);
+      commit('setCHKpassword', false);
+      commit('setCHKuserName', false);
+    },
+
+    //Login
+    LogInVerify({commit}){
+      let Email = document.getElementById('Lemail').value;
+      let Pwd = document.getElementById('Lpwd').value;
+
+      if(Email !=''){
+          commit('setCHKeMail', true);
+      } else {
+          commit('setCHKeMail', false);
+      }
+
+      if(Pwd!='') {
+          commit('setCHKpassword', true);
+      } else {
+          commit('setCHKpassword', false);
+      }
+
+    },
+
+    LogIn({commit}){
+      commit('setLoading', true);
+      console.log("Loading : "+this.state.Loading);
+      let Email = document.getElementById('Lemail').value;
+      let Pwd = document.getElementById('Lpwd').value;
+
+      // Initialisation de la promesse vers l'API via AXIOS
+      axios.post(this.state.urlAPI+'/api/users/login/', {
+          email: Email,
+          password: Pwd
+      })
+      .then(res =>{
+          // Récupération des information du compte de l'utilisateur
+          // console.log(res);
+          this.state.subOkay = true;
+          this.state.subCompleted = true;
+          commit('setConnected', true);
+          localStorage.setItem("Connected", true);
+          // console.log("Connected : "+ this.$store.state.Connected);
+          commit('setEmail', res.data.email);
+          localStorage.setItem("Email", this.state.email);
+          // console.log(this.$store.state.email);
+          document.getElementById('Lemail').value = '';
+          document.getElementById('Lpwd').value = '';
+          commit('setUserName', res.data.userName);
+          localStorage.setItem("userName", this.state.userName);
+          // console.log("userName : "+this.$store.state.userName);
+          commit('setUserID', res.data.userId);
+          localStorage.setItem("userId", this.state.userId);
+          // console.log(this.$store.state.userId);
+          commit('setToken', res.data.token);
+          localStorage.setItem("Token", this.state.Token);
+          // console.log("User Token : "+this.$store.state.Token);
+          commit('setIsAdmin', res.data.isAdmin);
+          localStorage.setItem("isAdmin", this.state.isAdmin);
+          // console.log("User is Admin : "+this.$store.state.isAdmin);
+          commit('setLoading',this.Loading = false);
+          console.log(this.state.Loading);
+
+          // Completed
+          this.state.subOkay = false;
+          this.state.subCompleted = false;
+          commit('setConnected', true);
+          console.log("User Connected : "+ this.state.Connected);
+          // Masquer la fenêtre Modal
+          $('#logginModal').modal('hide');
+
+          // Recharger le mur
+          commit('setWallReload', true);
+          console.log(this.state.WallReload);
+      })
+      .catch(err =>{
+          //WIP
+          console.log(err);
+          this.state.subFailure = true;
+          // this.subFail = err.error;
+          this.state.Loading = false;
+          commit('setLoading', false);
+          console.log(this.state.Loading);
+      });
+
+    },
+
+    ResetLoginStats(){
+      document.getElementById('Lemail').value = '';
+      document.getElementById('Lpwd').value = '';
+      this.state.subFailure = false;
+      this.state.CHKeMail = false
+      this.state.CHKpassword = false;
+      this.state.subOkay = false;
+      this.state.subCompleted = false;
+    },
+
     // Profil
+    checkBio({commit}){
+      let BioArea = document.getElementById("Bio").value;
+
+      if(BioArea != ''){
+          commit('setBioEdit', true);
+      } else {
+          commit('setBioEdit', false);
+      }
+    },
     GetProfil({commit}){
       axios.interceptors.request.use(
         config => {
@@ -432,7 +641,7 @@ export default createStore({
           console.log(err);
       });
     },
-    ResetStats(){
+    ResetProfilStats(){
       document.getElementById('Search').value = '';
       document.getElementById('Bio').value = '';
       this.state.BioEdit = false;
@@ -477,7 +686,7 @@ export default createStore({
     },
 
     // Administration
-    CheckNameExist({commit}){
+    CheckNameExist(){
       let searchName = document.getElementById("Search").value;
 
       axios.interceptors.request.use(
@@ -511,7 +720,7 @@ export default createStore({
           console.log('Not Found!');
       }
     },
-    addRight({commit}){
+    addRight(){
       let searchName = document.getElementById("Search").value;
 
       axios.interceptors.request.use(
@@ -537,7 +746,7 @@ export default createStore({
           console.log(err);
       });
     },
-    removeRight({commit}){
+    removeRight(){
       let searchName = document.getElementById("Search").value;
 
       axios.interceptors.request.use(
