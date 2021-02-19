@@ -212,25 +212,65 @@ export default createStore({
     },
 
     // Profil
-    userName(state){
-      return state.userName;
-    },
-
-    userID(state){
-      return state.userId;
-    },
-
-    userToken(state){
-      return state.Token;
-    },
 
     Connected(state){
       return state.Connected;
     },
-
+    userName(state){
+      return state.userName;
+    },
+    userID(state){
+      return state.userId;
+    },
+    userToken(state){
+      return state.Token;
+    },
+    Bio(state){
+      return state.bio;
+    },
+    Email(state){
+      return state.email;
+    },
+    isAdmin(state){
+      return state.isAdmin;
+    },
     BioEdit(state){
       return state.BioEdit;
     },
+
+    // Administration
+    findUser(state){
+      return state.findUser;
+    },
+    findUserAdmin(state){
+      return state.findUserAdmin;
+    },
+    findedUser(state){
+      return state.findedUser;
+    },
+    RightAdded(state){
+      return state.RightAdded;
+    },
+    RightRemoved(state){
+      return state.RightRemoved;
+    },
+
+    // Status
+    Loading(state){
+      return state.Loading;
+    },
+    WallReload(state){
+      return state.WallReload;
+    },
+    subOkay(state){
+      return state.subOkay;
+    },
+    subFailure(state){
+      return state.subFailure;
+    },
+    subCompleted(state){
+      return state.subCompleted;
+    }
 
     // N'oubliez-pas, Ces données devront être appelés depuis les composants et/ou Actions
   },
@@ -273,7 +313,6 @@ export default createStore({
         console.log(this.state.Loading);
     });
     },
-
     BioUpdate({commit}){
       let BioArea = document.getElementById("Bio").value;
       commit('setLoading', true);
@@ -322,6 +361,208 @@ export default createStore({
       });
 
     },
+    Unsubscribe({commit}){
+      // Authentification de l'utilisateur...
+
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+            config.headers.authorization = `Bearer ${this.state.Token}`;
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
+
+      // Suppression du compte utilisateur...
+      axios.delete(this.state.urlAPI+"/api/users/unsubscribe/")
+      .then(res =>{
+          localStorage.clear();
+          this.state.subOkay = false;
+          this.state.subCompleted = false;
+          commit('setConnected', false);
+          localStorage.removeItem('Connected');
+          console.log("Connected : "+ this.state.Connected);
+          commit('setEmail', '');
+          localStorage.removeItem('Email');
+          console.log(this.state.email);
+          commit('setUserName', '');
+          localStorage.removeItem('userName');
+          console.log(this.state.userName);
+          commit('setUserID', 0);
+          localStorage.removeItem('userId');
+          console.log(this.state.userId);
+          commit('setToken', '');
+          localStorage.removeItem('Token');
+          console.log(this.state.Token);
+          commit('setIsAdmin', false);
+          localStorage.removeItem('isAdmin');
+          console.log(this.state.isAdmin);
+          commit('setLoading', false);
+          console.log(this.state.Loading);
+
+          // Recharger la page
+          commit('setWallReload', true);
+          console.log(this.state.WallReload);
+      })
+      .catch(err =>{
+          console.log(err);
+      });
+
+    },
+    AlreadyConnected(){
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+            config.headers.authorization = `Bearer ${this.state.Token}`;
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
+
+      axios.get(this.state.urlAPI+"/api/users/me")
+      .then(res =>{
+          console.log(res);
+          this.state.bio = res.data.bio;
+      })
+      .catch(err =>{
+          console.log(err);
+      });
+    },
+    ResetStats(){
+      document.getElementById('Search').value = '';
+      document.getElementById('Bio').value = '';
+      this.state.BioEdit = false;
+      this.state.findUser = false;
+      this.state.findUserAdmin = false;
+      this.state.findedUser = '';
+      this.state.subOkay = false;
+      this.state.subFailure = false;
+      this.state.subCompleted = false;
+      this.state.RightAdded = false;
+      this.state.RightRemoved = false;
+    },
+    GoOut({commit}){
+      // Réinitialisation des paramètres Vue X...
+      // Supression des informations de session utilisateur...
+      this.state.subOkay = false;
+      this.state.subCompleted = false;
+      commit('setEmail', '');
+      localStorage.removeItem('Email');
+      console.log(this.state.email);
+      commit('setUserName', '');
+      localStorage.removeItem('userName');
+      console.log(this.state.userName);
+      commit('setUserID', 0);
+      localStorage.removeItem('userId');
+      console.log(this.state.userId);
+      commit('setToken', '');
+      localStorage.removeItem('Token');
+      console.log(this.state.Token);
+      commit('setIsAdmin', false);
+      localStorage.removeItem('isAdmin');
+      console.log(this.state.isAdmin);
+      commit('setConnected', false);
+      localStorage.removeItem('Connected');
+      console.log("Connected : "+ this.state.Connected);
+      commit('setLoading', false);
+      console.log(this.state.Loading);
+
+      // Recharger la page internet
+      document.location.reload();
+
+    },
+
+    // Administration
+    CheckNameExist({commit}){
+      let searchName = document.getElementById("Search").value;
+
+      axios.interceptors.request.use(
+          config => {
+              config.headers.authorization = `Bearer ${this.state.Token}`;
+              return config;
+          },
+          error => {
+              return Promise.reject(error);
+          }
+      );
+
+      if(searchName !=''){
+          console.log(searchName);
+          // Code faire une recherche dans la BDD
+          axios.post(this.state.urlAPI+"/api/users/",{
+                  Username: searchName,
+          })
+          .then(res=>{
+              console.log('finded!');
+              this.state.findUser = true;
+              this.state.findUserAdmin = res.data.isAdmin;
+          })
+          .catch(err=>{
+              console.log('Not Found! ' + err);
+          });
+      } else {
+          // Ne rien faire
+          this.state.findUser = false;
+          this.state.findUserAdmin = false;
+          console.log('Not Found!');
+      }
+    },
+    addRight({commit}){
+      let searchName = document.getElementById("Search").value;
+
+      axios.interceptors.request.use(
+          config => {
+              config.headers.authorization = `Bearer ${this.state.Token}`;
+              return config;
+          },
+          error => {
+              return Promise.reject(error);
+          }
+      );
+
+      axios.put(this.state.urlAPI+"/api/users/add",{
+          Username : searchName,
+      })
+      .then(res=>{
+          console.log(res);
+          this.state.RightAdded = true;
+          this.state.findUser = false;
+          document.getElementById('Search').value = '';
+      })
+      .catch(err=>{
+          console.log(err);
+      });
+    },
+    removeRight({commit}){
+      let searchName = document.getElementById("Search").value;
+
+      axios.interceptors.request.use(
+          config => {
+              config.headers.authorization = `Bearer ${this.state.Token}`;
+              return config;
+          },
+          error => {
+              return Promise.reject(error);
+          }
+      );
+
+      axios.put(this.state.urlAPI+"/api/users/remove",{
+          Username : searchName,                
+      })
+      .then(res=>{
+          console.log(res);
+          this.state.RightRemoved = true;
+          this.state.findUser = false;
+          document.getElementById('Search').value = '';
+      })
+      .catch(err=>{
+          console.log(err);
+      });
+    }
 
     //
   },

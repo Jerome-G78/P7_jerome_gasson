@@ -10,9 +10,9 @@
         
                 <div class="labelsAlign modal-body">
                     <p> 
-                        <strong> Nom : </strong>{{Data.userName}}<br/>
-                        <strong> E-mail : </strong>{{Data.email}}<br/>
-                        <strong> Biographie : </strong>{{Data.bio}}<br/>
+                        <strong> Nom : </strong>{{userName}}<br/>
+                        <strong> E-mail : </strong>{{Email}}<br/>
+                        <strong> Biographie : </strong>{{Bio}}<br/>
                     </p>
 
                     <div @keyup="checkBio" class="form-group">
@@ -29,7 +29,7 @@
                         <hr/>
                     </div>
 
-                    <div v-if="Data.isAdmin" class="form-group">
+                    <div v-if="isAdmin" class="form-group">
                         <h5>Options Modérateur</h5>
                         <label for="Search"><i class="fas fa-search"></i> Rechercher un utilisateur</label>
                         <input @keyup="checkNameExist" type="text" class="form-control" id="Search" placeholder="Tapez le nom d'un utilisateur" name="Search">
@@ -51,7 +51,7 @@
                         </div>
                     </div>
 
-                    <div v-if="!Data.isAdmin" class="alert alert-info">
+                    <div v-if="!isAdmin" class="alert alert-info">
                         <strong><i class="fas fa-info-circle"></i></strong> vous n'êtes pas modérateur.
                     </div>
                     
@@ -76,18 +76,6 @@ export default {
     data(){
         return {
             // Variables locales
-            urlAPI:this.$store.state.urlAPI,
-
-            findUser:false,
-            findUserAdmin:false,
-            findedUser:'',
-
-            RightAdded:false,
-            RightRemoved:false,
-
-            subOkay: false,
-            subFailure: false,
-            subCompleted: false,
 
             // Messages
             subOK: "Connexion réussi.",
@@ -99,22 +87,29 @@ export default {
 
     computed:{
         ...mapGetters([
-            'userName',
+            // Profil
             'Connected',
-            'BioEdit'
-        ]),
+            'userName',
+            'Email',
+            'Bio',
+            'BioEdit',
+            'isAdmin',
 
-        Data(){
-            return {
-                userName: this.$store.state.userName,
-                Connected: this.$store.state.Connected,
-                email:this.$store.state.email,
-                bio:this.$store.state.bio,
-                Loading: this.$store.state.Loading,
-                isAdmin: this.$store.state.isAdmin,
-                Token: this.$store.state.Token,
-            }
-        }
+            //Administration
+            'findUser',
+            'findUserAdmin',
+            'findedUser',
+            'RightAdded',
+            'RightRemoved',
+
+            // Status
+            'WallReload',
+            'Loading',
+            'subOkay',
+            'subFailure',
+            'subCompleted'
+
+        ]),
     },
 
     // Création de la logique du module
@@ -132,206 +127,27 @@ export default {
             this.$store.dispatch("BioUpdate");
         },
         checkNameExist(){
-            let searchName = document.getElementById("Search").value;
-
-            axios.interceptors.request.use(
-                config => {
-                    config.headers.authorization = `Bearer ${this.Data.Token}`;
-                    return config;
-                },
-                error => {
-                    return Promise.reject(error);
-                }
-            );
-
-            if(searchName !=''){
-                console.log(searchName);
-                // Code faire une recherche dans la BDD
-                axios.post(this.urlAPI+"/api/users/",{
-                        Username: searchName,
-                })
-                .then(res=>{
-                    console.log('finded!');
-                    this.findUser = true;
-                    this.findUserAdmin = res.data.isAdmin;
-                })
-                .catch(err=>{
-                    console.log('Not Found! ' + err);
-                });
-            } else {
-                // Ne rien faire
-                this.findUser = false;
-                this.findUserAdmin = false;
-                console.log('Not Found!');
-            }
-
+            this.$store.dispatch("CheckNameExist");
         },
         addRight(){
-            let searchName = document.getElementById("Search").value;
-
-            axios.interceptors.request.use(
-                config => {
-                    config.headers.authorization = `Bearer ${this.Data.Token}`;
-                    return config;
-                },
-                error => {
-                    return Promise.reject(error);
-                }
-            );
-
-            axios.put(this.urlAPI+"/api/users/add",{
-                Username : searchName,
-            })
-            .then(res=>{
-                console.log(res);
-                this.RightAdded = true;
-                this.findUser = false;
-                document.getElementById('Search').value = '';
-            })
-            .catch(err=>{
-                console.log(err);
-            });
-
+            this.$store.dispatch("addRight");
         },
         removeRight(){
-            let searchName = document.getElementById("Search").value;
-
-            axios.interceptors.request.use(
-                config => {
-                    config.headers.authorization = `Bearer ${this.Data.Token}`;
-                    return config;
-                },
-                error => {
-                    return Promise.reject(error);
-                }
-            );
-
-            axios.put(this.urlAPI+"/api/users/remove",{
-                Username : searchName,                
-            })
-            .then(res=>{
-                console.log(res);
-                this.RightRemoved = true;
-                this.findUser = false;
-                document.getElementById('Search').value = '';
-            })
-            .catch(err=>{
-                console.log(err);
-            });
-
-        },
-        GoOut(){
-            // Réinitialisation des paramètres Vue X...
-            // Supression des informations de session utilisateur...
-            this.subOkay = false;
-            this.subCompleted = false;
-            this.$store.commit('setEmail', '');
-            localStorage.removeItem('Email');
-            console.log(this.$store.state.email);
-            this.$store.commit('setUserName', '');
-            localStorage.removeItem('userName');
-            console.log(this.$store.state.userName);
-            this.$store.commit('setUserID', 0);
-            localStorage.removeItem('userId');
-            console.log(this.$store.state.userId);
-            this.$store.commit('setToken', '');
-            localStorage.removeItem('Token');
-            console.log(this.$store.state.Token);
-            this.$store.commit('setIsAdmin', false);
-            localStorage.removeItem('isAdmin');
-            console.log(this.$store.state.isAdmin);
-            this.$store.commit('setConnected', false);
-            localStorage.removeItem('Connected');
-            console.log("Connected : "+ this.$store.state.Connected);
-            this.$store.commit('setLoading', false);
-            console.log(this.Data.Loading);
-
-            // Recharger la page internet
-            document.location.reload();
+            this.$store.dispatch("removeRight");
         },
         Unsubscribe(){
-            // Authentification de l'utilisateur...
-
-            // Configuration de l'en-tete AXIOS (intégration du token)
-            axios.interceptors.request.use(
-                config => {
-                    config.headers.authorization = `Bearer ${this.Data.Token}`;
-                    return config;
-                },
-                error => {
-                    return Promise.reject(error);
-                }
-            );
-            // Suppression du compte utilisateur...
-            axios.delete(this.urlAPI+"/api/users/unsubscribe/")
-            .then(res =>{
-                localStorage.clear();
-                this.subOkay = false;
-                this.subCompleted = false;
-                this.$store.commit('setConnected', false);
-                localStorage.removeItem('Connected');
-                console.log("Connected : "+ this.$store.state.Connected);
-                this.$store.commit('setEmail', '');
-                localStorage.removeItem('Email');
-                console.log(this.$store.state.email);
-                this.$store.commit('setUserName', '');
-                localStorage.removeItem('userName');
-                console.log(this.$store.state.userName);
-                this.$store.commit('setUserID', 0);
-                localStorage.removeItem('userId');
-                console.log(this.$store.state.userId);
-                this.$store.commit('setToken', '');
-                localStorage.removeItem('Token');
-                console.log(this.$store.state.Token);
-                this.$store.commit('setIsAdmin', false);
-                localStorage.removeItem('isAdmin');
-                console.log(this.$store.state.isAdmin);
-                this.$store.commit('setLoading', false);
-                console.log(this.this.Data.Loading);
-
-                // Recharger la page internet
-                this.$store.commit('setWallReload', true);
-                console.log(this.Data.WallReload);
-            })
-            .catch(err =>{
-                console.log(err);
-            });
+            this.$store.dispatch("Unsubscribe");
         },
         ResetStats(){
-            document.getElementById('Search').value = '';
-            document.getElementById('Bio').value = '';
-            this.BioEdit = false;
-            this.findUser = false;
-            this.findUserAdmin = false;
-            this.findedUser = '';
-            this.subOkay = false;
-            this.subFailure = false;
-            this.subCompleted = false;
-            this.RightAdded = false;
-            this.RightRemoved = false;
-        }
+            this.$store.dispatch("ResetStats");
+        },
+        GoOut(){
+            this.$store.dispatch("GoOut");
+        },
     },
     mounted(){
-        if(this.Data.Connected == true){
-            // Configuration de l'en-tete AXIOS (intégration du token)
-            axios.interceptors.request.use(
-                config => {
-                    config.headers.authorization = `Bearer ${this.Data.Token}`;
-                    return config;
-                },
-                error => {
-                    return Promise.reject(error);
-                }
-            );
-
-            axios.get(this.urlAPI+"/api/users/me")
-            .then(res =>{
-                console.log(res);
-                this.bio = res.data.bio;
-            })
-            .catch(err =>{
-                console.log(err);
-            });
+        if(this.Connected == true){
+            this.$store.dispatch("AlreadyConnected");
         }
 
     }
