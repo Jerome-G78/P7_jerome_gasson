@@ -11,28 +11,28 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="TitleEdit">Titre : (Minimum 3 Caractères)</label>
-                        <input @keyup="EditVerify" type="text" class="form-control" id="TitleEdit" placeholder="Champ d'édition" name="TitleEdit" v-model="EditTitle">
+                        <input type="text" class="form-control" id="TitleEdit" placeholder="Champ d'édition" name="TitleEdit" v-model="EditTitle">
                     </div>
                     <div class="form-group">
                         <label for="ContentEdit">Contenue (Minimum 5 Caractères):</label>
-                        <textarea @keyup="EditVerify" class="form-control" id="ContentEdit" placeholder="Champ d'édition" rows="3" v-model="EditContent"></textarea>
+                        <textarea class="form-control" id="ContentEdit" placeholder="Champ d'édition" name="ContentEdit" rows="3" v-model="EditContent"></textarea>
                     </div>
                     <div v-if="subOkay && subCompleted" class="alert alert-info">
                         <strong><i class="fas fa-info-circle"></i></strong> {{OnSucess}}.
-                        <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div v-if="!subOkay && subCompleted" class="alert alert-danger">
                         <strong><i class="fas fa-info-circle"></i></strong> {{OnError}}.
-                        <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button @click="Submit" v-if="chkOK" type="button" title="Editer" class="btn btn-primary">Editer</button>
+                    <button @click="Submit" type="button" title="Editer" class="btn btn-primary">Editer</button>
                     <button @click="ResetStats" type="button" title="Annuler" class="btn btn-danger" data-dismiss="modal">Annuler</button>
                 </div>
         
@@ -50,11 +50,6 @@ export default {
         return {
             // Variables locales
 
-            // urlAPI: this.$store.state.urlAPI,
-
-            // EditTitle: this.$store.state.Etitle,
-            // EditContent: this.$store.state.Econtent,
-
             // Messages
             OnError:'Une erreur est survenue',
             OnSucess:'Le message à été modifié',
@@ -62,13 +57,11 @@ export default {
     },
 
     computed:{
+        
         ...mapGetters([
             // Edit Post
             'EditTitle',
             'EditContent',
-            'CHKtitle',
-            'CHKcontent',
-            'chkOK',
 
             // Status
             'WallReload',
@@ -81,15 +74,17 @@ export default {
 
     // Création de la logique du module
     methods:{
-        EditVerify(){
-            this.$store.dispatch("EditVerify");
+        /*
+        VerifyEditPost(){
+            this.$store.dispatch("VerifyEditPost");
         },
+        */
         Submit(){
             this.$store.dispatch("EditPost");
         },
         ResetStats(){
             this.$store.dispatch("ResetFields");
-        }
+        },
     },
 
     mounted(){

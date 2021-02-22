@@ -58,9 +58,6 @@ export default {
     name: 'NewMessage',
     data(){
         return {
-            Ntitle:this.$store.state.Ntitle,
-            Ncontent:this.$store.state.Ncontent,
-
             // Messages
             subOK: "Message envoyé!",
             subFail: "Une erreur est survenue!"

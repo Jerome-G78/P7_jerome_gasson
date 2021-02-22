@@ -1,5 +1,4 @@
 import { createStore } from 'vuex'
-import { mapGetters } from 'vuex'
 
 
 export default createStore({
@@ -43,12 +42,14 @@ export default createStore({
     Etitle:'',
     Econtent:'',
 
-    CHKtitle:false,
-    CHKcontent:false,
-    chkOK: false,
+    Mtitle:'',
+    Mcontent:'',
+
+    // chkOK:false,
 
     // Likes
     LikesCounter : 0,
+    Liked:false,
 
     // Loading
     Loading:false,
@@ -145,15 +146,11 @@ export default createStore({
     setCurrentEcontent(state, newValue){
       state.Econtent = newValue;
     },
-    setCheckTitle(state, newValue){
-      state.CHKtitle = newValue;
+    setCurrentMtitle(state, newValue){
+      state.Mtitle = newValue;
     },
-    setCheckContent(state, newValue){
-      state.CHKcontent = newValue;
-    },
-
-    setchkOK(state, newValue){
-      state.chkOK = newValue;
+    setCurrentMcontent(state, newValue){
+      state.Mcontent = newValue;
     },
 
     // Delete Comments
@@ -164,6 +161,10 @@ export default createStore({
     // Likes
     setLikes(state, newValue){
       state.LikesCounter =+ newValue;
+    },
+
+    setLiked(state, newValue){
+      state.Liked = newValue;
     },
 
     // NoMessage
@@ -225,6 +226,9 @@ export default createStore({
 
     urlAPI(state){
       return state.urlAPI;
+    },
+    NoData(state){
+      return state.NoData;
     },
 
     //SignIn
@@ -308,16 +312,35 @@ export default createStore({
     EditContent(state){
       return state.Econtent;
     },
-    CHKtitle(state){
-      return state.CHKtitle;
+    ModerateTitle(state){
+      return state.Mtitle;
     },
-    CHKcontent(state){
-      return state.CHKcontent;
-    },
-    chkOK(state){
-      return state.chkOK;
+    ModerateContent(state){
+      return state.Mcontent;
     },
 
+    // Liked Disliked
+    Liked(state){
+      return state.Liked;
+    },
+    LikesCounter(state){
+      return state.LikesCounter;
+    },
+
+    // Wall Load
+    Posts(state){
+      return state.Posts;
+    },
+    Comments(state){
+      return state.Comments;
+    },
+
+    ownMessage(state){
+      return state.ownMessage;
+    },
+    ownComment(state){
+      return state.ownComment;
+    },
 
     // Status
     Loading(state){
@@ -472,24 +495,24 @@ export default createStore({
           this.state.subCompleted = true;
           commit('setConnected', true);
           localStorage.setItem("Connected", true);
-          // console.log("Connected : "+ this.$store.state.Connected);
+          console.log("Connected : "+ this.state.Connected);
           commit('setEmail', res.data.email);
           localStorage.setItem("Email", this.state.email);
-          // console.log(this.$store.state.email);
+          // console.log(this.state.email);
           document.getElementById('Lemail').value = '';
           document.getElementById('Lpwd').value = '';
           commit('setUserName', res.data.userName);
           localStorage.setItem("userName", this.state.userName);
-          // console.log("userName : "+this.$store.state.userName);
+          // console.log("userName : "+this.state.userName);
           commit('setUserID', res.data.userId);
           localStorage.setItem("userId", this.state.userId);
-          // console.log(this.$store.state.userId);
+          // console.log(this.state.userId);
           commit('setToken', res.data.token);
           localStorage.setItem("Token", this.state.Token);
-          // console.log("User Token : "+this.$store.state.Token);
+          // console.log("User Token : "+this.state.Token);
           commit('setIsAdmin', res.data.isAdmin);
           localStorage.setItem("isAdmin", this.state.isAdmin);
-          // console.log("User is Admin : "+this.$store.state.isAdmin);
+          // console.log("User is Admin : "+this.state.isAdmin);
           commit('setLoading',this.Loading = false);
           console.log(this.state.Loading);
 
@@ -1007,17 +1030,14 @@ export default createStore({
       axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content")
       .then(res =>{
         console.log(res);
-        // console.log(res.data.length);
         commit('setCurrentPostId',PostId);
-        console.log(this.state.CurrentPostId);
         Counter = res.data.length;
         for(let i=0; i < Counter; i++){
-          // console.log('B-For');
           if(res.data[i].id == PostId){
-              commit('setCurrentEtitle',res.data[i].title);
-              console.log(this.state.Etitle);
-              commit('setCurrentEcontent',res.data[i].content);
-              console.log(this.state.Econtent);
+            commit('setCurrentEtitle',res.data[i].title);
+            console.log(this.state.Etitle);
+            commit('setCurrentEcontent',res.data[i].content);
+            console.log(this.state.Econtent);
           }
         }
       })
@@ -1025,46 +1045,27 @@ export default createStore({
           console.log(err);
       });
     },
-
-    EditVerify(){
-      let Title = document.getElementById('TitleEdit').value;
-      let Content = document.getElementById('ContentEdit').value;
-
-      if(Title !=''){
-          this.state.CHKtitle = true;
-      } else {
-          this.state.CHKtitle = false;
-      }
-      if(Content !=''){
-          this.state.CHKcontent = true;
-      } else {
-          this.state.CHKcontent = false;
-      }
-      if(this.state.CHKtitle && this.state.CHKcontent){
-          this.state.chkOK = true;
-      } else {
-          this.state.chkOK = false;
-      }
-    },
-    ModerateVerify(){
-      let Title = document.getElementById('TitleMod').value;
-      let Content = document.getElementById('ContentMod').value;
-
-      if(Title !=''){
-          this.state.CHKtitle = true;
-      } else {
-          this.state.CHKtitle = false;
-      }
-      if(Content !=''){
-          this.state.CHKcontent = true;
-      } else {
-          this.state.CHKcontent = false;
-      }
-      if(this.state.CHKtitle && this.state.CHKcontent){
-          this.state.chkOK = true;
-      } else {
-          this.state.chkOK = false;
-      }
+    WallModeratePost({commit},PostId){
+      let Counter = 0;
+      // Chargement du post (Axios)
+      axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content")
+      .then(res =>{
+        console.log(res);
+        commit('setCurrentPostId',PostId);
+        Counter = res.data.length;
+        for(let i=0; i < Counter; i++){
+          // console.log('B-For');
+          if(res.data[i].id == PostId){
+            commit('setCurrentMtitle',res.data[i].title);
+            console.log(this.state.Mtitle);
+            commit('setCurrentMcontent',res.data[i].content);
+            console.log(this.state.Mcontent);
+          }
+        }
+      })
+      .catch(err =>{
+          console.log(err);
+      });
     },
 
     EditPost({commit, dispatch}){
@@ -1092,21 +1093,15 @@ export default createStore({
           // Envoie des données en base
           console.log(res);
 
-          //SubOkay
+          //Sucess
           this.state.subOkay = true;
           this.state.subCompleted = true;
           commit('setLoading', false);
           console.log(this.state.Loading);
 
-          // Sucess
-          this.state.subOkay = true;
-          this.state.subCompleted = true;
-          this.state.chkOK = false;
-
           // Completed
           document.getElementById('TitleEdit').value = '';
           document.getElementById('ContentEdit').value = '';
-          this.state.subCompleted = true;
           commit('setLoading', false);
           dispatch("ResetFields");
 
@@ -1150,27 +1145,21 @@ export default createStore({
           // Envoie des données en base
           console.log(res);
 
-          //SubOkay
+          //Sucess
           this.state.subOkay = true;
           this.state.subCompleted = true;
           commit('setLoading', false);
           console.log(this.state.Loading);
 
-          // Sucess
-          this.state.subOkay = true;
-          this.state.subCompleted = true;
-          this.state.chkOK = false;
-
           // Completed
           document.getElementById('TitleMod').value = '';
           document.getElementById('ContentMod').value = '';
-          this.state.subCompleted = true;
           commit('setLoading', false);
           dispatch("ResetFields");
 
           $('#ModerateModal').modal('hide');
           commit('setWallReload', true);
-          console.log(this.Data.WallReload);
+          console.log(this.state.WallReload);
         })
         .catch(err =>{
           //WIP
@@ -1190,17 +1179,250 @@ export default createStore({
 
     },
 
-    ResetFields(){
-      this.EditTitle = this.state.Etitle;
-      console.log(this.state.EditTitle);
-      this.EditContent = this.state.Econtent;
-      console.log(this.state.EditContent);
+    ResetFields({commit}){
+      commit('setCurrentEtitle','');
+      commit('setCurrentEcontent','');
+      commit('setCurrentMtitle','');
+      commit('setCurrentMcontent','');
       this.state.subFailure = false;
       this.state.subOkay = false;
       this.state.subCompleted = false;
-      this.state.chkOK = false;
-      return this.state.Etitle, this.state.Econtent;
+    },
+
+    // Like & Dislike Post
+    LikePost({commit},PostId){
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+            config.headers.authorization = `Bearer ${this.state.Token}`;
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
+
+      axios.post(this.state.urlAPI+"/api/messages/"+PostId+"/vote/like")
+      .then(res =>{
+          // Like le post
+          console.log('Liked');
+          console.log(res);
+          commit('setLiked', true);
+          commit('setLikes', this.state.LikeCounter +=1);
+          console.log(this.state.LikeCounter);
+
+          // Rechargement du mur après opération
+          commit('setWallReload', true);
+          console.log(this.state.WallReload);
+      })
+      .catch(err =>{
+          axios.post(this.state.urlAPI+"/api/messages/"+PostId+"/vote/dislike")
+          .then(res=>{
+              // Dislike le post
+              console.log('Disliked');
+              console.log(res);
+              commit('setLiked', false);
+              commit('setLikes', this.state.LikeCounter -=1);
+              console.log(this.state.LikeCounter);
+
+              // Rechargement du mur après opération
+              commit('setWallReload', true);
+              console.log(this.state.WallReload);
+          })
+      });
+
+    },
+
+    DeletePost({commit},PostId){
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+          config.headers.authorization = `Bearer ${this.state.Token}`;
+          return config;
+        },
+        error => {
+          return Promise.reject(error);
+        }
+      );
+      if(this.state.isAdmin){
+        // Initialisation de la promesse vers l'API via AXIOS
+        axios.delete(this.state.urlAPI+'/api/messages/'+PostId+'/moderate')
+        .then(res =>{
+            console.log(res);
+
+            // Rechargement du mur après opération
+            commit('setWallReload', true);
+            console.log(this.state.WallReload);
+        })
+        .catch(err =>{
+            console.log(err);
+        });
+        console.log('Post Deleted');
+      } else {
+        // Initialisation de la promesse vers l'API via AXIOS
+        axios.delete(this.state.urlAPI+'/api/messages/'+PostId)
+        .then(res =>{
+            console.log(res);
+            // Rechargement du mur après opération
+            commit('setWallReload', true);
+            console.log(this.state.WallReload);
+        })
+        .catch(err =>{
+            console.log(err);
+        });
+        console.log('Post Deleted');
+      }      
+    },
+
+    // Send Comments
+    SubmitComment({commit},Post){
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+            config.headers.authorization = `Bearer ${this.state.Token}`;
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
+
+      let comment = document.getElementById('CP'+Post.id).value;
+      console.log(comment);
+      axios.post(this.state.urlAPI+"/api/messages/comment/"+Post.id+"/new/",{
+        comment : comment
+      })
+      .then(res =>{
+        // Sucess
+        document.getElementById('CP'+Post.id).value = '';
+        // this.ValueComment = false;
+        this.state.subOkay = true;
+        this.state.subCompleted = true;
+
+        // Rechargement du mur après opération
+        commit('setWallReload', true);
+        console.log(this.state.WallReload);
+        this.state.subOkay = false;
+
+      })
+      .catch(err =>{
+        // Faillure
+        this.state.subFailure = true;
+        this.state.subCompleted = true;
+      });
+
+    },
+
+    // Set OwnComment
+    SetOwnComment({},Username){
+      console.log('Methode - SetOwnComment : '+ Username);
+      if(Username == this.state.userName){
+          console.log(this.state.userName);
+          this.state.ownComment = true;
+          console.log("Own Comment!");
+          return Username;
+
+      } else {
+          console.log(this.state.userName);
+          this.state.ownComment = false;
+          console.log("No Own Comment");
+          return Username;
+      }
+    },
+
+    // Set OwnComment
+    SetOwnMessage({},Username){
+      console.log('Methode - SetOwnMessage : '+ Username);
+      if(Username == this.state.userName){
+          console.log(this.state.userName);
+          this.state.ownMessage = true;
+          console.log("Own Message!");
+          return Username;
+
+      } else {
+          console.log(this.state.userName);
+          this.state.ownMessage = false;
+          console.log("No Own Message");
+          return Username;
+      }
+    },
+
+    // Delete Comment
+    DeleteComment({commit},Comment){
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+            config.headers.authorization = `Bearer ${this.state.Token}`;
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
+      if(this.state.isAdmin){
+        axios.delete(this.state.urlAPI+"/api/messages/comment/"+Comment.messageId+"/"+Comment.id+"/moderate/")
+        .then(res=>{
+            console.log(res);
+            console.log('commentaire supprimé');
+            // Rechargement du mur après opération
+            commit('setWallReload', true);
+            console.log(this.state.WallReload);
+        })
+        .catch(err =>{
+            console.log(err);
+        });
+
+      } else {
+        axios.delete(this.state.urlAPI+"/api/messages/comment/"+Comment.messageId+"/"+Comment.id)
+        .then(res=>{
+          console.log(res);
+          console.log('commentaire supprimé');
+          // Rechargement du mur après opération
+          commit('setWallReload', true);
+          console.log(this.state.WallReload);
+        })
+        .catch(err =>{
+          console.log(err);
+        });
+      }
+    },
+
+    // Load & Reload Wall
+    WallLoad({commit}){
+      // Lors du chargement du composant, appeler les messages dans la BDD
+      // Initialisation de la promesse vers l'API via AXIOS
+
+      axios.all([
+        axios.get(this.state.urlAPI+'/api/messages/?order=updatedAt:DESC'),
+        axios.get(this.state.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
+      ])
+      .then(responseArr => {
+
+        commit('setLoading',true);
+        console.log(this.state.Loading);
+        this.state.Posts = responseArr[0].data;
+        console.log("Numbers of Posts: "+this.state.Posts.length);
+        console.log(this.state.Posts);
+        this.state.Comments = responseArr[1].data;
+        console.log("Numbers of Comments: "+this.state.Comments.length);
+        console.log(this.state.Comments);
+
+        if(this.state.Posts !=""){
+            commit('setNoData', false);
+            console.log("NoData : "+this.state.NoData);
+        }
+
+        commit('setLoading',false);
+        console.log(this.state.Loading);
+        commit('setWallReload', false);
+      })
+      .catch(err =>{
+        console.log(err);
+        commit('setLoading',false);
+        console.log(this.state.Loading);
+      });
     }
+
     //
   },
   modules: {

@@ -246,6 +246,7 @@ export default {
                 console.log('Post Deleted');
             }
         },
+        /*
         EditPost(PostId){
             // this.$store.dispatch("EditPost", PostId);
             let Counter = 0;
@@ -270,6 +271,7 @@ export default {
                 console.log(err);
             });
         },
+        */
         WallReload(data){
             this.$store.commit('setWallReload', data);
             console.log(this.Data.WallReload);

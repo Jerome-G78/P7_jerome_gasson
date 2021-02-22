@@ -11,28 +11,28 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="TitleMod">Titre : (Minimum 3 Caractères)</label>
-                        <input @keyup="ModerateVerify" type="text" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod" v-model="EditTitle">
+                        <input type="text" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod" v-model="ModerateTitle">
                     </div>
                     <div class="form-group">
                         <label for="ContentMod">Contenue : (Minimum 5 Caractères)</label>
-                        <textarea @keyup="ModerateVerify" class="form-control" id="ContentMod" placeholder="Champ de modération" rows="3" v-model="EditContent"></textarea>
+                        <textarea class="form-control" id="ContentMod" placeholder="Champ de modération" name="ContentMod" rows="3" v-model="ModerateContent"></textarea>
                     </div>
                     <div v-if="subOkay && subCompleted" class="alert alert-info">
                         <strong><i class="fas fa-info-circle"></i></strong> {{OnSucess}}.
-                        <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div v-if="!subOkay && subCompleted" class="alert alert-danger">
                         <strong><i class="fas fa-info-circle"></i></strong> {{OnError}}.
-                        <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button @click="Submit" v-if="chkOK" type="button" title="Modérer" class="btn btn-warning">Modérer</button>
+                    <button @click="Submit" type="button" title="Modérer" class="btn btn-warning">Modérer</button>
                     <button @click="ResetStats" type="button" title="Annuler" class="btn btn-danger" data-dismiss="modal">Annuler</button>
                 </div>
         
@@ -57,13 +57,11 @@ export default {
     },
 
     computed:{
+
         ...mapGetters([
             // Edit Post
-            'EditTitle',
-            'EditContent',
-            'CHKtitle',
-            'CHKcontent',
-            'chkOK',
+            'ModerateTitle',
+            'ModerateContent',
 
             // Status
             'WallReload',
@@ -76,15 +74,12 @@ export default {
 
     // Création de la logique du module
     methods:{
-        ModerateVerify(){
-            this.$store.dispatch("ModerateVerify");
-        },
         Submit(){
             this.$store.dispatch("ModeratePost");
         },
         ResetStats(){
             this.$store.dispatch("ResetFields");
-        }
+        },
     },
 
     mounted(){ 
