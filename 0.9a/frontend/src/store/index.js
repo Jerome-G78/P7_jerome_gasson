@@ -646,7 +646,6 @@ export default createStore({
           //WIP
           console.log(err);
           this.state.subFailure = true;
-          // this.subFail = err.error;
           commit('setLoading', false);
           console.log(this.state.Loading);
       });
@@ -694,6 +693,7 @@ export default createStore({
           console.log(this.state.Loading);
 
           // Recharger la page
+          dispatch("WallLoad");
           commit('setWallReload', true);
           console.log(this.state.WallReload);
       })
@@ -952,6 +952,7 @@ export default createStore({
               console.log(this.state.Loading);
 
               $('#NewMessage').modal('hide');
+              dispatch("WallLoad");
               commit('setWallReload', true);
               console.log(this.state.WallReload);
 
@@ -1000,6 +1001,7 @@ export default createStore({
               $('#NewMessage').modal('hide');
 
               // Recharger le mur
+              dispatch("WallLoad");
               commit('setWallReload', true);
               console.log(this.state.WallReload);
 
@@ -1115,6 +1117,7 @@ export default createStore({
           dispatch("ResetFields");
 
           $('#EditModal').modal('hide');
+          dispatch("WallLoad");
           commit('setWallReload', true);
           console.log(this.state.WallReload);
       })
@@ -1167,6 +1170,7 @@ export default createStore({
           dispatch("ResetFields");
 
           $('#ModerateModal').modal('hide');
+          dispatch("WallLoad");
           commit('setWallReload', true);
           console.log(this.state.WallReload);
         })
@@ -1199,7 +1203,7 @@ export default createStore({
     },
 
     // Like & Dislike Post
-    LikePost({commit},PostId){
+    LikePost({commit,dispatch},PostId){
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
@@ -1221,6 +1225,7 @@ export default createStore({
           console.log(this.state.LikeCounter);
 
           // Rechargement du mur après opération
+          dispatch("WallLoad");
           commit('setWallReload', true);
           console.log(this.state.WallReload);
       })
@@ -1235,6 +1240,7 @@ export default createStore({
               console.log(this.state.LikeCounter);
 
               // Rechargement du mur après opération
+              dispatch("WallLoad");
               commit('setWallReload', true);
               console.log(this.state.WallReload);
           })
@@ -1242,7 +1248,7 @@ export default createStore({
 
     },
 
-    DeletePost({commit},PostId){
+    DeletePost({commit,dispatch},PostId){
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
@@ -1260,6 +1266,7 @@ export default createStore({
             console.log(res);
 
             // Rechargement du mur après opération
+            dispatch("WallLoad");
             commit('setWallReload', true);
             console.log(this.state.WallReload);
         })
@@ -1273,6 +1280,7 @@ export default createStore({
         .then(res =>{
             console.log(res);
             // Rechargement du mur après opération
+            dispatch("WallLoad");
             commit('setWallReload', true);
             console.log(this.state.WallReload);
         })
@@ -1284,7 +1292,17 @@ export default createStore({
     },
 
     // Send Comments
-    SubmitComment({commit},Post){
+    CommentVerify({commit},PostId){
+      let Comment = document.getElementById('CP'+PostId).value;
+
+      if(Comment !=''){
+        commit('setValueComment', true);
+      } else {
+        commit('setValueComment', false);
+      }
+    },
+
+    SubmitComment({commit,dispatch},Post){
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
@@ -1313,6 +1331,8 @@ export default createStore({
         console.log(this.state.WallReload);
         this.state.subOkay = false;
         this.state.subCompleted = false;
+        this.state.ValueComment = false;
+        dispatch("WallLoad");
 
       })
       .catch(err =>{
@@ -1358,7 +1378,7 @@ export default createStore({
     },
 
     // Delete Comment
-    DeleteComment({commit},Comment){
+    DeleteComment({commit,dispatch},Comment){
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
@@ -1374,7 +1394,9 @@ export default createStore({
         .then(res=>{
             console.log(res);
             console.log('commentaire supprimé');
+
             // Rechargement du mur après opération
+            dispatch("WallLoad");
             commit('setWallReload', true);
             console.log(this.state.WallReload);
         })
@@ -1388,6 +1410,7 @@ export default createStore({
           console.log(res);
           console.log('commentaire supprimé');
           // Rechargement du mur après opération
+          dispatch("WallLoad");
           commit('setWallReload', true);
           console.log(this.state.WallReload);
         })
@@ -1430,6 +1453,7 @@ export default createStore({
         console.log(err);
         commit('setLoading',false);
         console.log(this.state.Loading);
+        commit('setWallReload', false);
       });
     }
 

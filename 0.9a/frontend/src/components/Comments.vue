@@ -88,13 +88,11 @@ export default {
     },
 
     mounted(){
-        this.$store.dispatch("WallLoad");
+        //
     },
 
     updated(){
-        if(this.WallReload == true){
-            this.$store.dispatch("WallLoad");
-        }
+        //
     }
 }
 </script>

@@ -58,8 +58,7 @@ export default {
 
     data(){
         return {
-            // Variables Local
-            ValueComment: false,
+            //
         }
     },
 
@@ -73,13 +72,6 @@ export default {
             'ownMessage',
             'Liked',
 
-            // Status
-            'WallReload',
-            'Loading',
-            'subOkay',
-            'subFailure',
-            'subCompleted',
-
             // Like Counters
             'LikesCounter',
 
@@ -89,21 +81,22 @@ export default {
             'ModerateTitle',
             'ModerateContent',
 
+            // Status
+            'WallReload',
+            'Loading',
+            'subOkay',
+            'subFailure',
+            'subCompleted',
+
             // Comments
-            // 'ValueComment'
+            'ValueComment'
         ]),
     },
 
     // Création de la logique du module
     methods:{
         CommentVerify(PostId){
-            let Comment = document.getElementById('CP'+PostId).value;
-
-            if(Comment !=''){
-                this.ValueComment = true;
-            } else {
-                this.ValueComment = false;
-            }
+            this.$store.dispatch("CommentVerify",PostId);
         },
         Submit(Post){
             this.$store.dispatch("SubmitComment",Post);
@@ -133,13 +126,11 @@ export default {
     },
 
     mounted(){
-        this.$store.dispatch("WallLoad");
+        //
     },
 
     updated(){
-        if(this.WallReload == true){
-            this.$store.dispatch("WallLoad");
-        }
+        //
     }
 }
 </script>
