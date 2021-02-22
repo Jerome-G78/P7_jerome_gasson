@@ -23,7 +23,7 @@
                             <input :id="'CP'+Post.id" @keyup="CommentVerify(Post.id)" type="text" class="form-control" placeholder="Commentez!" name="comment" maxlength="255"/>
                         </div>
                         <div v-if="Connected" class="col-2 align-items-center">
-                            <button :id="'CPS'+Post.id" @click="Submit(Post)" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
+                            <button v-if="ValueComment" :id="'CPS'+Post.id" @click="Submit(Post)" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
                         </div>
                     </div>
                     <hr>
@@ -59,7 +59,6 @@ export default {
     data(){
         return {
             // Variables Local
-            CHKcomment : false,
             ValueComment: false,
         }
     },
@@ -89,6 +88,9 @@ export default {
             'EditContent',
             'ModerateTitle',
             'ModerateContent',
+
+            // Comments
+            // 'ValueComment'
         ]),
     },
 

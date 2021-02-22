@@ -321,7 +321,7 @@ export default {
 
         axios.all([
             axios.get(this.urlAPI+'/api/messages/?order=updatedAt:DESC'),
-            axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
+            axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&order=updatedAt:DESC')
         ])
         .then(responseArr => {
 
@@ -357,7 +357,7 @@ export default {
             // Initialisation de la promesse vers l'API via AXIOS
             axios.all([
                 axios.get(this.urlAPI+'/api/messages/?order=updatedAt:DESC'),
-                axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
+                axios.get(this.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&order=updatedAt:DESC')
             ])
             .then(responseArr => {
 

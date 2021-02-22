@@ -37,6 +37,8 @@ export default createStore({
     Posts:[],
     Comments:[],
 
+    ValueComment:false,
+
     // Edit, Delete & Moderate Posts
     CurrentPostId:0,
     Etitle:'',
@@ -44,8 +46,6 @@ export default createStore({
 
     Mtitle:'',
     Mcontent:'',
-
-    // chkOK:false,
 
     // Likes
     LikesCounter : 0,
@@ -200,6 +200,10 @@ export default createStore({
       state.Comments = newValue;
     },
 
+    setValueComment(state, newValue){
+      state.ValueComment = newValue;
+    },
+
     // Admin Right
     setRightAdded(state, newValue){
       state.RightAdded = newValue;
@@ -317,6 +321,11 @@ export default createStore({
     },
     ModerateContent(state){
       return state.Mcontent;
+    },
+
+    // Comments
+    ValueComment(state){
+      return state.ValueComment;
     },
 
     // Liked Disliked
@@ -1295,7 +1304,7 @@ export default createStore({
       .then(res =>{
         // Sucess
         document.getElementById('CP'+Post.id).value = '';
-        // this.ValueComment = false;
+        this.state.ValueComment = false;
         this.state.subOkay = true;
         this.state.subCompleted = true;
 
@@ -1303,6 +1312,7 @@ export default createStore({
         commit('setWallReload', true);
         console.log(this.state.WallReload);
         this.state.subOkay = false;
+        this.state.subCompleted = false;
 
       })
       .catch(err =>{
@@ -1394,7 +1404,7 @@ export default createStore({
 
       axios.all([
         axios.get(this.state.urlAPI+'/api/messages/?order=updatedAt:DESC'),
-        axios.get(this.state.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&updatedAt:DESC')
+        axios.get(this.state.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&order=updatedAt:DESC')
       ])
       .then(responseArr => {
 
