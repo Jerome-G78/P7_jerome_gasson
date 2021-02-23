@@ -22,12 +22,6 @@ export default {
     components: {
         PostS, CommentS
     },
-
-    data(){
-        return {
-            //
-        }
-    },
     
     computed:{
 
@@ -63,16 +57,6 @@ export default {
 
             'NoData'
         ]),
-
-        GetEtitle(){
-            this.EditTitle = this.$store.state.Etitle;
-            return this.$store.state.Etitle;
-        },
-
-        GetEContent(){
-            this.EditContent = this.$store.state.Econtent;
-            return this.$store.state.Econtent;
-        },
     },
     
     // Création de la logique du module

@@ -1,27 +1,26 @@
 <template>
     <div>
-        <div v-for="Comment in Comments" :key="Comment.id" :id="'P'+Comment.messageId+'C'+Comment.id+'U'+Comment.username" class="row justify-content-end">
+        <div v-for="Comment in Comments" :key="Comment.id" class="row justify-content-end">
             <span v-show="SetOwnComment(Comment.username)"></span>
-            <!-- Verifier la correspondance du PostId pour affichage -->
-            <!-- <div v-if="Comment.messageId == Post.id"> -->
-                <div v-if="Connected && (isAdmin || ownComment)" class="CommentDeleteButton col-10">
-                    <p class="Comment">
-                        <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
-                        {{Comment.comment}}
-                    </p>
-                </div>
-                <div class="col-2" v-if="Connected && (isAdmin || ownComment)">
-                    <button @click="DeleteComment(Comment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
-                </div>
-                <div v-else class="col-12">
-                    <p class="Comment">
-                        <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
-                        {{Comment.comment}}
-                    </p>
-                </div>
-            <!--</div> -->
+            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || ownComment)" class="CommentDeleteButton col-10">
+                <p class="Comment">
+                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
+                    {{Comment.comment}}
+                </p>
+            </div>
+            <div class="col-2" v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || ownComment)">
+                <button @click="DeleteComment(Comment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+            </div>
+            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && !Connected" class="col-12">
+                <p class="Comment">
+                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
+                    {{Comment.comment}}
+                </p>
+            </div>
+            <span v-else-if="getCommentById(Comment.messageId, Post.id) != Post.id && !Connected"><i class="fas fa-comment-slash"></i> {{NoComments}}</span>
+            <span v-else-if="getCommentById(Comment.messageId, Post.id) != Post.id && Connected"><i class="fas fa-comment-slash"></i> {{NoComments}}</span>
         </div>
-        <span v-if="Comments.length == 0"> <i class="fas fa-comment-slash"></i> {{NoComments}} </span>
+        <span v-if="!Comments.length"><i class="fas fa-comment-slash"></i> {{NoComments}}</span>
     </div>
 </template>
 
@@ -33,8 +32,8 @@ export default {
     name: 'CommentS',
 
     props:{
-        Posts:{
-            type:Array
+        Post:{
+            type:Object
         },
 
          Comments:{
@@ -47,6 +46,7 @@ export default {
             // Variables Local
             
             // Messages
+            NotConnected:"Veuillez vous connecter.",
             NoComments:"Aucuns commentaires à afficher"
         }
     },
@@ -65,12 +65,24 @@ export default {
             'Loading',
             'subOkay',
             'subFailure',
-            'subCompleted'
+            'subCompleted',
         ]),
     },
 
     // Création de la logique du module
     methods:{
+        getCommentById(Cid, Pid){
+            // console.log(this.$store.state.Comments, Pid, Cid);
+            // return this.$store.state.Comments.filter(comment => comment.messageId === Pid);
+            if(this.$store.state.Comments.filter(comment => comment.messageId === Pid)){
+                return Cid;
+            }
+            else {
+                return null;
+            }
+            // return this.$store.state.Comments.filter(comment => comment.messageId === Pid);
+        },
+
         DeleteComment(Comment){
             console.log(Comment);
             this.$store.dispatch("DeleteComment",Comment);

@@ -41,9 +41,11 @@ export default createStore({
 
     // Edit, Delete & Moderate Posts
     CurrentPostId:0,
+    chkEdit:false,
     Etitle:'',
     Econtent:'',
 
+    chkModerate:false,
     Mtitle:'',
     Mcontent:'',
 
@@ -137,14 +139,22 @@ export default createStore({
     },
 
     // Edit & Moderate Posts
+    
     setCurrentPostId(state, newValue){
       state.CurrentPostId = newValue;
+    },
+    setchkEdit(state, newValue){
+      state.chkEdit = newValue;
     },
     setCurrentEtitle(state, newValue){
       state.Etitle = newValue;
     },
     setCurrentEcontent(state, newValue){
       state.Econtent = newValue;
+    },
+
+    setchkModerate(state, newValue){
+      state.chkModerate = newValue;
     },
     setCurrentMtitle(state, newValue){
       state.Mtitle = newValue;
@@ -310,11 +320,18 @@ export default createStore({
     },
 
     // Edit Post | Moderate post
+    chkEdit(state){
+      return state.chkEdit;
+    },
     EditTitle(state){
       return state.Etitle;
     },
     EditContent(state){
       return state.Econtent;
+    },
+
+    chkModerate(state){
+      return state.chkModerate;
     },
     ModerateTitle(state){
       return state.Mtitle;
@@ -323,7 +340,6 @@ export default createStore({
       return state.Mcontent;
     },
 
-    // Comments
     ValueComment(state){
       return state.ValueComment;
     },
@@ -1035,6 +1051,54 @@ export default createStore({
     },
 
     // Edit Post | Moderate Post
+    VerifyEditPost({commit}){
+      let CHKtitle = document.getElementById("TitleEdit").value;
+      let CHKContent = document.getElementById("ContentEdit").value;
+      console.log(CHKtitle, CHKContent);
+
+      if(CHKtitle.length > 3){
+        commit('setCurrentEtitle', CHKtitle);
+      } else {
+        commit('setCurrentEtitle', '');
+      }
+
+      if(CHKContent.length > 5){
+        commit('setCurrentEcontent', CHKContent);
+      } else {
+        commit('setCurrentEcontent', '');
+      }
+
+      if(CHKtitle.length > 3 && CHKContent.length > 5){
+        commit('setchkEdit', true);
+      } else {
+        commit('setchkEdit', false);
+      }
+    },
+
+    VerifyModeratePost({commit}){
+      let CHKtitle = document.getElementById("TitleMod").value;
+      let CHKContent = document.getElementById("ContentMod").value;
+      console.log(CHKtitle, CHKContent);
+
+      if(CHKtitle.length > 3){
+        commit('setCurrentMtitle', CHKtitle);
+      } else {
+        commit('setCurrentMtitle', '');
+      }
+
+      if(CHKContent.length > 5){
+        commit('setCurrentMcontent', CHKContent);
+      } else {
+        commit('setCurrentMcontent', '');
+      }
+
+      if(CHKtitle.length > 3 && CHKContent.length > 5){
+        commit('setchkModerate', true);
+      } else {
+        commit('setchkModerate', false);
+      }
+    },
+
     WallEditPost({commit},PostId){
       let Counter = 0;
       // Chargement du post (Axios)
@@ -1360,7 +1424,7 @@ export default createStore({
       }
     },
 
-    // Set OwnComment
+    // Set OwnMessage
     SetOwnMessage({},Username){
       console.log('Methode - SetOwnMessage : '+ Username);
       if(Username == this.state.userName){
@@ -1455,7 +1519,7 @@ export default createStore({
         console.log(this.state.Loading);
         commit('setWallReload', false);
       });
-    }
+    },
 
     //
   },

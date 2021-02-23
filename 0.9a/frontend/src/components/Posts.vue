@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <hr>
-                    <Comments :Posts="Posts" :Comments="Comments" />
+                    <Comments :Post="Post" :Comments="Comments" />
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@ export default {
         },
 
         Comments:{
-            type:Array
+            type:Object
         }
     },
 

@@ -11,11 +11,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="TitleMod">Titre : (Minimum 3 Caractères)</label>
-                        <input type="text" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod" v-model="ModerateTitle">
+                        <input @keyup="VerifyModeratePost" type="text" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod" v-model="ModerateTitle">
                     </div>
                     <div class="form-group">
                         <label for="ContentMod">Contenue : (Minimum 5 Caractères)</label>
-                        <textarea class="form-control" id="ContentMod" placeholder="Champ de modération" name="ContentMod" rows="3" v-model="ModerateContent"></textarea>
+                        <textarea @keyup="VerifyModeratePost" class="form-control" id="ContentMod" placeholder="Champ de modération" name="ContentMod" rows="3" v-model="ModerateContent"></textarea>
                     </div>
                     <div v-if="subOkay && subCompleted" class="alert alert-info">
                         <strong><i class="fas fa-info-circle"></i></strong> {{OnSucess}}.
@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button @click="Submit" type="button" title="Modérer" class="btn btn-warning">Modérer</button>
+                    <button v-if="chkModerate" @click="Submit" type="button" title="Modérer" class="btn btn-warning">Modérer</button>
                     <button @click="ResetStats" type="button" title="Annuler" class="btn btn-danger" data-dismiss="modal">Annuler</button>
                 </div>
         
@@ -60,6 +60,7 @@ export default {
 
         ...mapGetters([
             // Edit Post
+            'chkModerate',
             'ModerateTitle',
             'ModerateContent',
 
@@ -74,6 +75,9 @@ export default {
 
     // Création de la logique du module
     methods:{
+        VerifyModeratePost(){
+            this.$store.dispatch("VerifyModeratePost");
+        },
         Submit(){
             this.$store.dispatch("ModeratePost");
         },
