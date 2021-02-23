@@ -4,7 +4,7 @@
             <div class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
                 <div class="media-body">
                     <span v-show="SetOwnMessage(Post.User.username)"></span>
-                    <h4 class="UserBackground">{{Post.User.username}} <span class="inf"><span><i>(Edité le {{FormatDateTime(Post.updatedAt)}})</i></span></span></h4>
+                    <h4 class="UserBackground">{{Post.User.username}} <span class="inf"><span><i>(Créer le {{FormatDateTime(Post.updatedAt)}})</i></span></span></h4>
                     <h5 class="TitleBackground"><i>{{Post.title}}</i></h5>
                     <hr/>
                     <img class="justify-content-center rounded img-fluid d-flex" :src="Post.attachment"/>

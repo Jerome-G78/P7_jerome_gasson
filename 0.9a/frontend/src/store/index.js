@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    urlAPI:'http://shadsoft.no-ip.org:3000',
+    urlAPI:'http://localhost:3000',
     footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
     Connected: false,
@@ -1490,8 +1490,8 @@ export default createStore({
       // Initialisation de la promesse vers l'API via AXIOS
 
       axios.all([
-        axios.get(this.state.urlAPI+'/api/messages/?order=updatedAt:DESC'),
-        axios.get(this.state.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&order=updatedAt:DESC')
+        axios.get(this.state.urlAPI+'/api/messages/?order=createdAt:DESC'),
+        axios.get(this.state.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&order=createdAt:DESC')
       ])
       .then(responseArr => {
 
