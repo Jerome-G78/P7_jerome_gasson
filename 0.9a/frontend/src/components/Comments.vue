@@ -7,8 +7,14 @@
                     {{Comment.comment}}
                 </p>
             </div>
-            <div class="col-2" v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)">
+            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)" class="col-2">
                 <button @click="DeleteComment(Comment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+            </div>
+            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && Comment.username != userName" class="col-12">
+                <p class="Comment">
+                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
+                    {{Comment.comment}}
+                </p>
             </div>
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && !Connected" class="col-12">
                 <p class="Comment">
@@ -16,8 +22,7 @@
                     {{Comment.comment}}
                 </p>
             </div>
-            <span v-else-if="getCommentById(Comment.messageId, Post.id) != Post.id && !Connected"><i class="fas fa-comment-slash"></i> {{NoComments}}</span>
-            <span v-else-if="getCommentById(Comment.messageId, Post.id) != Post.id && Connected"><i class="fas fa-comment-slash"></i> {{NoComments}}</span>
+            <!-- <span v-else><i class="fas fa-comment-slash"></i> {{NoComments}}</span> -->
         </div>
         <span v-if="!Comments.length"><i class="fas fa-comment-slash"></i> {{NoComments}}</span>
     </div>
@@ -43,6 +48,7 @@ export default {
     data(){
         return {
             // Variables Local
+            CommentsCounter:0,
             
             // Messages
             NotConnected:"Veuillez vous connecter.",
@@ -68,11 +74,11 @@ export default {
 
     // Création de la logique du module
     methods:{
-        getCommentById(Cid, Pid){
+        getCommentById(CMid, Pid){
             // console.log(this.$store.state.Comments, Pid, Cid);
             // return this.$store.state.Comments.filter(comment => comment.messageId === Pid);
             if(this.$store.state.Comments.filter(comment => comment.messageId === Pid)){
-                return Cid;
+                return CMid;
             }
             else {
                 return null;
