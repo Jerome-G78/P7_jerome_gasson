@@ -1429,7 +1429,7 @@ export default createStore({
 
       axios.all([
         axios.get(this.state.urlAPI+'/api/messages/?order=createdAt:DESC'),
-        axios.get(this.state.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,updatedAt&order=createdAt:DESC')
+        axios.get(this.state.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt&order=createdAt:DESC')
       ])
       .then(responseArr => {
 
