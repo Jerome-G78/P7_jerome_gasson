@@ -3,7 +3,7 @@
         <div v-for="Comment in Comments" :key="Comment.id" class="row justify-content-end">
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)" class="CommentDeleteButton col-10">
                 <p class="Comment">
-                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
+                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
                     {{Comment.comment}}
                 </p>
             </div>
@@ -12,13 +12,13 @@
             </div>
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && Comment.username != userName" class="col-12">
                 <p class="Comment">
-                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
+                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
                     {{Comment.comment}}
                 </p>
             </div>
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && !Connected" class="col-12">
                 <p class="Comment">
-                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
+                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
                     {{Comment.comment}}
                 </p>
             </div>
