@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    urlAPI:'https://shadsoft.fr:3000',
+    urlAPI:'http://localhost:3000',
     footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
     Connected: false,
@@ -877,19 +877,19 @@ export default createStore({
       let CHKContent = document.getElementById("Content").value;
       console.log(CHKtitle, CHKContent);
 
-      if(CHKtitle !=''){
+      if(CHKtitle.length > 0){
           commit('setNtitle', CHKtitle);
       } else {
-          commit('setNtitle', '');
+        return null;
       }
 
-      if(CHKContent !=''){
+      if(CHKContent.length > 0){
         commit('setNcontent', CHKContent);
       } else {
-        commit('setNcontent', '');
+        return null;
       }
 
-      if(CHKtitle !='' && CHKContent !=''){
+      if(CHKtitle.length > 2 && CHKContent.length > 4){
           this.state.chkCompleted = true;
       } else {
           this.state.chkCompleted = false;
@@ -1051,24 +1051,25 @@ export default createStore({
     },
 
     // Edit Post | Moderate Post
+
     VerifyEditPost({commit}){
       let CHKtitle = document.getElementById("TitleEdit").value;
       let CHKContent = document.getElementById("ContentEdit").value;
       console.log(CHKtitle, CHKContent);
 
-      if(CHKtitle.length > 3){
+      if(CHKtitle.length > 0){
         commit('setCurrentEtitle', CHKtitle);
       } else {
-        commit('setCurrentEtitle', '');
+        return null;
       }
 
-      if(CHKContent.length > 5){
+      if(CHKContent.length > 0){
         commit('setCurrentEcontent', CHKContent);
       } else {
-        commit('setCurrentEcontent', '');
+        return null;
       }
 
-      if(CHKtitle.length > 3 && CHKContent.length > 5){
+      if(CHKtitle.length > 2 && CHKContent.length > 4){
         commit('setchkEdit', true);
       } else {
         commit('setchkEdit', false);
@@ -1080,19 +1081,19 @@ export default createStore({
       let CHKContent = document.getElementById("ContentMod").value;
       console.log(CHKtitle, CHKContent);
 
-      if(CHKtitle.length > 3){
+      if(CHKtitle.length > 0){
         commit('setCurrentMtitle', CHKtitle);
       } else {
-        commit('setCurrentMtitle', '');
+        return null;
       }
 
-      if(CHKContent.length > 5){
+      if(CHKContent.length > 0){
         commit('setCurrentMcontent', CHKContent);
       } else {
-        commit('setCurrentMcontent', '');
+        return null;
       }
 
-      if(CHKtitle.length > 3 && CHKContent.length > 5){
+      if(CHKtitle.length > 2 && CHKContent.length > 4){
         commit('setchkModerate', true);
       } else {
         commit('setchkModerate', false);

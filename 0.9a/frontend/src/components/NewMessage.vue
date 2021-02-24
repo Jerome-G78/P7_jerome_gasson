@@ -44,6 +44,7 @@
 
                 <div class="modal-footer">
                     <button @click="Post" v-if="chkCompleted" type="button" title="Envoyer" class="btn btn-primary">Envoyer...</button>
+                    <button @click="ResetStats" type="button" title="Annuler" class="btn btn-danger" data-dismiss="modal">Annuler</button>
                 </div>
         
             </div>

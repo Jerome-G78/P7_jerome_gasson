@@ -38,7 +38,7 @@
                         
                         <div class="form-group">
                             <label for="Sbio">Ma biographie:</label>
-                            <textarea class="form-control" id="SBio" placeholder="Racontez-nous! Qui êtes vous? (facultatif)" rows="3"></textarea>
+                            <textarea class="form-control" id="SBio" placeholder="Racontez-nous! Qui êtes vous?" rows="3"></textarea>
                             <p class ="text-danger"><small><i>* : Champs obligatoires</i></small></p>
                         </div>
 
