@@ -1,3 +1,4 @@
+import { resolveTransitionHooks } from 'vue';
 import { createStore } from 'vuex'
 
 
@@ -390,7 +391,7 @@ export default createStore({
           commit('setCHKpassword', false);
       }
     },
-    Subscribe({commit}){
+    Subscribe({commit,dispatch}){
       commit('setLoading', true);
       console.log(this.state.Loading);
       let Email = document.getElementById('Semail').value;
@@ -400,31 +401,34 @@ export default createStore({
 
       // Initialisation de la promesse vers l'API via AXIOS
       axios.post(this.state.urlAPI+'/api/users/register/', {
-          email : Email,
-          username : Name,
-          password : Pwd,
-          bio : Bio
-      }).then(res => {
-          console.log(res);
-          this.state.subOkay = true;
-          // Cleaning
-          document.getElementById('Semail').value = '';
-          document.getElementById('Spwd').value = '';
-          document.getElementById('SpwdC').value = '';
-          document.getElementById('Sname').value = '';
-          document.getElementById('SBio').value = '';
+        email : Email,
+        username : Name,
+        password : Pwd,
+        bio : Bio
+      })
+      .then(res => {
+        console.log(res);
+        this.state.subOkay = true;
+        // Cleaning
+        document.getElementById('Semail').value = '';
+        document.getElementById('Spwd').value = '';
+        document.getElementById('SpwdC').value = '';
+        document.getElementById('Sname').value = '';
+        document.getElementById('SBio').value = '';
 
-          // Completed
-          this.state.subCompleted = true;
-          commit('setLoading', false);
-          console.log(this.state.Loading);
+        // Completed
+        this.state.subCompleted = true;
+        commit('setLoading', false);
+        console.log(this.state.Loading);
 
-          // Masquer la fenêtre Modal
-          $('#registrationModal').modal('hide');
+        // Masquer la fenêtre Modal
+        $('#registrationModal').modal('hide');
+        dispatch('ResetSignInStats');
       })
       .catch(err => {
       //WIP
       console.log(err);
+      this.subFail = err;
       this.state.subFailure = true;
       // Cleaning
       document.getElementById('Spwd').value = '';
@@ -1348,40 +1352,6 @@ export default createStore({
       });
 
     },
-
-    // Set OwnComment
-    /*
-    SetOwnComment({commit},Username){
-      console.log('Methode - SetOwnComment : '+ Username);
-      if(Username == this.state.userName){
-        commit('setOwnComment', true);
-        console.log("Own Comment!");
-        return true;
-
-      } else {
-        commit('setOwnComment', false);
-        console.log("No Own Comment");
-        return false;
-      }
-    },
-    */
-
-    // Set OwnMessage
-    /*
-    SetOwnMessage({commit},Username){
-      console.log('Methode - SetOwnMessage : '+ Username);
-      if(Username == this.state.userName){
-        commit('setOwnMessage', true);
-        console.log("Own Message!");
-        return true;
-
-      } else {
-        commit('setOwnMessage', false);
-        console.log("No Own Message");
-        return false;
-      }
-    },
-    */
 
     // Delete Comment
     DeleteComment({commit,dispatch},Comment){
