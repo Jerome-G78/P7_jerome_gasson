@@ -44,6 +44,9 @@ export default {
       this.$store.commit('setToken', localStorage.getItem("Token"));
       this.$store.commit('setIsAdmin', localStorage.getItem("isAdmin"));
       this.$store.commit('setLoading', false);
+      this.$store.dispatch("WallLoad");
+    } else {
+      this.$store.dispatch("WallLoad");
     }
   }
 }

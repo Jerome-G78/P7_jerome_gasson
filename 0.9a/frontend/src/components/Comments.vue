@@ -1,14 +1,13 @@
 <template>
     <div>
         <div v-for="Comment in Comments" :key="Comment.id" class="row justify-content-end">
-            <span v-show="SetOwnComment(Comment.username)"></span>
-            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || ownComment)" class="CommentDeleteButton col-10">
+            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)" class="CommentDeleteButton col-10">
                 <p class="Comment">
                     <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.updatedAt)}})</i></span></span><br/>
                     {{Comment.comment}}
                 </p>
             </div>
-            <div class="col-2" v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || ownComment)">
+            <div class="col-2" v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)">
                 <button @click="DeleteComment(Comment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
             </div>
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && !Connected" class="col-12">
@@ -58,7 +57,6 @@ export default {
             'Connected',
             'isAdmin',
             'userName',
-            'ownComment',
 
             // Status
             'Loading',
@@ -92,9 +90,6 @@ export default {
             if (DateTime) {
                 return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
             }
-        },
-        SetOwnComment(Username){
-            this.$store.dispatch("SetOwnComment",Username);
         },
     },
 

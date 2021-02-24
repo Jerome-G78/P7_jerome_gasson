@@ -1,9 +1,8 @@
 <template>
     <div>
         <div v-for="Post in Posts" :key="Post.id" :id="Post.id" class="Space row justify-content-center">
-            <div class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
+            <div  class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
                 <div class="media-body">
-                    <span v-show="SetOwnMessage(Post.User.username)"></span>
                     <h4 class="UserBackground">{{Post.User.username}} <span class="inf"><span><i>(Créer le {{FormatDateTime(Post.updatedAt)}})</i></span></span></h4>
                     <h5 class="TitleBackground"><i>{{Post.title}}</i></h5>
                     <hr/>
@@ -12,9 +11,9 @@
                     <hr v-if="Connected">
                     <div class="Buttons row justify-content-center">
                         <button @click.stop="Like(Post.id)" v-if="Connected" type="button" title="J'aime" class="btn btn-primary text-center"><i class="far fa-thumbs-up"></i> {{Post.likes}}</button>
-                        <button @click="EditPost(Post.id)" v-if="Connected && ownMessage" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
+                        <button @click="EditPost(Post.id)" v-if="Connected && Post.User.username == userName" type="button" title="Editer" class="btn btn-primary text-center" data-toggle="modal" data-target="#EditModal"><i class="fas fa-pen"></i></button>
                         <button @click="ModeratePost(Post.id)" v-if="Connected && isAdmin" type="button" title="Modérer" class="btn btn-danger text-center" data-toggle="modal" data-target="#ModerateModal"><i class="fas fa-exclamation-circle"></i></button>
-                        <button @click.stop="DeletePost(Post.id)" v-if="Connected && (isAdmin || ownMessage)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
+                        <button @click.stop="DeletePost(Post.id)" v-if="Connected && (isAdmin || Post.User.username == userName)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
                     </div>
                     <hr v-if="Connected"/>
                     <div v-if="Connected" class="row justify-content-start">
@@ -69,7 +68,6 @@ export default {
             'Connected',
             'isAdmin',
             'userName',
-            'ownMessage',
             'Liked',
 
             // Like Counters
@@ -118,9 +116,6 @@ export default {
             if (DateTime) {
                 return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
             }
-        },
-        SetOwnMessage(Username){
-            this.$store.dispatch("SetOwnMessage", Username);
         }
     },
 
