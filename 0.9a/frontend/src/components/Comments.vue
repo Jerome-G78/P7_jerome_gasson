@@ -61,7 +61,6 @@ export default {
             'ownComment',
 
             // Status
-            'WallReload',
             'Loading',
             'subOkay',
             'subFailure',

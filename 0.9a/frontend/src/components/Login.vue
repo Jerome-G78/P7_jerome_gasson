@@ -54,9 +54,6 @@ export default {
     name: 'Login',
     data(){
         return {
-            // Récupération des variables globales dans vue X
-            urlAPI:this.$store.state.urlAPI,
-
             // Messages
             subOK: "Connexion réussi.",
             subFail: "Une erreur est survenue!"
@@ -71,7 +68,6 @@ export default {
             'Connected',
 
             // Status
-            'WallReload',
             'Loading',
             'subOkay',
             'subFailure',

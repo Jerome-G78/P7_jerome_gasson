@@ -82,7 +82,6 @@ export default {
             'ModerateContent',
 
             // Status
-            'WallReload',
             'Loading',
             'subOkay',
             'subFailure',

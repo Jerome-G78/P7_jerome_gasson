@@ -44,8 +44,6 @@ export default {
       this.$store.commit('setToken', localStorage.getItem("Token"));
       this.$store.commit('setIsAdmin', localStorage.getItem("isAdmin"));
       this.$store.commit('setLoading', false);
-      // Rechargement du mur de messages
-      this.$store.commit('setWallReload', true);
     }
   }
 }

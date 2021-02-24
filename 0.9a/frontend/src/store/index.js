@@ -55,7 +55,6 @@ export default createStore({
 
     // Loading
     Loading:false,
-    WallReload:false,
     NoData:true,
 
     // Status
@@ -180,16 +179,6 @@ export default createStore({
     // NoMessage
     setNoData(state, newValue){
       state.NoData = newValue;
-    },
-
-    // Wall Load
-    setCommentForPost(state, newValue){
-      state.CommentForPost = newValue;
-    },
-
-    // Reload
-    setWallReload(state, newValue){
-      state.WallReload = newValue;
     },
 
     // Own Message & Own Comment
@@ -371,9 +360,6 @@ export default createStore({
     Loading(state){
       return state.Loading;
     },
-    WallReload(state){
-      return state.WallReload;
-    },
     subOkay(state){
       return state.subOkay;
     },
@@ -502,7 +488,7 @@ export default createStore({
 
     },
 
-    LogIn({commit}){
+    LogIn({commit,dispatch}){
       commit('setLoading', true);
       console.log("Loading : "+this.state.Loading);
       let Email = document.getElementById('Lemail').value;
@@ -550,8 +536,9 @@ export default createStore({
           $('#logginModal').modal('hide');
 
           // Recharger le mur
-          commit('setWallReload', true);
-          console.log(this.state.WallReload);
+          dispatch("WallLoad");
+          // commit('setWallReload', true);
+          // console.log(this.state.WallReload);
       })
       .catch(err =>{
           //WIP
@@ -1512,13 +1499,11 @@ export default createStore({
 
         commit('setLoading',false);
         console.log(this.state.Loading);
-        commit('setWallReload', false);
       })
       .catch(err =>{
         console.log(err);
         commit('setLoading',false);
         console.log(this.state.Loading);
-        commit('setWallReload', false);
       });
     },
 
