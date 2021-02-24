@@ -634,7 +634,7 @@ export default createStore({
       });
 
     },
-    Unsubscribe({commit}){
+    Unsubscribe({commit,dispatch}){
       // Authentification de l'utilisateur...
 
       // Configuration de l'en-tete AXIOS (intégration du token)
