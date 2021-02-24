@@ -88,7 +88,7 @@ export default createStore({
       state.CHKuserName = newValue;
     },
     setLoading(state, newValue){
-      state.CHKuserName = newValue;
+      state.Loading = newValue;
     },
     setConnected(state, newValue){
       state.Connected = newValue;
@@ -428,7 +428,6 @@ export default createStore({
       .catch(err => {
       //WIP
       console.log(err);
-      this.subFail = err;
       this.state.subFailure = true;
       // Cleaning
       document.getElementById('Spwd').value = '';
