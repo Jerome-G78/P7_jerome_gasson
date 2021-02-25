@@ -55,12 +55,6 @@ export default {
         Comments
     },
 
-    data(){
-        return {
-            //
-        }
-    },
-
     computed:{
         ...mapGetters([
             
