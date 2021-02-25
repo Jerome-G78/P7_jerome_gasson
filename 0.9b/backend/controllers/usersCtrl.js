@@ -248,7 +248,7 @@ module.exports = {
           return res.status(500).json({'error':'cannot update user profile'});
       }
     });
-  },
+  }, 
 
   deleteProfile: function(req, res, next){
     // delete cascade : true
