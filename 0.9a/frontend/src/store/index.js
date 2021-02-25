@@ -651,35 +651,35 @@ export default createStore({
       // Suppression du compte utilisateur...
       axios.delete(this.state.urlAPI+"/api/users/unsubscribe/")
       .then(res =>{
-          localStorage.clear();
-          this.state.subOkay = false;
-          this.state.subCompleted = false;
-          commit('setConnected', false);
-          localStorage.removeItem('Connected');
-          console.log("Connected : "+ this.state.Connected);
-          commit('setEmail', '');
-          localStorage.removeItem('Email');
-          console.log(this.state.email);
-          commit('setUserName', '');
-          localStorage.removeItem('userName');
-          console.log(this.state.userName);
-          commit('setUserID', 0);
-          localStorage.removeItem('userId');
-          console.log(this.state.userId);
-          commit('setToken', '');
-          localStorage.removeItem('Token');
-          console.log(this.state.Token);
-          commit('setIsAdmin', false);
-          localStorage.removeItem('isAdmin');
-          console.log(this.state.isAdmin);
-          commit('setLoading', false);
-          console.log(this.state.Loading);
+        localStorage.clear();
+        this.state.subOkay = false;
+        this.state.subCompleted = false;
+        commit('setConnected', false);
+        localStorage.removeItem('Connected');
+        console.log("Connected : "+ this.state.Connected);
+        commit('setEmail', '');
+        localStorage.removeItem('Email');
+        console.log(this.state.email);
+        commit('setUserName', '');
+        localStorage.removeItem('userName');
+        console.log(this.state.userName);
+        commit('setUserID', 0);
+        localStorage.removeItem('userId');
+        console.log(this.state.userId);
+        commit('setToken', '');
+        localStorage.removeItem('Token');
+        console.log(this.state.Token);
+        commit('setIsAdmin', false);
+        localStorage.removeItem('isAdmin');
+        console.log(this.state.isAdmin);
+        commit('setLoading', false);
+        console.log(this.state.Loading);
 
-          // Recharger la page
-          dispatch("WallLoad");
+        // Recharger la page
+        dispatch("WallLoad");
       })
       .catch(err =>{
-          console.log(err);
+        console.log(err);
       });
 
     },
