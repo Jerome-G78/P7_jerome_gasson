@@ -54,17 +54,17 @@ export default {
       console.log("Chargement des paramètres utilisateur...");
       this.$store.commit('setLoading', true);
       this.$store.commit('setConnected', localStorage.getItem("Connected"));
-      console.log(this.$store.state.Connected);
+      // console.log(this.$store.state.Connected);
       this.$store.commit('setEmail', localStorage.getItem("Email"));
-      console.log(this.$store.state.email);
+      // console.log(this.$store.state.email);
       this.$store.commit('setUserName', localStorage.getItem("userName"));
-      console.log(this.$store.state.userName);
+      // console.log(this.$store.state.userName);
       this.$store.commit('setUserID', localStorage.getItem("userId"));
-      console.log(this.$store.state.userId);
+      // console.log(this.$store.state.userId);
       this.$store.commit('setToken', localStorage.getItem("Token"));
-      console.log(this.$store.state.Token);
+      // console.log(this.$store.state.Token);
       this.$store.commit('setIsAdmin', localStorage.getItem("isAdmin"));
-      console.log(this.$store.state.isAdmin);
+      // console.log(this.$store.state.isAdmin);
       this.$store.dispatch("WallLoad");
       this.$store.commit('setLoading', false);
     } else {
