@@ -523,8 +523,7 @@ export default createStore({
           // Completed
           this.state.subOkay = false;
           this.state.subCompleted = false;
-          commit('setConnected', true);
-          console.log("User Connected : "+ this.state.Connected);
+          
           // Masquer la fenêtre Modal
           $('#logginModal').modal('hide');
 
@@ -738,33 +737,35 @@ export default createStore({
       this.state.RightRemoved = false;
       this.state.UConfirm = false;
     },
-    GoOut({commit}){
+    GoOut({commit,dispatch}){
       // Réinitialisation des paramètres Vue X...
       // Supression des informations de session utilisateur...
       this.state.subOkay = false;
       this.state.subCompleted = false;
-      commit('setEmail', '');
+      this.state.subFailure = false;
       localStorage.removeItem('Email');
+      commit('setEmail', '');
       console.log(this.state.email);
-      commit('setUserName', '');
       localStorage.removeItem('userName');
+      commit('setUserName', '');
       console.log(this.state.userName);
-      commit('setUserID', 0);
       localStorage.removeItem('userId');
+      commit('setUserID', 0);
       console.log(this.state.userId);
-      commit('setToken', '');
       localStorage.removeItem('Token');
+      commit('setToken', '');
       console.log(this.state.Token);
-      commit('setIsAdmin', false);
       localStorage.removeItem('isAdmin');
+      commit('setIsAdmin', false);
       console.log(this.state.isAdmin);
-      commit('setConnected', false);
       localStorage.removeItem('Connected');
-      console.log("Connected : "+ this.state.Connected);
+      commit('setConnected', false);
+      console.log(this.state.Connected);
       commit('setLoading', false);
       console.log(this.state.Loading);
 
       // Recharger la page internet
+      // dispatch("WallLoad");
       document.location.reload();
 
     },
@@ -1017,9 +1018,9 @@ export default createStore({
       document.getElementById('Content').value = '';
       console.log('Reset...');
       commit('setNtitle', '');
-      console.log(this.state.Ntitle);
+      // console.log(this.state.Ntitle);
       commit('setNcontent', '');
-      console.log(this.state.Ncontent);
+      // console.log(this.state.Ncontent);
       document.getElementById("Join").checked = false;
       this.state.Nattachment = 0,
       this.state.chkCompleted = false;

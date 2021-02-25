@@ -32,21 +32,6 @@ export default {
     HeaderNav, SignIn, Login, NewMessage, Profil, Wall, WallEditPost, WallModeratePost, Footer
   },
 
-  computed:{
-
-        ...mapGetters([
-            
-            // Utilisateur
-            'Connected',
-            'isAdmin',
-            'userName',
-
-            // Status
-            'WallReload',
-            'Loading'
-        ]),
-    },
-
   mounted(){
     // Vérifier si l'utilisateur est déjà connécté
     if(localStorage.Connected){
