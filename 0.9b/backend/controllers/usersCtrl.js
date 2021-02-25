@@ -103,7 +103,7 @@ module.exports = {
         return res.status(500).json({ 'error': 'cannot add user' });
       }
     });
-  },
+  }, 
 
   login: function(req, res, next){
     // Récupération des paramètres de connexion (User & Mdp)
