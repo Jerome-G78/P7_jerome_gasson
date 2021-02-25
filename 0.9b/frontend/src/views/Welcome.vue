@@ -49,7 +49,7 @@ export default {
 
   mounted(){
     // Vérifier si l'utilisateur est déjà connécté
-    if(localStorage.Connected){ // AlreadyConnected != null
+    if(localStorage.Connected){
       // Chargement des paramètres utilisateur...
       console.log("Chargement des paramètres utilisateur...");
       this.$store.commit('setLoading', true);
