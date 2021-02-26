@@ -10,7 +10,7 @@
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)" class="col-2">
                 <button @click="DeleteComment(Comment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
             </div>
-            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && Comment.username != userName" class="col-12">
+            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && !isAdmin && Comment.username != userName" class="col-12">
                 <p class="Comment">
                     <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
                     {{Comment.comment}}
