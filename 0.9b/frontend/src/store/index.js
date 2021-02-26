@@ -483,23 +483,14 @@ export default createStore({
         console.log(res);
         this.state.subOkay = true;
         this.state.subCompleted = true;
-        // commit('setConnected', true);
-        // localStorage.setItem("Connected", true);
         console.log("Connected : "+ this.state.Connected);
         commit('setEmail', res.data.email);
-        // localStorage.setItem("Email", this.state.email);
         console.log(this.state.email);
         commit('setUserName', res.data.username);
-        // localStorage.setItem("userName", this.state.userName);
         console.log("userName : "+this.state.userName);
         commit('setUserID', res.data.id);
-        // localStorage.setItem("userId", this.state.userId);
         console.log("userId : "+this.state.userId);
-        // commit('setToken', res.data.token);
-        // localStorage.setItem("Token", this.state.Token);
-        // console.log("User Token : "+this.state.Token);
         commit('setIsAdmin', res.data.isAdmin);
-        // localStorage.setItem("isAdmin", this.state.isAdmin);
         console.log("User is Admin : "+this.state.isAdmin);
 
         // Completed
@@ -514,7 +505,7 @@ export default createStore({
         console.log(err);
       });
     },
-    
+
     LogInVerify({commit}){
       let Email = document.getElementById('Lemail').value;
       let Pwd = document.getElementById('Lpwd').value;
