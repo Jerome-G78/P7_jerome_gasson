@@ -504,22 +504,22 @@ export default createStore({
           localStorage.setItem("Connected", true);
           console.log("Connected : "+ this.state.Connected);
           commit('setEmail', res.data.email);
-          localStorage.setItem("Email", this.state.email);
-          // console.log(this.state.email);
+          // localStorage.setItem("Email", this.state.email);
+          console.log("Adress Mail : "+this.state.email);
           document.getElementById('Lemail').value = '';
           document.getElementById('Lpwd').value = '';
           commit('setUserName', res.data.userName);
-          localStorage.setItem("userName", this.state.userName);
-          // console.log("userName : "+this.state.userName);
+          // localStorage.setItem("userName", this.state.userName);
+          console.log("userName : "+this.state.userName);
           commit('setUserID', res.data.userId);
-          localStorage.setItem("userId", this.state.userId);
-          // console.log(this.state.userId);
+          // localStorage.setItem("userId", this.state.userId);
+          console.log("user Id : "+this.state.userId);
           commit('setToken', res.data.token);
           localStorage.setItem("Token", this.state.Token);
-          // console.log("User Token : "+this.state.Token);
+          console.log("User Token : "+this.state.Token);
           commit('setIsAdmin', res.data.isAdmin);
-          localStorage.setItem("isAdmin", this.state.isAdmin);
-          // console.log("User is Admin : "+this.state.isAdmin);
+          // localStorage.setItem("isAdmin", this.state.isAdmin);
+          console.log("User is Admin : "+this.state.isAdmin);
           commit('setLoading', false);
           console.log(this.state.Loading);
 
@@ -536,7 +536,8 @@ export default createStore({
       .catch(err =>{
           //WIP
           console.log(err);
-          this.state.subFailure = true;
+          localStorage.removeItem("Connected");
+          commit('setConnected', false);
           commit('setLoading', false);
           console.log(this.state.Loading);
       });
@@ -704,7 +705,7 @@ export default createStore({
 
     },
 
-    AlreadyConnected(){
+    AlreadyConnected({commit}){
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
@@ -718,11 +719,38 @@ export default createStore({
 
       axios.get(this.state.urlAPI+"/api/users/me")
       .then(res =>{
-          console.log(res);
-          this.state.bio = res.data.bio;
+        console.log(res);
+        this.state.subOkay = true;
+        this.state.subCompleted = true;
+        // commit('setConnected', true);
+        // localStorage.setItem("Connected", true);
+        console.log("Connected : "+ this.state.Connected);
+        commit('setEmail', res.data.email);
+        // localStorage.setItem("Email", this.state.email);
+        console.log(this.state.email);
+        commit('setUserName', res.data.username);
+        // localStorage.setItem("userName", this.state.userName);
+        console.log("userName : "+this.state.userName);
+        commit('setUserID', res.data.id);
+        // localStorage.setItem("userId", this.state.userId);
+        console.log("userId : "+this.state.userId);
+        // commit('setToken', res.data.token);
+        // localStorage.setItem("Token", this.state.Token);
+        // console.log("User Token : "+this.state.Token);
+        commit('setIsAdmin', res.data.isAdmin);
+        // localStorage.setItem("isAdmin", this.state.isAdmin);
+        console.log("User is Admin : "+this.state.isAdmin);
+
+        // Completed
+        this.state.subOkay = false;
+        this.state.subCompleted = false;
+        commit('setLoading', false);
+        console.log(this.state.Loading);
       })
       .catch(err =>{
-          console.log(err);
+        localStorage.removeItem("Connected");
+        commit('setConnected', false);
+        console.log(err);
       });
     },
     ResetProfilStats(){

@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 // @ is an alias to /src
 import HeaderNav from '@/components/HeaderNav.vue'
 import SignIn from '@/components/SignIn.vue'
@@ -30,18 +32,33 @@ export default {
     HeaderNav, SignIn, Login, NewMessage, Profil, Wall, WallEditPost, WallModeratePost, Footer
   },
 
+  computed:{
+
+      ...mapGetters([
+          
+        // Utilisateur
+        'Connected',
+        'isAdmin',
+
+        // Status
+        'Loading',
+
+        // Posts & Comments
+        'Posts',
+        'Comments',
+        'NoData'
+      ]),
+    },
+
   mounted(){
     // Vérifier si l'utilisateur est déjà connécté
-    if(localStorage.Connected){
+    console.log(localStorage.getItem("Connected"));
+    if(localStorage.getItem("Connected")){
       // Chargement des paramètres utilisateur...
       console.log("Chargement des paramètres utilisateur...");
       this.$store.commit('setLoading', true);
       this.$store.commit('setConnected', JSON.parse(localStorage.getItem("Connected")));
-      this.$store.commit('setEmail', localStorage.getItem("Email"));
-      this.$store.commit('setUserName', localStorage.getItem("userName"));
-      this.$store.commit('setUserID', localStorage.getItem("userId"));
       this.$store.commit('setToken', localStorage.getItem("Token"));
-      this.$store.commit('setIsAdmin', JSON.parse(localStorage.getItem("isAdmin")));
       this.$store.dispatch("AlreadyConnected");
       this.$store.commit('setLoading', false);
       this.$store.dispatch("WallLoad");

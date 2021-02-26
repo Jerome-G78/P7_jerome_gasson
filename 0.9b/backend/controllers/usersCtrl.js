@@ -178,7 +178,7 @@ module.exports = {
 
     // Si tout va bien, on fait un appel ORM(sequelize) pour récupérer les informations de l'utilisateur en BDD
     models.User.findOne({
-        attributes: ['id', 'email', 'username', 'bio'],
+        attributes: ['id', 'email', 'username', 'bio', 'isAdmin'],
         where: {id: userId}
     })
     .then(function(user){
@@ -631,5 +631,5 @@ module.exports = {
         return res.status(500).json({'error':'Unable to modify Rights!'});
       }
     });
-  }
+  },
 }
