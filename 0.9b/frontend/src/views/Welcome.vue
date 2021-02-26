@@ -52,8 +52,8 @@ export default {
 
   mounted(){
     // Vérifier si l'utilisateur est déjà connécté
-    console.log(localStorage.getItem("Connected"));
-    if(localStorage.getItem("Connected")){
+    // console.log(JSON.parse(localStorage.getItem("Connected")));
+    if(JSON.parse(localStorage.getItem("Connected"))){
       // Chargement des paramètres utilisateur...
       console.log("Chargement des paramètres utilisateur...");
       this.$store.commit('setLoading', true);

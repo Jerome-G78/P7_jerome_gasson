@@ -466,6 +466,55 @@ export default createStore({
     },
 
     //Login
+    AlreadyConnected({commit}){
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+            config.headers.authorization = `Bearer ${this.state.Token}`;
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
+
+      axios.get(this.state.urlAPI+"/api/users/me")
+      .then(res =>{
+        console.log(res);
+        this.state.subOkay = true;
+        this.state.subCompleted = true;
+        // commit('setConnected', true);
+        // localStorage.setItem("Connected", true);
+        console.log("Connected : "+ this.state.Connected);
+        commit('setEmail', res.data.email);
+        // localStorage.setItem("Email", this.state.email);
+        console.log(this.state.email);
+        commit('setUserName', res.data.username);
+        // localStorage.setItem("userName", this.state.userName);
+        console.log("userName : "+this.state.userName);
+        commit('setUserID', res.data.id);
+        // localStorage.setItem("userId", this.state.userId);
+        console.log("userId : "+this.state.userId);
+        // commit('setToken', res.data.token);
+        // localStorage.setItem("Token", this.state.Token);
+        // console.log("User Token : "+this.state.Token);
+        commit('setIsAdmin', res.data.isAdmin);
+        // localStorage.setItem("isAdmin", this.state.isAdmin);
+        console.log("User is Admin : "+this.state.isAdmin);
+
+        // Completed
+        this.state.subOkay = false;
+        this.state.subCompleted = false;
+        commit('setLoading', false);
+        console.log(this.state.Loading);
+      })
+      .catch(err =>{
+        localStorage.removeItem("Connected");
+        commit('setConnected', false);
+        console.log(err);
+      });
+    },
+    
     LogInVerify({commit}){
       let Email = document.getElementById('Lemail').value;
       let Pwd = document.getElementById('Lpwd').value;
@@ -705,54 +754,6 @@ export default createStore({
 
     },
 
-    AlreadyConnected({commit}){
-      // Configuration de l'en-tete AXIOS (intégration du token)
-      axios.interceptors.request.use(
-        config => {
-            config.headers.authorization = `Bearer ${this.state.Token}`;
-            return config;
-        },
-        error => {
-            return Promise.reject(error);
-        }
-      );
-
-      axios.get(this.state.urlAPI+"/api/users/me")
-      .then(res =>{
-        console.log(res);
-        this.state.subOkay = true;
-        this.state.subCompleted = true;
-        // commit('setConnected', true);
-        // localStorage.setItem("Connected", true);
-        console.log("Connected : "+ this.state.Connected);
-        commit('setEmail', res.data.email);
-        // localStorage.setItem("Email", this.state.email);
-        console.log(this.state.email);
-        commit('setUserName', res.data.username);
-        // localStorage.setItem("userName", this.state.userName);
-        console.log("userName : "+this.state.userName);
-        commit('setUserID', res.data.id);
-        // localStorage.setItem("userId", this.state.userId);
-        console.log("userId : "+this.state.userId);
-        // commit('setToken', res.data.token);
-        // localStorage.setItem("Token", this.state.Token);
-        // console.log("User Token : "+this.state.Token);
-        commit('setIsAdmin', res.data.isAdmin);
-        // localStorage.setItem("isAdmin", this.state.isAdmin);
-        console.log("User is Admin : "+this.state.isAdmin);
-
-        // Completed
-        this.state.subOkay = false;
-        this.state.subCompleted = false;
-        commit('setLoading', false);
-        console.log(this.state.Loading);
-      })
-      .catch(err =>{
-        localStorage.removeItem("Connected");
-        commit('setConnected', false);
-        console.log(err);
-      });
-    },
     ResetProfilStats(){
       document.getElementById('Search').value = '';
       document.getElementById('Bio').value = '';
