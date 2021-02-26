@@ -740,7 +740,7 @@ export default createStore({
       this.state.RightRemoved = false;
       this.state.UConfirm = false;
     },
-    GoOut({commit,dispatch}){
+    GoOut({commit}){
       // Réinitialisation des paramètres Vue X...
       // Supression des informations de session utilisateur...
       this.state.subOkay = false;
@@ -768,12 +768,8 @@ export default createStore({
       console.log(this.state.Loading);
 
       // Recharger la page internet
-      dispatch("ResetSignInStats");
-      dispatch("ResetLoginStats");
-      dispatch("ResetNewMsgStats");
-      dispatch("ResetProfilStats");
-      dispatch("ResetFields");
-      dispatch("WallLoad");
+      document.location.reload();
+
     },
 
     // Profil (Administration)
