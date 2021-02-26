@@ -768,9 +768,12 @@ export default createStore({
       console.log(this.state.Loading);
 
       // Recharger la page internet
-      // dispatch("WallLoad");
-      document.location.reload();
-
+      dispatch("ResetSignInStats");
+      dispatch("ResetLoginStats");
+      dispatch("ResetNewMsgStats");
+      dispatch("ResetProfilStats");
+      dispatch("ResetFields");
+      dispatch("WallLoad");
     },
 
     // Profil (Administration)
