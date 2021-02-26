@@ -34,20 +34,14 @@ export default {
 
   computed:{
 
-      ...mapGetters([
-          
-        // Utilisateur
-        'Connected',
-        'isAdmin',
+    ...mapGetters([
+        
+      // Utilisateur
+      'Connected',
 
-        // Status
-        'Loading',
-
-        // Posts & Comments
-        'Posts',
-        'Comments',
-        'NoData'
-      ]),
+      // Status
+      'Loading',
+    ]),
     },
 
   mounted(){

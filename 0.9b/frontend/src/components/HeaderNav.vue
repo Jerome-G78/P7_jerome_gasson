@@ -17,6 +17,12 @@
             <span aria-hidden="true">&times;</span>
             </button>
         </div>
+        <div id="Warning" v-if="TokenExpired" class="alert alert-danger">
+            Bonjour {{userName}}, votre session à exiprer, veuillez vous reconnecter.
+            <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button> -->
+        </div>
     </header>
 </template>
 
@@ -29,7 +35,8 @@ export default {
     computed:{
         ...mapGetters([
             'userName',
-            'Connected'
+            'Connected',
+            'TokenExpired'
         ]),
     },
     // Création de la logique du module

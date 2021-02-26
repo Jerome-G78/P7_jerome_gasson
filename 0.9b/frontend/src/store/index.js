@@ -7,11 +7,12 @@ export default createStore({
     urlAPI:'http://shadsoft.no-ip.org:3000',
     footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
+
+    // Profil
     Connected: false,
     isAdmin: false,
     Token:'',
-
-    // Profil
+    TokenExpired:false,
     userId:0,
     userName:'',
     email:'',
@@ -114,6 +115,10 @@ export default createStore({
 
     setToken(state, newValue){
       state.Token = newValue;
+    },
+
+    setTokenExpired(state, newValue){
+      state.TokenExpired = newValue;
     },
 
     setBioEdit(state, newValue){
@@ -258,6 +263,11 @@ export default createStore({
     userToken(state){
       return state.Token;
     },
+
+    TokenExpired(state){
+      return state.TokenExpired;
+    },
+
     Bio(state){
       return state.bio;
     },
@@ -485,7 +495,7 @@ export default createStore({
         this.state.subCompleted = true;
         console.log("Connected : "+ this.state.Connected);
         commit('setEmail', res.data.email);
-        console.log(this.state.email);
+        console.log("E-Mail : "+this.state.email);
         commit('setUserName', res.data.username);
         console.log("userName : "+this.state.userName);
         commit('setUserID', res.data.id);
@@ -502,6 +512,7 @@ export default createStore({
       .catch(err =>{
         localStorage.removeItem("Connected");
         commit('setConnected', false);
+        commit('setTokenExpired', true);
         console.log(err);
       });
     },
@@ -564,6 +575,7 @@ export default createStore({
           console.log(this.state.Loading);
 
           // Completed
+          commit('setTokenExpired', false);
           this.state.subOkay = false;
           this.state.subCompleted = false;
           
