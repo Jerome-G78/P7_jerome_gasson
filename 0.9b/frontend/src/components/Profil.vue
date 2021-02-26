@@ -137,7 +137,6 @@ export default {
             'RightRemoved',
 
             // Status
-            'WallReload',
             'Loading',
             'subOkay',
             'subFailure',
@@ -177,10 +176,7 @@ export default {
         },
     },
     mounted(){
-        if(this.Connected == true){
-            this.$store.dispatch("AlreadyConnected");
-        }
-
+        //
     }
 }
 </script>

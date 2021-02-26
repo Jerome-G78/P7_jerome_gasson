@@ -227,6 +227,9 @@ export default createStore({
     NoData(state){
       return state.NoData;
     },
+    Footer(state){
+      return state.footer;
+    },
 
     //SignIn
     CHKeMail(state){

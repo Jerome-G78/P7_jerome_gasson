@@ -1,16 +1,19 @@
 <template>
     <footer class="bg-light text-center">
-        <p class="col-sm-12"> {{footer}} </p>
+        <p class="col-sm-12"> {{Footer}} </p>
     </footer>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'Footer',
-    data(){
-        return {
-            footer:this.$store.state.footer
-        }
+
+    computed:{
+        ...mapGetters([
+            'Footer'
+        ])
     }
 }
 </script>

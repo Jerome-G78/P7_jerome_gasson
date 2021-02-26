@@ -48,7 +48,7 @@ export default {
     data(){
         return {
             // Variables Local
-            CommentsCounter:0,
+            // CommentsCounter:0,
             
             // Messages
             NotConnected:"Veuillez vous connecter.",
@@ -80,10 +80,6 @@ export default {
             if(this.$store.state.Comments.filter(comment => comment.messageId === Pid)){
                 return CMid;
             }
-            else {
-                return null;
-            }
-            // return this.$store.state.Comments.filter(comment => comment.messageId === Pid);
         },
 
         DeleteComment(Comment){

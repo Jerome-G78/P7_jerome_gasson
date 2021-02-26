@@ -1,5 +1,6 @@
 <template>
     <div>
+        <p> Status Administrateur : {{typeof isAdmin}} | Status Connected : {{typeof Connected}}</p>
         <div v-if="Loading" class="spinner-border text-primary text-center" id="WallLoad">
             <p>Chargement des messages... </p>
         </div>
@@ -30,31 +31,13 @@ export default {
             // Utilisateur
             'Connected',
             'isAdmin',
-            'userName',
-            'ownMessage',
-            'ownComment',
-            'Liked',
-
-            // Like Counters
-            'LikesCounter',
-
-            // Edit & Moderate
-            'EditTitle',
-            'EditContent',
-            'ModerateTitle',
-            'ModerateContent',
 
             // Status
-            'WallReload',
             'Loading',
-            'subOkay',
-            'subFailure',
-            'subCompleted',
 
             // Posts & Comments
             'Posts',
             'Comments',
-
             'NoData'
         ]),
     },
