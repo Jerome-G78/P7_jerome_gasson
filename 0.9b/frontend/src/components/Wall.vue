@@ -1,6 +1,5 @@
 <template>
     <div>
-        <p> Status Administrateur : {{typeof isAdmin}} | Status Connected : {{typeof Connected}}</p>
         <div v-if="Loading" class="spinner-border text-primary text-center" id="WallLoad">
             <p>Chargement des messages... </p>
         </div>
