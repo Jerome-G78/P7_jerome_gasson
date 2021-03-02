@@ -40,9 +40,9 @@ exports.router = (function(){
     apiRouter.delete('/messages/comment/:messageId/:commentId/', commentCtrl.deleteMyComment);
 
     // Moderation
-    apiRouter.put('/messages/:messageId/moderate/', messagesCtrl.moderateMessage);
+    apiRouter.put('/messages/:messageId/moderate/', multer, messagesCtrl.moderateMessage);
     apiRouter.delete('/messages/:messageId/moderate/', multer, messagesCtrl.deleteMessage);
-    apiRouter.delete('/messages/comment/:messageId/:commentId/moderate/', commentCtrl.deleteComment);
+    apiRouter.delete('/messages/comment/:messageId/:commentId/moderate/', multer, commentCtrl.deleteComment);
 
     // Likes routes
     apiRouter.post('/messages/:messageId/vote/like', likesCtrl.likePost);

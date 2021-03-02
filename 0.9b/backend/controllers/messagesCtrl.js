@@ -25,7 +25,7 @@ module.exports = {
         let title = req.body.title;
         let content = req.body.content;
         let image = req.body.image;
-        let attachment = req.body.attachment;
+        let attachment = JSON.parse(req.body.attachment);
         let mediaUrl = "";
 
         console.log(title + " | " + content + " | " + attachment);
@@ -189,14 +189,18 @@ module.exports = {
         let userId = jwtUtils.getUserId(headerAuth);
 
         // Params (recupération du title & du contenue) & de l'état Admin - et de l'image si existante
+        let messageId = parseInt(req.params.messageId);
         let title = req.body.title;
         let content = req.body.content;
         let attachment = req.body.attachment;
-        let deleted = req.body.deleted;
+        let deleted = JSON.parse(req.body.deleted);
         let mediaUrl = "";
 
+        console.log('MiD: ' + messageId);
+        console.log('title: ' + title);
+        console.log('content: ' + content);
         console.log('attachment: ' + attachment);
-        console.log('Deleted: ' + deleted);
+        console.log('deleted: ' + deleted);
 
         if(deleted){
             console.log('data: ' + attachment);
@@ -250,7 +254,6 @@ module.exports = {
 
             function(userFound, done){
                 // Récupérer l'id du message concerné
-                let messageId = parseInt(req.params.messageId);
 
                 models.Message.findOne({
                     attributes: ['id', 'title', 'content'],
@@ -469,9 +472,10 @@ module.exports = {
         let title = req.body.title;
         let content = req.body.content;
         let attachment = req.body.attachment;
-        let deleted = req.body.deleted;
+        let deleted = JSON.parse(req.body.deleted);
         let mediaUrl = "";
 
+        console.log('MiD : ' + messageId);
         console.log('Attachment: ' + attachment, ' | Deleted: ' + deleted);
         console.log('Title: '+title, '| content: ' + content);
 

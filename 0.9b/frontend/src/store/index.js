@@ -4,7 +4,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    urlAPI:'http://localhost:3000',
+    urlAPI:'http://shadsoft.no-ip.org:3000',
     footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
 
@@ -1027,6 +1027,7 @@ export default createStore({
 
         // Completed
         console.log("Completed");
+        commit('setUploadFile', false);
       })
       .catch(err =>{
         console.log(err);
@@ -1095,10 +1096,21 @@ export default createStore({
       } else {
         console.log('NoAttatched');
         console.log(this.state.Ntitle, this.state.Ncontent);
+
+        let formData = new FormData();
+        formData.append("title",document.getElementById("Title").value);
+        formData.append("content",document.getElementById("Content").value);
+        formData.append("attachment",false);
+        // console.log(FormData);
+
         // Configuration de l'en-tete AXIOS (intégration du token)
         axios.interceptors.request.use(
           config => {
-            config.headers.authorization = `Bearer ${this.state.Token}`;
+            config.headers = {
+              'authorization': `Bearer ${this.state.Token}`,
+              'Accept': 'application/json',
+              'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
+            }
             return config;
           },
           error => {
@@ -1107,11 +1119,7 @@ export default createStore({
         );
 
         // Initialisation de la promesse vers l'API via AXIOS
-        axios.post(this.state.urlAPI+'/api/messages/new/', {
-          title: this.state.Ntitle,
-          content: this.state.Ncontent,
-          attachment : false
-        })
+        axios.post(this.state.urlAPI+'/api/messages/new/', formData)
         .then(res =>{
         // Sucess
         commit('setsubOkay', true);
@@ -1169,7 +1177,6 @@ export default createStore({
         console.log(this.state.chkEdit);
       }
     },
-
     VerifyModeratePost({commit,dispatch}){
       let CHKtitle = document.getElementById("TitleMod").value;
       let CHKContent = document.getElementById("ContentMod").value;
@@ -1241,17 +1248,26 @@ export default createStore({
     },
 
     EditPost({commit, dispatch}){
-      let TitleEdit = this.state.Etitle;
-      let ContentEdit = this.state.Econtent;
-      let AttachmentEdit = this.state.Eattachment;
-      let Deleted = JSON.parse(this.state.EDeleteFile);
+
+      let formData = new FormData();
+      // Ajout des autres éléments au FormData ( title, content, attachment )
+      formData.append("title",this.state.Etitle);
+      formData.append("content",this.state.Econtent);
+      formData.append("attachment",this.state.Eattachment);
+      formData.append("deleted",JSON.parse(this.state.EDeleteFile));
+      // console.log(FormData);
+
       console.log(this.state.CurrentPostId);
-      console.log(TitleEdit, ContentEdit, AttachmentEdit, Deleted);
 
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
-          config.headers.authorization = `Bearer ${this.state.Token}`;
+          config.headers = {
+            'authorization': `Bearer ${this.state.Token}`,
+            'Accept': 'application/json',
+            'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
+          }
+          // config.headers.authorization = `Bearer ${this.state.Token}`;
           return config;
         },
         error => {
@@ -1260,12 +1276,7 @@ export default createStore({
       );
 
       // Initialisation de la promesse vers l'API via AXIOS
-      axios.put(this.state.urlAPI+'/api/messages/'+this.state.CurrentPostId,{
-        title : TitleEdit,
-        content : ContentEdit,
-        attachment : AttachmentEdit,
-        deleted : Deleted
-      })
+      axios.put(this.state.urlAPI+'/api/messages/'+this.state.CurrentPostId,formData)
       .then(res =>{
         // Envoie des données en base
         console.log(res);
@@ -1294,22 +1305,122 @@ export default createStore({
       });
 
     },
+
+    EditUploadPreview({commit}){
+      let CHKtitle = document.getElementById("TitleEdit").value;
+      let CHKContent = document.getElementById("ContentEdit").value;
+      console.log(CHKtitle, CHKContent);
+      commit('setCurrentEtitle', CHKtitle);
+      commit('setCurrentEcontent', CHKContent);
+
+      let Status = document.getElementById("EditJoin").checked;
+      console.log("Status : "+Status);
+      
+      if(Status){
+        commit('setUploadFile', true);
+        console.log("Upload :" + this.state.uploadFile)
+      }
+      
+      let formData = new FormData();
+      let imageFile = document.querySelector("#EdituploadFile");
+      console.log(imageFile.value, imageFile.files[0]);
+      formData.append("image",imageFile.files[0]);
+
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+            config.headers = {
+              'authorization': `Bearer ${this.state.Token}`,
+              'Accept': 'application/json',
+              'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
+            }
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
+
+      // Initialisation de la promesse vers l'API via AXIOS
+      axios.post(this.state.urlAPI+'/api/messages/new/preview',formData)
+      .then(res =>{
+        console.log(res);
+        commit('setCurrentEattachment',res.data);
+        console.log(this.state.Eattachment);
+
+        // Completed
+        console.log("Completed");
+      })
+      .catch(err =>{
+        console.log(err);
+      });
+    },
+    EditDeletePreview({commit}){
+      let CHKtitle = document.getElementById("TitleEdit").value;
+      let CHKContent = document.getElementById("ContentEdit").value;
+      console.log(CHKtitle, CHKContent);
+      commit('setCurrentEtitle', CHKtitle);
+      commit('setCurrentEcontent', CHKContent);
+
+      let Status = document.getElementById("EditJoin").checked;
+      console.log("Status : "+Status);
+      
+      if(!Status){
+        commit('setUploadFile', false);
+        console.log("Upload : " + this.state.uploadFile)
+      }
+
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+          config.headers = {
+            'authorization': `Bearer ${this.state.Token}`,
+          }
+          return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
+
+      console.log(this.state.Npicture);
+
+      // Initialisation de la promesse vers l'API via AXIOS
+      axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.Npicture)
+      .then(res =>{
+        console.log(res);
+        commit("setNpicture",'');
+        console.log(this.state.Npicture);
+
+        // Completed
+        console.log("Completed");
+      })
+      .catch(err =>{
+        console.log(err);
+      });
+    },
+
     RemoveEAttachment({commit}){
       commit('setEDeleteFile', true);
     },
 
     ModeratePost({commit, dispatch}){
-      let TitleMod = this.state.Mtitle;
-      let ContentMod = this.state.Mcontent;
-      let AttachmentMod = this.state.Mattachment;
-      let Deleted = JSON.parse(this.state.MDeleteFile);
-      console.log(this.state.CurrentPostId);
-      console.log(TitleMod,ContentMod,AttachmentMod,Deleted);
+      let formData = new FormData();
+      // Ajout des autres éléments au FormData ( title, content, attachment, delete )
+      formData.append("title",this.state.Mtitle);
+      formData.append("content",this.state.Mcontent);
+      formData.append("attachment",this.state.Mattachment);
+      formData.append("deleted",JSON.parse(this.state.MDeleteFile));
+      // console.log(FormData);
 
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
-          config.headers.authorization = `Bearer ${this.state.Token}`;
+          config.headers = {
+            'authorization': `Bearer ${this.state.Token}`,
+            'Accept': 'application/json',
+            'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
+          }
           return config;
         },
         error => {
@@ -1319,12 +1430,7 @@ export default createStore({
 
       // Initialisation de la promesse vers l'API via AXIOS
       if(this.state.isAdmin){
-        axios.put(this.state.urlAPI+'/api/messages/'+this.state.CurrentPostId+'/moderate',{
-        title : TitleMod,
-        content : ContentMod,
-        attachment : AttachmentMod,
-        deleted : Deleted,
-        })
+        axios.put(this.state.urlAPI+'/api/messages/'+this.state.CurrentPostId+'/moderate',formData)
         .then(res =>{
           // Envoie des données en base
           console.log(res);
@@ -1358,11 +1464,57 @@ export default createStore({
         console.log(this.state.Loading);
       }
     },
-    RemoveMAttachment({commit}){
+    ModerateDeletePreview({commit}){
+      let CHKtitle = document.getElementById("TitleEdit").value;
+      let CHKContent = document.getElementById("ContentEdit").value;
+      console.log(CHKtitle, CHKContent);
+      commit('setCurrentEtitle', CHKtitle);
+      commit('setCurrentEcontent', CHKContent);
+
+      let Status = document.getElementById("EditJoin").checked;
+      console.log("Status : "+Status);
+      
+      if(!Status){
+        commit('setUploadFile', false);
+        console.log("Upload : " + this.state.uploadFile)
+      }
+
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+          config.headers = {
+            'authorization': `Bearer ${this.state.Token}`,
+          }
+          return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
+
+      console.log(this.state.Npicture);
+
+      // Initialisation de la promesse vers l'API via AXIOS
+      axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.Npicture)
+      .then(res =>{
+        console.log(res);
+        commit("setNpicture",'');
+        console.log(this.state.Npicture);
+
+        // Completed
+        console.log("Completed");
+      })
+      .catch(err =>{
+        console.log(err);
+      });
+    },
+    RemoveMAttachment({commit, dispatch}){
       commit('setMDeleteFile', true);
     },
 
     ResetFields({commit}){
+      document.getElementById("EditJoin").checked = false;
+      document.querySelector("#EdituploadFile").value = '';
       commit('setCurrentEtitle','');
       commit('setCurrentEcontent','');
       commit('setCurrentEattachment','');
@@ -1374,6 +1526,7 @@ export default createStore({
       commit('setsubFailure', false);
       commit('setsubOkay', false);
       commit('setsubCompleted', false);
+      commit('setUploadFile', false);
     },
 
     // Like & Dislike Post

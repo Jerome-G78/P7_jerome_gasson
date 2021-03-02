@@ -16,9 +16,15 @@
                     <div v-if="EditAttachment !='' && !EDeleteFile" class="form-group">
                         <label for="Picture"> Image </label>
                         <img class="col-4 justify-content-center rounded img-fluid d-flex" name="Picture" :src="EditAttachment"/>
-                        <button @click="RemoveAttachment" type="button" title="Supprimer" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
-                        <button @click="ModifyAttachment" type="button" title="Remplacer" class="btn btn-primary"><i class="fas fa-sync-alt"></i></button>
+                        <button @click="RemoveAttachment" type="button" title="Supprimer" class="btn btn-danger"><i class="far fa-trash-alt"></i></button><br/>
                     </div>
+
+                    <div v-show="EditAttachment ==''">
+                        <img v-if="uploadFile && Npicture !=''" class="col-12 justify-content-center rounded img-fluid d-flex" name="Picture" :src="Npicture"/>
+                        <input type="file" name="File" id="EdituploadFile"> <br/>
+                        <input @click="handleFileUpload" id="EditJoin" type="checkbox">joindre une image
+                    </div>
+
                     <div class="labelsAlign form-group">
                         <label for="ContentEdit">Contenue (Minimum 5 Caractères):</label>
                         <textarea class="form-control" id="ContentEdit" placeholder="Champ d'édition" name="ContentEdit" rows="3" v-model="EditContent"></textarea>
@@ -71,6 +77,8 @@ export default {
             'EditContent',
             'EditAttachment',
             'EDeleteFile',
+            'uploadFile',
+            'Npicture',
 
             // Status
             'WallReload',
@@ -86,9 +94,17 @@ export default {
         RemoveAttachment(){
             this.$store.dispatch("RemoveEAttachment");
         },
-        ModifyAttachment(){
-            this.$store.dispatch("");
+
+        handleFileUpload(){
+            let Stat = document.getElementById("EditJoin").checked;
+            console.log(Stat);
+            if(Stat){
+                this.$store.dispatch("EditUploadPreview");
+            } else {
+                this.$store.dispatch("EditDeletePreview");
+            }
         },
+
         Submit(){
             this.$store.dispatch("VerifyEditPost");
         },
