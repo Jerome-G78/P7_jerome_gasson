@@ -13,10 +13,10 @@
 
 	1.	GET /api/messages/ --------------: Permet de récupérer les messages (paramètrage possible)
 	2.	POST /api/messages/new/----------: Permet de poster un nouveau message (avec ou sans photo)
-    3.  POST /api/messages/new/preview/--: Permet de disposer d'un Preview de l'image choisie.
+    3.	POST /api/messages/new/preview/--: Permet de disposer d'un Preview de l'image choisie.
     4.	PUT /api/messages/:messageId/ ---: Permet de modifier votre message
     5.	DELETE /api/messages/:messageId/ : Permet de supprimer votre message
-    6.  DELETE /messages/new/preview/----: Permet de supprimer le Preview.
+    6.	DELETE /messages/new/preview/----: Permet de supprimer le Preview.
 
 ## III - LIKE/DISLIKE
 
