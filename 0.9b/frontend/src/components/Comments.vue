@@ -7,7 +7,7 @@
                     {{Comment.comment}}
                 </p>
             </div>
-            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)" class="col-2">
+            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)" class="col-3">
                 <button @click="DeleteComment(Comment)" type="button" title="Supprimer" class="btn btn-danger text-center"><i class="far fa-trash-alt"></i></button>
             </div>
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && !isAdmin && Comment.username != userName" class="col-12">
