@@ -13,8 +13,10 @@
 
 	1.	GET /api/messages/ --------------: Permet de récupérer les messages (paramètrage possible)
 	2.	POST /api/messages/new/----------: Permet de poster un nouveau message (avec ou sans photo)
-    3.	PUT /api/messages/:messageId/ ---: Permet de modifier votre message
-    4.	DELETE /api/messages/:messageId/ : Permet de supprimer votre message
+    3.  POST /api/messages/new/preview/--: Permet de disposer d'un Preview de l'image choisie.
+    4.	PUT /api/messages/:messageId/ ---: Permet de modifier votre message
+    5.	DELETE /api/messages/:messageId/ : Permet de supprimer votre message
+    6.  DELETE /messages/new/preview/----: Permet de supprimer le Preview.
 
 ## III - LIKE/DISLIKE
 
@@ -141,7 +143,21 @@
 - Réponse JSON : `| "id" | "title" | "content" | "attachment" | "UserId" | "updatedAt" | "createdAt" |`
 ---------------------------
 
-3.	PUT /api/messages/:messageId/ ...WIP
+3.	POST /api/messages/new/preview/
+> POST http://NomDuSite.com/api/messages/new/preview/
+- Permet de disposer d'un Preview de l'image choisie.
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+    ----------------------------
+    > Body | form-data
+    - image - requis
+
+- Réponse JSON : `| Adresse de L'image |`
+---------------------------
+
+4.	PUT /api/messages/:messageId/ ...WIP
 > PUT http://NomDuSite.com/api/messages/:messageId/
 - Permet de modifier votre message
 
@@ -158,7 +174,7 @@
 - Réponse JSON : `| "id" | "title" | "content" | "attachment" | "UserId" | "updatedAt" | "createdAt" |`
 ---------------------------
 
-4.	DELETE /api/messages/:messageId/
+5.	DELETE /api/messages/:messageId/
 > DELETE http://NomDuSite.com/api/messages/:messageId/
 - Permet de supprimer votre message
 
@@ -167,6 +183,20 @@
     - Authorization : Bearer TOKEN
 
 - Réponse JSON : ` "message": "message deleted successfully" `
+---------------------------
+
+6.	DELETE /api/messages/new/preview/
+> DELETE http://NomDuSite.com/api/messages/new/preview/?image=Adresse de L'image
+- Permet de supprimer le Preview.
+
+- Attendu : 
+    > Headers 
+    - Authorization : Bearer TOKEN
+    ----------------------------
+    > Params
+    - http://NomDuSite.com/api/messages/new/preview/?image=Adresse de L'image
+
+- Réponse JSON : `| Nom de L'image Supprimée |`
 ---------------------------
 
 ## [LIKE/DISLIKE]
