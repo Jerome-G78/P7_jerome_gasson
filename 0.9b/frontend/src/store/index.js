@@ -4,7 +4,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    urlAPI:'http://shadsoft.no-ip.org:3000',
+    urlAPI:'http://localhost:3000',
     footer:'Groupomania 2020 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
 
@@ -29,8 +29,7 @@ export default createStore({
     // New Message
     Ntitle:'',
     Ncontent:'',
-    Nattachment: 0,
-    Npicture:'', // Bug Chrome : impossible de charger un fichier image local - d:\fakepath... 
+    Npicture:'',
     chkCompleted:false,
     uploadFile:false,
 
@@ -45,10 +44,14 @@ export default createStore({
     chkEdit:false,
     Etitle:'',
     Econtent:'',
+    Eattachment:'',
+    EDeleteFile:false,
 
     chkModerate:false,
     Mtitle:'',
     Mcontent:'',
+    Mattachment:'',
+    MDeleteFile:false,
 
     // Likes
     LikesCounter : 0,
@@ -138,11 +141,14 @@ export default createStore({
     setNcontent(state, newValue){
       state.Ncontent = newValue;
     },
-    setNattachment(state, newValue){
-      state.Nattachment = newValue;
-    },
     setNpicture(state, newValue){
       state.Npicture = newValue;
+    },
+    setUploadFile(state, newValue){
+      state.uploadFile = newValue;
+    },
+    setchkCompleted(state, newValue){
+      state.chkCompleted = newValue;
     },
 
     // Edit & Moderate Posts
@@ -156,6 +162,12 @@ export default createStore({
     setCurrentEtitle(state, newValue){
       state.Etitle = newValue;
     },
+    setCurrentEattachment(state, newValue){
+      state.Eattachment = newValue;
+    },
+    setEDeleteFile(state, newValue){
+      state.EDeleteFile = newValue;
+    },
     setCurrentEcontent(state, newValue){
       state.Econtent = newValue;
     },
@@ -165,6 +177,12 @@ export default createStore({
     },
     setCurrentMtitle(state, newValue){
       state.Mtitle = newValue;
+    },
+    setCurrentMattachment(state, newValue){
+      state.Mattachment = newValue;
+    },
+    setMDeleteFile(state, newValue){
+      state.MDeleteFile = newValue
     },
     setCurrentMcontent(state, newValue){
       state.Mcontent = newValue;
@@ -220,6 +238,17 @@ export default createStore({
     },
     setfindedUser(state, newValue){
       state.findedUser = newValue;
+    },
+
+    // Status
+    setsubOkay(state, newValue){
+      state.subOkay = newValue;
+    },
+    setsubCompleted(state, newValue){
+      state.subCompleted = newValue;
+    },
+    setsubFailure(state, newValue){
+      state.subFailure = newValue;
     },
   },
 
@@ -312,12 +341,13 @@ export default createStore({
     chkCompleted(state){
       return state.chkCompleted;
     },
-    Nattachment(state){
-      return state.Nattachment;
+    Npicture(state){
+      return state.Npicture;
     },
     uploadFile(state){
       return state.uploadFile;
     },
+    
 
     // Edit Post | Moderate post
     chkEdit(state){
@@ -325,6 +355,12 @@ export default createStore({
     },
     EditTitle(state){
       return state.Etitle;
+    },
+    EditAttachment(state){
+      return state.Eattachment;
+    },
+    EDeleteFile(state){
+      return state.EDeleteFile;
     },
     EditContent(state){
       return state.Econtent;
@@ -335,6 +371,12 @@ export default createStore({
     },
     ModerateTitle(state){
       return state.Mtitle;
+    },
+    ModerateAttachment(state){
+      return state.Mattachment;
+    },
+    MDeleteFile(state){
+      return state.MDeleteFile;
     },
     ModerateContent(state){
       return state.Mcontent;
@@ -387,29 +429,27 @@ export default createStore({
       let Name = document.getElementById('Sname').value;
       // console.log(Email, Pwd, PwdC, Name);
 
-
       if(Email !=''){
-          commit('setCHKeMail', true);
-
+        commit('setCHKeMail', true);
       } else {
-          commit('setCHKeMail', false);
+        commit('setCHKeMail', false);
       }
 
       if(Name.length > 4){
-          commit('setCHKuserName', true);
+        commit('setCHKuserName', true);
       } else {
-          commit('setCHKuserName', false);
+        commit('setCHKuserName', false);
       }
 
       if(Pwd.length >= 8 && PwdC.length >= 8 && (Pwd == PwdC)){
-          commit('setComparePwds', false);
-          commit('setCHKpassword', true);
+        commit('setComparePwds', false);
+        commit('setCHKpassword', true);
       }
       if(Pwd !='' && PwdC !="" && (Pwd != PwdC)){
-          commit('setComparePwds', true);
+        commit('setComparePwds', true);
       }
       if(Pwd=='' || PwdC=='') {
-          commit('setCHKpassword', false);
+        commit('setCHKpassword', false);
       }
     },
     Subscribe({commit,dispatch}){
@@ -429,7 +469,7 @@ export default createStore({
       })
       .then(res => {
         console.log(res);
-        this.state.subOkay = true;
+        commit('setsubOkay', true);
         // Cleaning
         document.getElementById('Semail').value = '';
         document.getElementById('Spwd').value = '';
@@ -438,7 +478,7 @@ export default createStore({
         document.getElementById('SBio').value = '';
 
         // Completed
-        this.state.subCompleted = true;
+        commit('setsubCompleted', true);
         commit('setLoading', false);
         console.log(this.state.Loading);
 
@@ -449,14 +489,14 @@ export default createStore({
       .catch(err => {
       //WIP
       console.log(err);
-      this.state.subFailure = true;
+      commit('setsubFailure', true);
       // Cleaning
       document.getElementById('Spwd').value = '';
       document.getElementById('SpwdC').value = '';
       commit('setLoading', false);
 
       // Completed
-      this.state.subCompleted = true;
+      commit('setsubCompleted', true);
       commit('setLoading', false);
       console.log(this.state.Loading);
       });
@@ -467,9 +507,9 @@ export default createStore({
       document.getElementById('SpwdC').value = '';
       document.getElementById('Sname').value = '';
       document.getElementById('SBio').value = '';
-      this.state.subFailure = false;
-      this.state.subOkay = false;
-      this.state.subCompleted = false;
+      commit('setsubFailure', false);
+      commit('setsubOkay', false);
+      commit('setsubCompleted', false);
       commit('setCHKeMail', false);
       commit('setCHKpassword', false);
       commit('setCHKuserName', false);
@@ -480,19 +520,19 @@ export default createStore({
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
-            config.headers.authorization = `Bearer ${this.state.Token}`;
-            return config;
+          config.headers.authorization = `Bearer ${this.state.Token}`;
+          return config;
         },
         error => {
-            return Promise.reject(error);
+          return Promise.reject(error);
         }
       );
 
       axios.get(this.state.urlAPI+"/api/users/me")
       .then(res =>{
         console.log(res);
-        this.state.subOkay = true;
-        this.state.subCompleted = true;
+        commit('setsubOkay', true);
+        commit('setsubCompleted', true);
         console.log("Connected : "+ this.state.Connected);
         commit('setEmail', res.data.email);
         console.log("E-Mail : "+this.state.email);
@@ -504,8 +544,8 @@ export default createStore({
         console.log("User is Admin : "+this.state.isAdmin);
 
         // Completed
-        this.state.subOkay = false;
-        this.state.subCompleted = false;
+        commit('setsubOkay', false);
+        commit('setsubCompleted', false);
         commit('setLoading', false);
         console.log(this.state.Loading);
       })
@@ -522,15 +562,15 @@ export default createStore({
       let Pwd = document.getElementById('Lpwd').value;
 
       if(Email !=''){
-          commit('setCHKeMail', true);
+        commit('setCHKeMail', true);
       } else {
-          commit('setCHKeMail', false);
+        commit('setCHKeMail', false);
       }
 
       if(Pwd.length >= 8) {
-          commit('setCHKpassword', true);
+        commit('setCHKpassword', true);
       } else {
-          commit('setCHKpassword', false);
+        commit('setCHKpassword', false);
       }
 
     },
@@ -543,47 +583,43 @@ export default createStore({
 
       // Initialisation de la promesse vers l'API via AXIOS
       axios.post(this.state.urlAPI+'/api/users/login/', {
-          email: Email,
-          password: Pwd
+        email: Email,
+        password: Pwd
       })
       .then(res =>{
-          // Récupération des information du compte de l'utilisateur
-          // console.log(res);
-          this.state.subOkay = true;
-          this.state.subCompleted = true;
-          commit('setConnected', true);
-          localStorage.setItem("Connected", true);
-          console.log("Connected : "+ this.state.Connected);
-          commit('setEmail', res.data.email);
-          // localStorage.setItem("Email", this.state.email);
-          console.log("Adress Mail : "+this.state.email);
-          document.getElementById('Lemail').value = '';
-          document.getElementById('Lpwd').value = '';
-          commit('setUserName', res.data.userName);
-          // localStorage.setItem("userName", this.state.userName);
-          console.log("userName : "+this.state.userName);
-          commit('setUserID', res.data.userId);
-          // localStorage.setItem("userId", this.state.userId);
-          console.log("user Id : "+this.state.userId);
-          commit('setToken', res.data.token);
-          localStorage.setItem("Token", this.state.Token);
-          console.log("User Token : "+this.state.Token);
-          commit('setIsAdmin', res.data.isAdmin);
-          // localStorage.setItem("isAdmin", this.state.isAdmin);
-          console.log("User is Admin : "+this.state.isAdmin);
-          commit('setLoading', false);
-          console.log(this.state.Loading);
+        // Récupération des information du compte de l'utilisateur
+        // console.log(res);
+        commit('setsubOkay', true);
+        commit('setsubCompleted', true);
+        commit('setConnected', true);
+        localStorage.setItem("Connected", true);
+        console.log("Connected : "+ this.state.Connected);
+        commit('setEmail', res.data.email);
+        console.log("Adress Mail : "+this.state.email);
+        document.getElementById('Lemail').value = '';
+        document.getElementById('Lpwd').value = '';
+        commit('setUserName', res.data.userName);
+        console.log("userName : "+this.state.userName);
+        commit('setUserID', res.data.userId);
+        console.log("user Id : "+this.state.userId);
+        commit('setToken', res.data.token);
+        localStorage.setItem("Token", this.state.Token);
+        console.log("User Token : "+this.state.Token);
+        commit('setIsAdmin', res.data.isAdmin);
+        console.log("User is Admin : "+this.state.isAdmin);
+        commit('setLoading', false);
+        console.log(this.state.Loading);
 
-          // Completed
-          commit('setTokenExpired', false);
-          this.state.subOkay = false;
-          this.state.subCompleted = false;
-          
-          // Masquer la fenêtre Modal
-          $('#logginModal').modal('hide');
+        // Completed
+        commit('setTokenExpired', false);
+        commit('setsubOkay', false);
+        commit('setsubCompleted', false);
+        
+        // Masquer la fenêtre Modal
+        $('#logginModal').modal('hide');
 
-          // Recharger le mur
-          dispatch("WallLoad");
+        // Recharger le mur
+        dispatch("WallLoad");
       })
       .catch(err =>{
           //WIP
@@ -598,11 +634,11 @@ export default createStore({
     ResetLoginStats(){
       document.getElementById('Lemail').value = '';
       document.getElementById('Lpwd').value = '';
-      this.state.subFailure = false;
-      this.state.CHKeMail = false
-      this.state.CHKpassword = false;
-      this.state.subOkay = false;
-      this.state.subCompleted = false;
+      commit('setsubFailure', false);
+      commit('setCHKeMail', false);
+      commit('setCHKpassword', false);
+      commit('setsubOkay', false);
+      commit('setsubCompleted', false);
     },
 
     // Profil
@@ -610,19 +646,19 @@ export default createStore({
       let BioArea = document.getElementById("Bio").value;
 
       if(BioArea != ''){
-          commit('setBioEdit', true);
+        commit('setBioEdit', true);
       } else {
-          commit('setBioEdit', false);
+        commit('setBioEdit', false);
       }
     },
     GetProfil({commit}){
       axios.interceptors.request.use(
         config => {
-            config.headers.authorization = `Bearer ${this.state.Token}`;
-            return config;
+          config.headers.authorization = `Bearer ${this.state.Token}`;
+          return config;
         },
         error => {
-            return Promise.reject(error);
+          return Promise.reject(error);
         }
     );
 
@@ -657,43 +693,42 @@ export default createStore({
 
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
-          config => {
-              config.headers.authorization = `Bearer ${this.state.Token}`;
-              return config;
-          },
-          error => {
-              return Promise.reject(error);
-          }
+        config => {
+            config.headers.authorization = `Bearer ${this.state.Token}`;
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
       );
 
       // Initialisation de la promesse vers l'API via AXIOS
       axios.put(this.state.urlAPI+'/api/users/me/',{
-          bio: BioArea,
-          })
+        bio: BioArea,
+      })
       .then(res =>{
-          // Envoie des données en base
-          console.log(res);
-          this.bio = BioArea;
+        // Envoie des données en base
+        console.log(res);
+        this.bio = BioArea;
 
-          //SubOkay
-          commit('setBio', BioArea);
-          this.state.subOkay = true;
-          this.state.subCompleted = true;
-          commit('setLoading', false);
-          console.log(this.state.Loading);
+        //SubOkay
+        commit('setBio', BioArea);
+        commit('setsubOkay', true);
+        commit('setsubCompleted', true);
+        commit('setLoading', false);
+        console.log(this.state.Loading);
 
-          // Completed
-          document.getElementById('Bio').value = '';
-          this.state.subCompleted = true;
-          commit('setLoading', false);
-          console.log(this.state.Loading);
+        // Completed
+        document.getElementById('Bio').value = '';
+        commit('setsubCompleted', true);
+        commit('setLoading', false);
+        console.log(this.state.Loading);
       })
       .catch(err =>{
-          //WIP
-          console.log(err);
-          this.state.subFailure = true;
-          commit('setLoading', false);
-          console.log(this.state.Loading);
+        console.log(err);
+        commit('setsubFailure', true);
+        commit('setLoading', false);
+        console.log(this.state.Loading);
       });
 
     },
@@ -713,11 +748,11 @@ export default createStore({
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
-            config.headers.authorization = `Bearer ${this.state.Token}`;
-            return config;
+          config.headers.authorization = `Bearer ${this.state.Token}`;
+          return config;
         },
         error => {
-            return Promise.reject(error);
+          return Promise.reject(error);
         }
       );
 
@@ -725,25 +760,21 @@ export default createStore({
       axios.delete(this.state.urlAPI+"/api/users/unsubscribe/")
       .then(res =>{
         localStorage.clear();
-        this.state.subOkay = false;
-        this.state.subCompleted = false;
+        commit('setsubOkay', false);
+        commit('setsubCompleted', false);
         commit('setConnected', false);
         localStorage.removeItem('Connected');
         console.log("Connected : "+ this.state.Connected);
         commit('setEmail', '');
-        localStorage.removeItem('Email');
         console.log(this.state.email);
         commit('setUserName', '');
-        localStorage.removeItem('userName');
         console.log(this.state.userName);
         commit('setUserID', 0);
-        localStorage.removeItem('userId');
         console.log(this.state.userId);
         commit('setToken', '');
         localStorage.removeItem('Token');
         console.log(this.state.Token);
         commit('setIsAdmin', false);
-        localStorage.removeItem('isAdmin');
         console.log(this.state.isAdmin);
         commit('setLoading', false);
         console.log(this.state.Loading);
@@ -761,36 +792,32 @@ export default createStore({
       document.getElementById('Search').value = '';
       document.getElementById('Bio').value = '';
       document.getElementById('Confirmation').value = '';
-      this.state.BioEdit = false;
-      this.state.findUser = false;
-      this.state.findUserAdmin = false;
-      this.state.findedUser = '';
-      this.state.subOkay = false;
-      this.state.subFailure = false;
-      this.state.subCompleted = false;
-      this.state.RightAdded = false;
-      this.state.RightRemoved = false;
-      this.state.UConfirm = false;
+      commit('setBioEdit', false);
+      commit('setfindUser', false);
+      commit('setfindUserAdmin', false);
+      commit('setfindedUser', '');
+      commit('setsubOkay', false);
+      commit('setsubFailure', false);
+      commit('setsubCompleted', false);
+      commit('setRightAdded', false);
+      commit('setRightRemoved', false);
+      commit('setChkConfirm', false);
     },
     GoOut({commit}){
       // Réinitialisation des paramètres Vue X...
       // Supression des informations de session utilisateur...
-      this.state.subOkay = false;
-      this.state.subCompleted = false;
-      this.state.subFailure = false;
-      localStorage.removeItem('Email');
+      commit('setsubOkay', false);
+      commit('setsubCompleted', false);
+      commit('setsubFailure', false);
       commit('setEmail', '');
       console.log(this.state.email);
-      localStorage.removeItem('userName');
       commit('setUserName', '');
       console.log(this.state.userName);
-      localStorage.removeItem('userId');
       commit('setUserID', 0);
       console.log(this.state.userId);
       localStorage.removeItem('Token');
       commit('setToken', '');
       console.log(this.state.Token);
-      localStorage.removeItem('isAdmin');
       commit('setIsAdmin', false);
       console.log(this.state.isAdmin);
       localStorage.removeItem('Connected');
@@ -801,7 +828,6 @@ export default createStore({
 
       // Recharger la page internet
       document.location.reload();
-
     },
 
     // Profil (Administration)
@@ -810,134 +836,210 @@ export default createStore({
 
       axios.interceptors.request.use(
           config => {
-              config.headers.authorization = `Bearer ${this.state.Token}`;
-              return config;
+            config.headers.authorization = `Bearer ${this.state.Token}`;
+            return config;
           },
           error => {
-              return Promise.reject(error);
+            return Promise.reject(error);
           }
       );
 
       if(searchName !=''){
-          console.log(searchName);
-          // Code faire une recherche dans la BDD
-          axios.post(this.state.urlAPI+"/api/users/",{
-                  Username: searchName,
-          })
-          .then(res=>{
-              console.log('finded!');
-              this.state.findUser = true;
-              this.state.findUserAdmin = res.data.isAdmin;
-          })
-          .catch(err=>{
-              console.log('Not Found! ' + err);
-          });
+        console.log(searchName);
+        // Code faire une recherche dans la BDD
+        axios.post(this.state.urlAPI+"/api/users/",{
+          Username: searchName,
+        })
+        .then(res=>{
+          console.log('finded!');
+          commit('setfindUser', true);
+          commit('setfindUserAdmin', res.data.isAdmin);
+        })
+        .catch(err=>{
+          console.log('Not Found! ' + err);
+        });
       } else {
-          // Ne rien faire
-          this.state.findUser = false;
-          this.state.findUserAdmin = false;
-          console.log('Not Found!');
+        // Ne rien faire
+        commit('setfindUser', false);
+        commit('setfindUserAdmin', false);
+        console.log('Not Found!');
       }
     },
     addRight(){
       let searchName = document.getElementById("Search").value;
 
       axios.interceptors.request.use(
-          config => {
-              config.headers.authorization = `Bearer ${this.state.Token}`;
-              return config;
-          },
-          error => {
-              return Promise.reject(error);
-          }
+        config => {
+          config.headers.authorization = `Bearer ${this.state.Token}`;
+          return config;
+        },
+        error => {
+          return Promise.reject(error);
+        }
       );
 
       axios.put(this.state.urlAPI+"/api/users/add",{
-          Username : searchName,
+        Username : searchName,
       })
       .then(res=>{
-          console.log(res);
-          this.state.RightAdded = true;
-          this.state.findUser = false;
-          document.getElementById('Search').value = '';
+        console.log(res);
+        commit('setRightAdded', true);
+        commit('setfindUser', false);
+        document.getElementById('Search').value = '';
       })
       .catch(err=>{
-          console.log(err);
+        console.log(err);
       });
     },
     removeRight(){
       let searchName = document.getElementById("Search").value;
 
       axios.interceptors.request.use(
-          config => {
-              config.headers.authorization = `Bearer ${this.state.Token}`;
-              return config;
-          },
-          error => {
-              return Promise.reject(error);
-          }
+        config => {
+          config.headers.authorization = `Bearer ${this.state.Token}`;
+          return config;
+        },
+        error => {
+          return Promise.reject(error);
+        }
       );
 
       axios.put(this.state.urlAPI+"/api/users/remove",{
           Username : searchName,                
       })
       .then(res=>{
-          console.log(res);
-          this.state.RightRemoved = true;
-          this.state.findUser = false;
-          document.getElementById('Search').value = '';
+        console.log(res);
+        commit('setRightRemoved', true);
+        commit('setfindUser', false);
+        document.getElementById('Search').value = '';
       })
       .catch(err=>{
-          console.log(err);
+        console.log(err);
       });
     },
 
     // New Message
-    MsgVerify({commit}){
+    MsgVerify({commit,dispatch}){
+      console.log("InMsgVerify");
+      let CHKtitle = document.getElementById("Title").value;
+      let CHKContent = document.getElementById("Content").value;
+      console.log("MSG VERIFY : " + CHKtitle, CHKContent);
+
+      if(CHKtitle.length > 2 && CHKContent.length > 4){
+        commit('setNtitle', CHKtitle);
+        commit('setNcontent', CHKContent);
+        commit('setchkCompleted', true);
+        dispatch('PostPict');
+      } else {
+        commit('setsubFailure', true);
+        commit('setchkCompleted', false);
+      }
+    },
+    MsgVerifyFail({commit}){
+      commit('setsubFailure', false);
+    },
+
+    UploadPreview({commit}){
       let CHKtitle = document.getElementById("Title").value;
       let CHKContent = document.getElementById("Content").value;
       console.log(CHKtitle, CHKContent);
+      commit('setNtitle', CHKtitle);
+      commit('setNcontent', CHKContent);
 
-      if(CHKtitle.length > 0){
-          commit('setNtitle', CHKtitle);
-      } else {
-        return null;
+      let Status = document.getElementById("Join").checked;
+      console.log("Status : "+Status);
+      
+      if(Status){
+        commit('setUploadFile', true);
+        console.log("Upload :" + this.state.uploadFile)
       }
+      
+      let formData = new FormData();
+      let imageFile = document.querySelector("#uploadFile");
+      console.log(imageFile.value, imageFile.files[0]);
+      formData.append("image",imageFile.files[0]);
 
-      if(CHKContent.length > 0){
-        commit('setNcontent', CHKContent);
-      } else {
-        return null;
-      }
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+            config.headers = {
+              'authorization': `Bearer ${this.state.Token}`,
+              'Accept': 'application/json',
+              'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
+            }
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
 
-      if(CHKtitle.length > 2 && CHKContent.length > 4){
-          this.state.chkCompleted = true;
-      } else {
-          this.state.chkCompleted = false;
-      }
+      // Initialisation de la promesse vers l'API via AXIOS
+      axios.post(this.state.urlAPI+'/api/messages/new/preview',formData)
+      .then(res =>{
+        console.log(res);
+        commit("setNpicture",res.data);
+        console.log(this.state.Npicture);
 
+        // Completed
+        console.log("Completed");
+      })
+      .catch(err =>{
+        console.log(err);
+      });
     },
-    JoinPict({commit}){
-      if(this.state.uploadFile){
-        this.state.uploadFile = false;
-        this.state.Nattachment = 0;
-        commit('setNattachment', 0);
-        commit('setNpicture','');
-        console.log(this.state.Nattachment);
+    DeletePreview({commit}){
+      let CHKtitle = document.getElementById("Title").value;
+      let CHKContent = document.getElementById("Content").value;
+      console.log(CHKtitle, CHKContent);
+      commit('setNtitle', CHKtitle);
+      commit('setNcontent', CHKContent);
 
-      } else {
-          this.state.uploadFile = true;
-          this.state.Nattachment = 1;
-          commit('setNattachment', 1);
-          console.log(this.state.Nattachment);
+      let Status = document.getElementById("Join").checked;
+      console.log("Status : "+Status);
+      
+      if(!Status){
+        commit('setUploadFile', false);
+        console.log("Upload : " + this.state.uploadFile)
       }
+
+      // Configuration de l'en-tete AXIOS (intégration du token)
+      axios.interceptors.request.use(
+        config => {
+          config.headers = {
+            'authorization': `Bearer ${this.state.Token}`,
+          }
+          return config;
+        },
+        error => {
+            return Promise.reject(error);
+        }
+      );
+
+      console.log(this.state.Npicture);
+
+      // Initialisation de la promesse vers l'API via AXIOS
+      axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.Npicture)
+      .then(res =>{
+        console.log(res);
+        commit("setNpicture",'');
+        console.log(this.state.Npicture);
+
+        // Completed
+        console.log("Completed");
+      })
+      .catch(err =>{
+        console.log(err);
+      });
     },
+
     PostPict({commit, dispatch}){
-      console.log(this.state.Ntitle, this.state.Ncontent, this.state.uploadFile, this.state.Nattachment);
+      console.log("InPostPict");
+      console.log(this.state.Ntitle, this.state.Ncontent, this.state.uploadFile);
       commit('setLoading', true);
       console.log(this.state.Loading);
 
-      if(this.state.Nattachment == 1){
+      if(this.state.uploadFile){
         console.log('Attatched');
         // Récupération du fichier Image
         let formData = new FormData();
@@ -947,60 +1049,52 @@ export default createStore({
         // Ajout des autres éléments au FormData ( title, content, attachment )
         formData.append("title",document.getElementById("Title").value);
         formData.append("content",document.getElementById("Content").value);
-        formData.append("attachment",1);
+        formData.append("attachment",true);
         // console.log(FormData);
 
         // Configuration de l'en-tete AXIOS (intégration du token)
         axios.interceptors.request.use(
-            config => {
-                config.headers = {
-                    'authorization': `Bearer ${this.state.Token}`,
-                    'Accept': 'application/json',
-                    'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
-                }
-                return config;
-            },
-            error => {
-                return Promise.reject(error);
+          config => {
+            config.headers = {
+              'authorization': `Bearer ${this.state.Token}`,
+              'Accept': 'application/json',
+              'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
             }
+            return config;
+          },
+          error => {
+            return Promise.reject(error);
+          }
         );
 
         // Initialisation de la promesse vers l'API via AXIOS
         axios.post(this.state.urlAPI+'/api/messages/new/',formData)
         .then(res =>{
+          console.log(res);
           // Sucess
-          this.state.subOkay = true;
-          this.state.chkCompleted = false;
+          commit('setsubOkay', true);
 
           // Completed
           document.getElementById("Join").checked = false;
           document.getElementById("Title").value = '';
           document.getElementById("Content").value ='';
-          this.state.subCompleted = true;
-          this.state.Nattachment = 0;
-          this.state.chkCompleted = false;
-          this.state.subFailure = false;
-          this.state.uploadFile = false;
-          this.state.subOkay = false;
-          this.state.subCompleted = false;
+          document.querySelector("#uploadFile").value = '';
+          commit('setsubCompleted', true);
           dispatch("ResetNewMsgStats");
-
-          commit('setLoading', false);
-          console.log(this.state.Loading);
 
           $('#NewMessage').modal('hide');
           dispatch("WallLoad");
         })
         .catch(err =>{
           console.log(err);
-          this.state.subFailure = true;
-          // this.subFail = err.error;
-          commit('setLoading', false);
+          commit('setsubFailure', true);
+          document.getElementById("Join").checked = false;
           console.log(this.state.Loading);
         });
 
       } else {
         console.log('NoAttatched');
+        console.log(this.state.Ntitle, this.state.Ncontent);
         // Configuration de l'en-tete AXIOS (intégration du token)
         axios.interceptors.request.use(
           config => {
@@ -1014,22 +1108,17 @@ export default createStore({
 
         // Initialisation de la promesse vers l'API via AXIOS
         axios.post(this.state.urlAPI+'/api/messages/new/', {
-          title: document.getElementById("Title").value,
-          content: document.getElementById("Content").value
+          title: this.state.Ntitle,
+          content: this.state.Ncontent,
+          attachment : false
         })
         .then(res =>{
         // Sucess
-        this.state.subOkay = true;
-        this.state.chkCompleted = false;
+        commit('setsubOkay', true);
 
         // Completed
-        document.getElementById("Join").checked = false;
         document.getElementById("Title").value = '';
         document.getElementById("Content").value ='';
-        this.state.subCompleted = true;
-
-        commit('setLoading', false);
-        console.log(this.state.Loading);
         dispatch("ResetNewMsgStats");
 
         $('#NewMessage').modal('hide');
@@ -1039,8 +1128,7 @@ export default createStore({
         })
         .catch(err =>{
           console.log(err);
-          this.state.subFailure = true;
-          // this.subFail = err.error;
+          commit('setsubFailure', true);
           commit('setLoading', false);
           console.log(this.state.Loading);
         });
@@ -1050,75 +1138,58 @@ export default createStore({
     ResetNewMsgStats({commit}){
       document.getElementById('Title').value = '';
       document.getElementById('Content').value = '';
+      document.getElementById("Join").checked = false;
+      document.querySelector("#uploadFile").value = '';
       console.log('Reset...');
       commit('setNtitle', '');
-      // console.log(this.state.Ntitle);
       commit('setNcontent', '');
-      // console.log(this.state.Ncontent);
-      document.getElementById("Join").checked = false;
-      this.state.Nattachment = 0,
-      this.state.chkCompleted = false;
-      this.state.subFailure = false;
-      this.state.uploadFile = false
-      this.state.subOkay = false;
-      this.state.subCompleted = false;
+      commit('setNpicture','');
+      commit('setchkCompleted', false);
+      commit('setsubFailure', false);
+      commit('setUploadFile', false);
+      commit('setsubOkay', false);
+      commit('setsubCompleted', false);
       commit('setLoading',false);
+      console.log(this.state.Loading);
     },
 
     // Edit Post | Moderate Post
 
-    VerifyEditPost({commit}){
+    VerifyEditPost({commit,dispatch}){
       let CHKtitle = document.getElementById("TitleEdit").value;
       let CHKContent = document.getElementById("ContentEdit").value;
       console.log(CHKtitle, CHKContent);
 
-      if(CHKtitle.length > 0){
-        commit('setCurrentEtitle', CHKtitle);
-      } else {
-        return null;
-      }
-
-      if(CHKContent.length > 0){
-        commit('setCurrentEcontent', CHKContent);
-      } else {
-        return null;
-      }
-
       if(CHKtitle.length > 2 && CHKContent.length > 4){
-        commit('setchkEdit', true);
+        commit('setCurrentEtitle', CHKtitle);
+        commit('setCurrentEcontent', CHKContent);
+        dispatch("EditPost");
       } else {
         commit('setchkEdit', false);
+        console.log(this.state.chkEdit);
       }
     },
 
-    VerifyModeratePost({commit}){
+    VerifyModeratePost({commit,dispatch}){
       let CHKtitle = document.getElementById("TitleMod").value;
       let CHKContent = document.getElementById("ContentMod").value;
       console.log(CHKtitle, CHKContent);
 
-      if(CHKtitle.length > 0){
-        commit('setCurrentMtitle', CHKtitle);
-      } else {
-        return null;
-      }
-
-      if(CHKContent.length > 0){
-        commit('setCurrentMcontent', CHKContent);
-      } else {
-        return null;
-      }
-
       if(CHKtitle.length > 2 && CHKContent.length > 4){
-        commit('setchkModerate', true);
+        commit('setCurrentMtitle', CHKtitle);
+        commit('setCurrentMcontent', CHKContent);
+        dispatch("ModeratePost");
       } else {
         commit('setchkModerate', false);
+        console.log(this.state.chkModerate);
       }
     },
 
     WallEditPost({commit},PostId){
+      commit('setLoading',true);
       let Counter = 0;
       // Chargement du post (Axios)
-      axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content")
+      axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content,attachment")
       .then(res =>{
         console.log(res);
         commit('setCurrentPostId',PostId);
@@ -1129,64 +1200,79 @@ export default createStore({
             console.log(this.state.Etitle);
             commit('setCurrentEcontent',res.data[i].content);
             console.log(this.state.Econtent);
+            commit('setCurrentEattachment',res.data[i].attachment);
+            console.log(this.state.Eattachment);
+            commit('setEDeleteFile', false);
           }
         }
+        commit('setLoading',false);
       })
       .catch(err =>{
-          console.log(err);
+        console.log(err);
+        commit('setLoading',false);
       });
     },
     WallModeratePost({commit},PostId){
+      commit('setLoading',true);
       let Counter = 0;
       // Chargement du post (Axios)
-      axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content")
+      axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content,attachment")
       .then(res =>{
         console.log(res);
         commit('setCurrentPostId',PostId);
         Counter = res.data.length;
         for(let i=0; i < Counter; i++){
-          // console.log('B-For');
           if(res.data[i].id == PostId){
             commit('setCurrentMtitle',res.data[i].title);
             console.log(this.state.Mtitle);
             commit('setCurrentMcontent',res.data[i].content);
             console.log(this.state.Mcontent);
+            commit('setCurrentMattachment',res.data[i].attachment);
+            console.log(this.state.Mattachment);
+            commit('setMDeleteFile',false);
           }
+          commit('setLoading',false);
         }
       })
       .catch(err =>{
-          console.log(err);
+        console.log(err);
+        commit('setLoading',false);
       });
     },
 
     EditPost({commit, dispatch}){
-      let TitleEdit = document.getElementById('TitleEdit').value;
-      let Content = document.getElementById('ContentEdit').value;
+      let TitleEdit = this.state.Etitle;
+      let ContentEdit = this.state.Econtent;
+      let AttachmentEdit = this.state.Eattachment;
+      let Deleted = JSON.parse(this.state.EDeleteFile);
       console.log(this.state.CurrentPostId);
+      console.log(TitleEdit, ContentEdit, AttachmentEdit, Deleted);
 
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
-          config => {
-              config.headers.authorization = `Bearer ${this.state.Token}`;
-              return config;
-          },
-          error => {
-              return Promise.reject(error);
-          }
+        config => {
+          config.headers.authorization = `Bearer ${this.state.Token}`;
+          return config;
+        },
+        error => {
+          return Promise.reject(error);
+        }
       );
 
       // Initialisation de la promesse vers l'API via AXIOS
       axios.put(this.state.urlAPI+'/api/messages/'+this.state.CurrentPostId,{
         title : TitleEdit,
-        content : Content
+        content : ContentEdit,
+        attachment : AttachmentEdit,
+        deleted : Deleted
       })
       .then(res =>{
         // Envoie des données en base
         console.log(res);
 
         //Sucess
-        this.state.subOkay = true;
-        this.state.subCompleted = true;
+        commit('setsubOkay', true);
+        commit('setsubCompleted', true);
         commit('setLoading', false);
         console.log(this.state.Loading);
 
@@ -1200,44 +1286,52 @@ export default createStore({
         dispatch("WallLoad");
       })
       .catch(err =>{
-        //WIP
         console.log(err);
-        this.state.subFailure = true;
-        this.state.subCompleted = true;
+        commit('setsubFailure', true);
+        commit('setsubCompleted', true);
         commit('setLoading', false);
         console.log(this.state.Loading);
       });
 
     },
+    RemoveEAttachment({commit}){
+      commit('setEDeleteFile', true);
+    },
+
     ModeratePost({commit, dispatch}){
-      let TitleMod = document.getElementById('TitleMod').value;
-      let ContentMod = document.getElementById('ContentMod').value;
+      let TitleMod = this.state.Mtitle;
+      let ContentMod = this.state.Mcontent;
+      let AttachmentMod = this.state.Mattachment;
+      let Deleted = JSON.parse(this.state.MDeleteFile);
       console.log(this.state.CurrentPostId);
+      console.log(TitleMod,ContentMod,AttachmentMod,Deleted);
 
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
-          config => {
-              config.headers.authorization = `Bearer ${this.state.Token}`;
-              return config;
-          },
-          error => {
-              return Promise.reject(error);
-          }
+        config => {
+          config.headers.authorization = `Bearer ${this.state.Token}`;
+          return config;
+        },
+        error => {
+          return Promise.reject(error);
+        }
       );
 
       // Initialisation de la promesse vers l'API via AXIOS
       if(this.state.isAdmin){
         axios.put(this.state.urlAPI+'/api/messages/'+this.state.CurrentPostId+'/moderate',{
         title : TitleMod,
-        content : ContentMod
+        content : ContentMod,
+        attachment : AttachmentMod,
+        deleted : Deleted,
         })
         .then(res =>{
           // Envoie des données en base
           console.log(res);
 
           //Sucess
-          this.state.subOkay = true;
-          this.state.subCompleted = true;
+          commit('setsubOkay', true);
+          commit('setsubCompleted', true);
           commit('setLoading', false);
           console.log(this.state.Loading);
 
@@ -1251,31 +1345,35 @@ export default createStore({
           dispatch("WallLoad");
         })
         .catch(err =>{
-          //WIP
           console.log(err);
-          this.state.subFailure = true;
-          this.state.subCompleted = true;
+          commit('setsubFailure', true);
+          commit('setsubCompleted', true);
           commit('setLoading', false);
           console.log(this.state.Loading);
         });
-
       } else {
-        this.state.subFailure = true;
-        this.state.subCompleted = true;
+        commit('setsubFailure', true);
+        commit('setsubCompleted', true);
         commit('setLoading',false);
         console.log(this.state.Loading);
       }
-
+    },
+    RemoveMAttachment({commit}){
+      commit('setMDeleteFile', true);
     },
 
     ResetFields({commit}){
       commit('setCurrentEtitle','');
       commit('setCurrentEcontent','');
+      commit('setCurrentEattachment','');
+      commit('setEDeleteFile', false);
       commit('setCurrentMtitle','');
       commit('setCurrentMcontent','');
-      this.state.subFailure = false;
-      this.state.subOkay = false;
-      this.state.subCompleted = false;
+      commit('setCurrentMattachment','');
+      commit('setMDeleteFile',false);
+      commit('setsubFailure', false);
+      commit('setsubOkay', false);
+      commit('setsubCompleted', false);
     },
 
     // Like & Dislike Post
@@ -1374,11 +1472,11 @@ export default createStore({
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
-            config.headers.authorization = `Bearer ${this.state.Token}`;
-            return config;
+          config.headers.authorization = `Bearer ${this.state.Token}`;
+          return config;
         },
         error => {
-            return Promise.reject(error);
+          return Promise.reject(error);
         }
       );
 
@@ -1390,20 +1488,20 @@ export default createStore({
       .then(res =>{
         // Sucess
         document.getElementById('CP'+Post.id).value = '';
-        this.state.ValueComment = false;
-        this.state.subOkay = true;
-        this.state.subCompleted = true;
+        commit('setValueComment', false);
+        commit('setsubOkay', true);
+        commit('setsubCompleted', true);
 
         // Rechargement du mur après opération
-        this.state.subOkay = false;
-        this.state.subCompleted = false;
-        this.state.ValueComment = false;
+        commit('setsubOkay', false);
+        commit('setsubCompleted', false);
+        commit('setValueComment', false);
         dispatch("WallLoad");
       })
       .catch(err =>{
         // Faillure
-        this.state.subFailure = true;
-        this.state.subCompleted = true;
+        commit('setsubFailure', true);
+        commit('setsubCompleted', true);
       });
 
     },
@@ -1457,13 +1555,13 @@ export default createStore({
         axios.get(this.state.urlAPI+'/api/messages/comment?fields=id,messageId,username,comment,createdAt&order=createdAt:DESC')
       ])
       .then(responseArr => {
-
         commit('setLoading',true);
         console.log(this.state.Loading);
-        this.state.Posts = responseArr[0].data;
+        commit('setPosts', responseArr[0].data);
+        // this.state.Posts = responseArr[0].data;
         console.log("Numbers of Posts: "+this.state.Posts.length);
         console.log(this.state.Posts);
-        this.state.Comments = responseArr[1].data;
+        commit('setComments', responseArr[1].data);
         console.log("Numbers of Comments: "+this.state.Comments.length);
         console.log(this.state.Comments);
 
@@ -1482,7 +1580,6 @@ export default createStore({
       });
     },
 
-    //
   },
   modules: {
     //

@@ -70,8 +70,10 @@ export default {
             // Edit & Moderate
             'EditTitle',
             'EditContent',
+            'Editattachment',
             'ModerateTitle',
             'ModerateContent',
+            'Moderateattachment',
 
             // Status
             'Loading',

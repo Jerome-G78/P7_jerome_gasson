@@ -28,8 +28,11 @@ exports.router = (function(){
     // Messages routes
     apiRouter.get('/messages/', messagesCtrl.listMessage);
     apiRouter.post('/messages/new/', multer, messagesCtrl.createMessage);
+    apiRouter.post('/messages/new/preview/', multer, messagesCtrl.Preview);
     apiRouter.put('/messages/:messageId/', multer, messagesCtrl.putMyMessage);
     apiRouter.delete('/messages/:messageId/', multer, messagesCtrl.deleteMyMessage);
+    apiRouter.delete('/messages/new/preview/', multer, messagesCtrl.DeletePreview);
+    
 
     // Comments routes
     apiRouter.get('/messages/comment/', commentCtrl.listComment);

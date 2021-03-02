@@ -6,6 +6,7 @@ let models = require('../models');
 let asyncLib = require('async');
 let jwtUtils = require('../utils/jwt.utils');
 let fs = require('fs');
+let url = require('url');
 
 // Constants
 const TITLE_LIMIT = 2;
@@ -26,8 +27,10 @@ module.exports = {
         let image = req.body.image;
         let attachment = req.body.attachment;
         let mediaUrl = "";
+
+        console.log(title + " | " + content + " | " + attachment);
         
-        if(attachment == 1){
+        if(attachment){
             // Renseigner le chemin du stockage de l'image
             mediaUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
         }
@@ -91,6 +94,93 @@ module.exports = {
         });
     },
 
+    Preview:function(req,res,next){
+        // Récupération de l'en-tête d'authorisation
+        let headerAuth = req.headers['authorization'];
+
+        // Verifier que ce token est valide pour faire une requête en BDD
+        let userId = jwtUtils.getUserId(headerAuth);
+
+        // Params récupération de l'image
+        let image = req.body.image;
+        let mediaUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+
+        asyncLib.waterfall([
+            // Récupérer l'utilisateur dans la base de données (correspondant au token)
+            // Function (callback)
+            function(done){
+                models.User.findOne({
+                    where: {id: userId}
+                })
+                .then(function(){
+                    // Si l'utilisateur est trouvé, on continue (premier paramètre null)
+                    mediaUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+                    done(mediaUrl);
+                })
+                .catch(function(err){
+                    // Sinon, on retourne une erreur
+                    return res.status(500).json({'error':'unable to verify user'});
+                });
+            },
+        ],
+        function(mediaUrl){
+            if(mediaUrl){
+                console.log(mediaUrl);
+                // post du message OK
+                return res.status(201).json(mediaUrl);
+            } else {
+                // Le message n'est pas passé.
+                return res.status(500).json({'error':'fail to upload Preview'});
+            }
+        });
+    },
+
+    DeletePreview:function(req,res,next){
+        // Récupération de l'en-tête d'authorisation
+        let headerAuth = req.headers['authorization'];
+
+        // Verifier que ce token est valide pour faire une requête en BDD
+        let userId = jwtUtils.getUserId(headerAuth);
+
+        // Params récupération de l'image
+        const queryObject = url.parse(req.url,true).query;
+        // console.log(queryObject.image);
+        let image = queryObject.image;
+        console.log ("Delete : " + image);
+
+        asyncLib.waterfall([
+            // Récupérer l'utilisateur dans la base de données (correspondant au token)
+            // Function (callback)
+            function(done){
+                models.User.findOne({
+                    where: {id: userId}
+                })
+                .then(function(){
+                    // Si l'utilisateur est trouvé, on continue (premier paramètre null)
+                    console.log("Token OK");
+                    let filename = image.split('/images/')[1];
+                    console.log("OK : " + filename);
+                    fs.unlinkSync(`images/${filename}`);
+                    done(filename);
+                })
+                .catch(function(err){
+                    // Sinon, on retourne une erreur
+                    return res.status(500).json({'error':'unable to verify user'});
+                });
+            },
+        ],
+        function(filename){
+            if(filename){
+                console.log(filename);
+                // post du message OK
+                return res.status(201).json(filename);
+            } else {
+                // Le message n'est pas passé.
+                return res.status(500).json({'error':'fail to delete Preview'});
+            }
+        });
+    },
+
     moderateMessage: function(req, res, next){
         // Récupération de l'en-tête d'authorisation
         let headerAuth = req.headers['authorization'];
@@ -98,9 +188,30 @@ module.exports = {
         // Verifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
-        // Params (recupération du title & du contenue) & de l'état Admin.
+        // Params (recupération du title & du contenue) & de l'état Admin - et de l'image si existante
         let title = req.body.title;
         let content = req.body.content;
+        let attachment = req.body.attachment;
+        let deleted = req.body.deleted;
+        let mediaUrl = "";
+
+        console.log('attachment: ' + attachment);
+        console.log('Deleted: ' + deleted);
+
+        if(deleted){
+            console.log('data: ' + attachment);
+            // Supprimer l'immage
+            let filename = attachment.split('/images/')[1];
+            console.log(filename);
+                if(filename !=null){
+                    fs.unlinkSync(`images/${filename}`);
+                    console.log('deleted File!');
+                }
+            mediaUrl = "";
+        }
+        else {
+            mediaUrl = attachment;
+        }
     
         asyncLib.waterfall([
             function(done){
@@ -150,7 +261,8 @@ module.exports = {
 
                     messageId.update({
                         title : (title? title : userFound.title),
-                        content : (content? content : userFound.content)
+                        content : (content? content : userFound.content),
+                        attachment : (mediaUrl? mediaUrl : mediaUrl)
                     })
                     .then(function(moderateMessage){
                         // Si tout c'est bien passé, le message est envoyé.
@@ -356,15 +468,27 @@ module.exports = {
         let messageId = parseInt(req.params.messageId);
         let title = req.body.title;
         let content = req.body.content;
-        // let image = req.body.image;
-        // let attachment = req.body.attachment;
-        // let mediaUrl = "";
-        /*
-        if(attachment == 1){
-            // Renseigner le chemin du stockage de l'image
-            mediaUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+        let attachment = req.body.attachment;
+        let deleted = req.body.deleted;
+        let mediaUrl = "";
+
+        console.log('Attachment: ' + attachment, ' | Deleted: ' + deleted);
+        console.log('Title: '+title, '| content: ' + content);
+
+        if(deleted){
+            console.log('data: ' + attachment);
+            // Supprimer l'immage
+            let filename = attachment.split('/images/')[1];
+            console.log(filename);
+                if(filename !=null){
+                    fs.unlinkSync(`images/${filename}`);
+                    console.log('deleted File!');
+                }
+            mediaUrl = "";
         }
-        */
+        else {
+            mediaUrl = attachment;
+        }
 
         // Verification de données non null & cohérente
         if (title == null || content == null){
@@ -425,7 +549,7 @@ module.exports = {
                     messageId.update({
                         title : (title? title : userFound.title),
                         content : (content? content : userFound.content),
-                        // attachment : (mediaUrl? mediaUrl : mediaUrl)
+                        attachment : (mediaUrl? mediaUrl : mediaUrl)
                     })
                     .then(function(putMessage){
                         // Si tout c'est bien passé, le message est envoyé.

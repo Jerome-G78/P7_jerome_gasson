@@ -41,8 +41,9 @@ export default {
 
       // Status
       'Loading',
+
     ]),
-    },
+  },
 
   mounted(){
     // Vérifier si l'utilisateur est déjà connécté

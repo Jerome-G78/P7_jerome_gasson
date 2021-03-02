@@ -9,13 +9,19 @@
                 </div>
         
                 <div class="modal-body">
-                    <div class="form-group">
+                    <div class="labelsAlign form-group">
                         <label for="TitleEdit">Titre : (Minimum 3 Caractères)</label>
-                        <input @keyup="VerifyEditPost" type="text" class="form-control" id="TitleEdit" placeholder="Champ d'édition" name="TitleEdit" v-model="EditTitle">
+                        <input type="text" class="form-control" id="TitleEdit" placeholder="Champ d'édition" name="TitleEdit" v-model="EditTitle">
                     </div>
-                    <div class="form-group">
+                    <div v-if="EditAttachment !='' && !EDeleteFile" class="form-group">
+                        <label for="Picture"> Image </label>
+                        <img class="col-4 justify-content-center rounded img-fluid d-flex" name="Picture" :src="EditAttachment"/>
+                        <button @click="RemoveAttachment" type="button" title="Supprimer" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+                        <button @click="ModifyAttachment" type="button" title="Remplacer" class="btn btn-primary"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="labelsAlign form-group">
                         <label for="ContentEdit">Contenue (Minimum 5 Caractères):</label>
-                        <textarea @keyup="VerifyEditPost" class="form-control" id="ContentEdit" placeholder="Champ d'édition" name="ContentEdit" rows="3" v-model="EditContent"></textarea>
+                        <textarea class="form-control" id="ContentEdit" placeholder="Champ d'édition" name="ContentEdit" rows="3" v-model="EditContent"></textarea>
                     </div>
                     <div v-if="subOkay && subCompleted" class="alert alert-info">
                         <strong><i class="fas fa-info-circle"></i></strong> {{OnSucess}}.
@@ -32,7 +38,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button v-if="chkEdit" @click="Submit" type="button" title="Editer" class="btn btn-primary">Editer</button>
+                    <button @click="Submit" type="button" title="Editer" class="btn btn-primary">Editer</button>
                     <button @click="ResetStats" type="button" title="Annuler" class="btn btn-danger" data-dismiss="modal">Annuler</button>
                 </div>
         
@@ -63,6 +69,8 @@ export default {
             'chkEdit',
             'EditTitle',
             'EditContent',
+            'EditAttachment',
+            'EDeleteFile',
 
             // Status
             'WallReload',
@@ -75,11 +83,14 @@ export default {
 
     // Création de la logique du module
     methods:{
-        VerifyEditPost(){
-            this.$store.dispatch("VerifyEditPost");
+        RemoveAttachment(){
+            this.$store.dispatch("RemoveEAttachment");
+        },
+        ModifyAttachment(){
+            this.$store.dispatch("");
         },
         Submit(){
-            this.$store.dispatch("EditPost");
+            this.$store.dispatch("VerifyEditPost");
         },
         ResetStats(){
             this.$store.dispatch("ResetFields");
