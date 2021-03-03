@@ -5,12 +5,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 
-// WIP
 // intégration de la couche SSL
 const fs = require('fs');
 const https = require('https');
-const privateKey  = fs.readFileSync('/etc/ssl/private/ssl-cert-snakeoil.key', 'utf8');
-const certificate = fs.readFileSync('/etc/ssl/certs/ca-certificates.crt', 'utf8');
+const privateKey  = fs.readFileSync('/etc/ssl/private/File.key', 'utf8');
+const certificate = fs.readFileSync('/etc/ssl/certs/File.crt', 'utf8');
 let credentials = {key: privateKey, cert: certificate};
 
 // On importe l'API routeur, on précise aussi qu'on veut l'objet .router
@@ -50,11 +49,10 @@ server.use('/images', express.static(path.join(__dirname, 'images')));
 server.use('/api/', apiRouter);
 
 // Launch Server
-server.listen(3001, function(){
+server.listen(3000, function(){
     console.log('Server HTTP online - 3001');
 });
 
-// WIP
 // HTTPS access
 let httpsServer = https.createServer(credentials, server);
 httpsServer.listen(3443, function(){
