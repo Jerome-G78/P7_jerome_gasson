@@ -35,7 +35,7 @@
                         </button>
                     </div>
                     <div v-if="subFailure" class="alert alert-danger">
-                        {{subFail}}
+                        {{MSGfaillure}}
                         <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -56,7 +56,6 @@ export default {
         return {
             // Messages
             subOK: "Connexion réussi.",
-            subFail: "Une erreur est survenue!"
         }
     },
 
@@ -71,8 +70,10 @@ export default {
             // Status
             'Loading',
             'subOkay',
+            'subCompleted',
+
             'subFailure',
-            'subCompleted'
+            'MSGfaillure'
         ]),
     },
     // Création de la logique du module

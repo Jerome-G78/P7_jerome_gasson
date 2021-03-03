@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-for="Comment in Comments" :key="Comment.id" class="row justify-content-end">
-            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)" class="CommentDeleteButton col-10">
+            <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)" class="CommentDeleteButton col-9">
                 <p class="Comment">
                     <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
                     {{Comment.comment}}

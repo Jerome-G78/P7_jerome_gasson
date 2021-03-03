@@ -64,6 +64,7 @@ export default createStore({
     subOkay: false,
     subFailure: false,
     subCompleted: false,
+    MSGfaillure:'',
 
     // Admin Right
     RightAdded:false,
@@ -243,6 +244,10 @@ export default createStore({
     setsubFailure(state, newValue){
       state.subFailure = newValue;
     },
+
+    setMSGfaillure(state,newValue){
+      state.MSGfaillure = newValue;
+    }
   },
 
   getters:{
@@ -404,6 +409,10 @@ export default createStore({
     },
     subCompleted(state){
       return state.subCompleted;
+    },
+
+    MSGfaillure(state){
+      return state.MSGfaillure;
     }
 
     // N'oubliez-pas, Ces données devront être appelés depuis les composants et/ou Actions
@@ -413,6 +422,7 @@ export default createStore({
 
     // Singin
     SignInVerify({commit}){
+      commit('setsubFailure', false);
       let Email = document.getElementById('Semail').value;
       let Pwd = document.getElementById('Spwd').value;
       let PwdC = document.getElementById('SpwdC').value;
@@ -474,6 +484,7 @@ export default createStore({
         dispatch('ResetSignInStats');
       })
       .catch(err => {
+      commit('setMSGfaillure', "Veillez a bien remplir les champs du formulaire d'inscription.");
       commit('setsubFailure', true);
 
       // Cleaning
@@ -492,6 +503,7 @@ export default createStore({
       document.getElementById('Sname').value = '';
       document.getElementById('SBio').value = '';
       commit('setsubFailure', false);
+      commit('setMSGfaillure','');
       commit('setsubOkay', false);
       commit('setsubCompleted', false);
       commit('setCHKeMail', false);
@@ -537,6 +549,7 @@ export default createStore({
     LogInVerify({commit}){
       let Email = document.getElementById('Lemail').value;
       let Pwd = document.getElementById('Lpwd').value;
+      commit('setsubFailure', false);
 
       if(Email !=''){
         commit('setCHKeMail', true);
@@ -590,15 +603,18 @@ export default createStore({
         dispatch("WallLoad");
       })
       .catch(err =>{
+        commit('setMSGfaillure','E-mail ou Mot de passe incorrect');
+        commit('setsubFailure', true);
         localStorage.removeItem("Connected");
         commit('setConnected', false);
         commit('setLoading', false);
       });
     },
 
-    ResetLoginStats(){
+    ResetLoginStats({commit}){
       document.getElementById('Lemail').value = '';
       document.getElementById('Lpwd').value = '';
+      commit('setMSGfaillure','');
       commit('setsubFailure', false);
       commit('setCHKeMail', false);
       commit('setCHKpassword', false);
@@ -629,26 +645,27 @@ export default createStore({
 
     axios.get(this.state.urlAPI+'/api/users/me')
     .then(res =>{
-        // console.log(res)
-        let UserProfil = {
-            'userID': res.data.id,
-            'UserName': res.data.username,
-            'Email': res.data.email,
-            'Bio': res.data.bio
-        };
+      // console.log(res)
+      let UserProfil = {
+        'userID': res.data.id,
+        'UserName': res.data.username,
+        'Email': res.data.email,
+        'Bio': res.data.bio
+      };
 
-        // console.log(UserProfil);
-        // Sucess
-        commit('setUserID',UserProfil.userID);
-        commit('setUserName',UserProfil.UserName);
-        commit('setEmail',UserProfil.Email);
+      if(res.data.bio != ''){
         commit('setBio',UserProfil.Bio);
-        console.log('API - UserProfil : Completed!');
+      }
+
+      // Sucess
+      commit('setUserID',UserProfil.userID);
+      commit('setUserName',UserProfil.UserName);
+      commit('setEmail',UserProfil.Email);
     })
     .catch(err =>{
-        console.log(err);
-        commit('setLoading', false);
-        console.log(this.state.Loading);
+      commit('setsubFailure', true);
+      commit('setMSGfaillure',"Votre profil n'as pas été récupéré!");
+      commit('setLoading', false);
     });
     },
     BioUpdate({commit}){
@@ -688,6 +705,7 @@ export default createStore({
       })
       .catch(err =>{
         commit('setsubFailure', true);
+        commit('setMSGfaillure',"Votre profil n'as pas été mis à jour!");
         commit('setLoading', false);
       });
 
@@ -695,6 +713,7 @@ export default createStore({
 
     CheckConfirm({commit}){
       let Confirm = document.getElementById("Confirmation").value;
+      console.log(Confirm);
 
       if(Confirm == "J'accepte"){
         commit("setChkConfirm",true);
@@ -736,12 +755,14 @@ export default createStore({
         dispatch("WallLoad");
       })
       .catch(err =>{
+        commit('setsubFailure', false);
+        commit('setMSGfaillure',"Erreur lors de la désinscription!");
         console.log(err);
       });
 
     },
 
-    ResetProfilStats(){
+    ResetProfilStats({commit}){
       document.getElementById('Search').value = '';
       document.getElementById('Bio').value = '';
       document.getElementById('Confirmation').value = '';
@@ -751,6 +772,7 @@ export default createStore({
       commit('setfindedUser', '');
       commit('setsubOkay', false);
       commit('setsubFailure', false);
+      commit('setMSGfaillure',"");
       commit('setsubCompleted', false);
       commit('setRightAdded', false);
       commit('setRightRemoved', false);
@@ -777,7 +799,7 @@ export default createStore({
     },
 
     // Profil (Administration)
-    CheckNameExist(){
+    CheckNameExist({commit}){
       let searchName = document.getElementById("Search").value;
 
       axios.interceptors.request.use(
@@ -810,7 +832,7 @@ export default createStore({
         console.log('Not Found!');
       }
     },
-    addRight(){
+    addRight({commit}){
       let searchName = document.getElementById("Search").value;
 
       axios.interceptors.request.use(
@@ -835,7 +857,7 @@ export default createStore({
         console.log(err);
       });
     },
-    removeRight(){
+    removeRight({commit}){
       let searchName = document.getElementById("Search").value;
 
       axios.interceptors.request.use(
@@ -873,11 +895,13 @@ export default createStore({
         dispatch('PostPict');
       } else {
         commit('setsubFailure', true);
+        commit('setMSGfaillure',"Veuillez vérifier le(s) champ(s) de formulaire");
         commit('setchkCompleted', false);
       }
     },
     MsgVerifyFail({commit}){
       commit('setsubFailure', false);
+      commit('setMSGfaillure',"");
     },
 
     UploadPreview({commit}){
@@ -921,7 +945,8 @@ export default createStore({
         console.log("Completed");
       })
       .catch(err =>{
-        console.log(err);
+        commit('setsubFailure', true);
+        commit('setMSGfaillure',"Imposible de charger l'image selectionnée (Format supportés : jpg, jpeg, png)");
       });
     },
     DeletePreview({commit}){
@@ -960,7 +985,8 @@ export default createStore({
         commit('setUploadFile', false);
       })
       .catch(err =>{
-        console.log(err);
+        commit('setsubFailure', true);
+        commit('setMSGfaillure',"Imposible de supprimer le preview (fichier introuvable)");
       });
     },
 
@@ -1077,6 +1103,7 @@ export default createStore({
       commit('setNpicture','');
       commit('setchkCompleted', false);
       commit('setsubFailure', false);
+      commit('setMSGfaillure',"");
       commit('setUploadFile', false);
       commit('setsubOkay', false);
       commit('setsubCompleted', false);
@@ -1093,6 +1120,8 @@ export default createStore({
         commit('setCurrentEcontent', CHKContent);
         dispatch("EditPost");
       } else {
+        commit('setsubFailure', true);
+        commit('setMSGfaillure',"Veuillez vérifier le(s) champ(s) de formulaire");
         commit('setchkEdit', false);
       }
     },
@@ -1105,6 +1134,8 @@ export default createStore({
         commit('setCurrentMcontent', CHKContent);
         dispatch("ModeratePost");
       } else {
+        commit('setsubFailure', true);
+        commit('setMSGfaillure',"Veuillez vérifier le(s) champ(s) de formulaire");
         commit('setchkModerate', false);
       }
     },
@@ -1129,7 +1160,8 @@ export default createStore({
         commit('setLoading',false);
       })
       .catch(err =>{
-        console.log(err);
+        commit('setsubFailure', true);
+        commit('setMSGfaillure',"Le message est introuvable, impossible de le charger.");
         commit('setLoading',false);
       });
     },
@@ -1153,7 +1185,8 @@ export default createStore({
         }
       })
       .catch(err =>{
-        console.log(err);
+        commit('setsubFailure', true);
+        commit('setMSGfaillure',"Le message est introuvable, impossible de le charger.");
         commit('setLoading',false);
       });
     },
@@ -1203,12 +1236,11 @@ export default createStore({
         dispatch("WallLoad");
       })
       .catch(err =>{
-        console.log(err);
         commit('setsubFailure', true);
+        commit('setMSGfaillure',"Echec de mise à jour du message.");
         commit('setsubCompleted', true);
         commit('setLoading', false);
       });
-
     },
 
     EditUploadPreview({commit}){
@@ -1251,7 +1283,8 @@ export default createStore({
         console.log("Completed");
       })
       .catch(err =>{
-        console.log(err);
+        commit('setsubFailure', true);
+        commit('setMSGfaillure',"Imposible de charger l'image selectionnée (Format supportés : jpg, jpeg, png)");
       });
     },
     EditDeletePreview({commit}){
@@ -1290,10 +1323,10 @@ export default createStore({
         console.log("Completed");
       })
       .catch(err =>{
-        console.log(err);
+        commit('setsubFailure', true);
+        commit('setMSGfaillure',"Imposible de supprimer le preview (fichier introuvable)");
       });
     },
-
     RemoveEAttachment({commit}){
       commit('setEDeleteFile', true);
     },
@@ -1344,11 +1377,13 @@ export default createStore({
         .catch(err =>{
           console.log(err);
           commit('setsubFailure', true);
+          commit('setMSGfaillure',"Echec de mise à jour du message.");
           commit('setsubCompleted', true);
           commit('setLoading', false);
         });
       } else {
         commit('setsubFailure', true);
+        commit('setMSGfaillure',"Vous ne disposez pas des droits de modération.");
         commit('setsubCompleted', true);
         commit('setLoading',false);
       }
@@ -1389,7 +1424,8 @@ export default createStore({
         console.log("Completed");
       })
       .catch(err =>{
-        console.log(err);
+        commit('setsubFailure', true);
+        commit('setMSGfaillure',"Imposible de supprimer le preview (fichier introuvable)");
       });
     },
     RemoveMAttachment({commit}){
@@ -1408,6 +1444,7 @@ export default createStore({
       commit('setCurrentMattachment','');
       commit('setMDeleteFile',false);
       commit('setsubFailure', false);
+      commit('setMSGfaillure',"");
       commit('setsubOkay', false);
       commit('setsubCompleted', false);
       commit('setUploadFile', false);
@@ -1529,6 +1566,7 @@ export default createStore({
       })
       .catch(err =>{
         // Faillure
+        console.log(err);
         commit('setsubFailure', true);
         commit('setsubCompleted', true);
       });

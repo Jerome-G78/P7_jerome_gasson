@@ -30,7 +30,7 @@
                             <hr/>
                         </div>
 
-                        <div v-if="isAdmin" class="form-group">
+                        <div v-show="isAdmin" class="form-group">
                             <h5>Options Modérateur</h5>
                             <label for="Search"><i class="fas fa-search"></i> Rechercher un utilisateur</label>
                             <input @keyup="checkNameExist" type="text" class="form-control" id="Search" placeholder="Tapez le nom d'un utilisateur" name="Search">
@@ -59,6 +59,12 @@
                     </div>
 
                     <div class="modal-footer">
+                        <div v-if="subFailure" class="alert alert-danger">
+                            {{MSGfaillure}}
+                            <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         <button type="button" href="#" data-toggle="modal" data-target="#ConfirmDeleteProfil" title="Désinscription" class="btn btn-danger" data-dismiss="modal">Désinscription</button>
                         <button @click="GoOut" type="button" title="Déconnexion" class="btn btn-primary" data-dismiss="modal">Déconnexion</button>
                     </div>
@@ -87,6 +93,12 @@
                             <label for="Confirmation"><i class="fas fa-pen"></i> Veuillez confirmer votre demande : </label>
                             <input @keyup="checkConfirm" type="text" class="form-control" id="Confirmation" placeholder="Tapez : J'accepte" name="Confirmation">
                         </div>
+                        <div v-if="subFailure" class="alert alert-danger">
+                            {{MSGfaillure}}
+                            <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -112,7 +124,6 @@ export default {
 
             // Messages
             subOK: "Connexion réussi.",
-            subFail: "Une erreur est survenue!",
             RightAdd: "Droit accordé à l'utilisateur",
             RightRemove: "Droit supprimé à l'utilisateur",
         }
@@ -140,8 +151,11 @@ export default {
             // Status
             'Loading',
             'subOkay',
+            'subCompleted',
+
             'subFailure',
-            'subCompleted'
+            'MSGfaillure'
+            
 
         ]),
     },

@@ -84,6 +84,11 @@ export default {
 h5, .Comment, .Content
 {
   text-align: left;
+  word-wrap: break-word;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
 }
 
 .inf

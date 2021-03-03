@@ -36,7 +36,7 @@
                         </button>
                     </div>
                     <div v-if="subFailure" class="alert alert-danger">
-                        {{subFail}}
+                        {{MSGfaillure}}
                         <button @click="MsgVerify" type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -63,7 +63,7 @@ export default {
         return {
             // Messages
             subOK: "Message envoyé!",
-            subFail: "Une erreur est survenue!",
+            // subFail: "Une erreur est survenue!",
         }
         
     },
@@ -81,8 +81,11 @@ export default {
             // Status
             'Loading',
             'subOkay',
+            'subCompleted',
+
             'subFailure',
-            'subCompleted'
+            'MSGfaillure'
+            
         ]),
     },
 
@@ -102,7 +105,6 @@ export default {
         },
 
         Post(){
-            console.log("OK");
             this.$store.dispatch("MsgVerify");
         },
 

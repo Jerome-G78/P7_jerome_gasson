@@ -41,6 +41,12 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+                    <div v-if="subFailure" class="alert alert-danger">
+                        {{MSGfaillure}}
+                        <button @click="MsgVerify" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -84,13 +90,20 @@ export default {
             'WallReload',
             'Loading',
             'subOkay',
+            'subCompleted',
+
             'subFailure',
-            'subCompleted'
+            'MSGfaillure'
+            
         ]),
     },
 
     // Création de la logique du module
     methods:{
+        MsgVerify(){
+            this.$store.dispatch("MsgVerifyFail");
+        },
+        
         RemoveAttachment(){
             this.$store.dispatch("RemoveEAttachment");
         },
