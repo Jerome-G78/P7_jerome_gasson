@@ -116,3 +116,20 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+@media screen and (min-width:360px) and (max-width:568px) and (orientation: portrait)       /* 20em - Mobiles           */
+{
+    .alert 
+    {
+        font-size : 0.745em;
+    }
+}
+@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
+{
+    .alert 
+    {
+        font-size : 0.591em;
+    }
+}
+</style>

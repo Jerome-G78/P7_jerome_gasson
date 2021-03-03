@@ -22,7 +22,7 @@
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-.btn-danger {
+  .btn-danger {
     color: #fff;
     background-color: #d2515b;
     border-color: #dc3545;
