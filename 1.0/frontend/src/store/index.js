@@ -36,7 +36,6 @@ export default createStore({
     // Posts & Comments
     Posts:[],
     Comments:[],
-
     ValueComment:false,
 
     // Edit, Delete & Moderate Posts
@@ -152,7 +151,6 @@ export default createStore({
     },
 
     // Edit & Moderate Posts
-    
     setCurrentPostId(state, newValue){
       state.CurrentPostId = newValue;
     },
@@ -186,11 +184,6 @@ export default createStore({
     },
     setCurrentMcontent(state, newValue){
       state.Mcontent = newValue;
-    },
-
-    // Delete Comments
-    setCurrentCommentId(state, newValue){
-      state.CurrentCommentId = newValue;
     },
 
     // Likes
@@ -292,11 +285,9 @@ export default createStore({
     userToken(state){
       return state.Token;
     },
-
     TokenExpired(state){
       return state.TokenExpired;
     },
-
     Bio(state){
       return state.bio;
     },
@@ -309,7 +300,6 @@ export default createStore({
     BioEdit(state){
       return state.BioEdit;
     },
-
     ChkConfirm(state){
       return state.UConfirm;
     },
@@ -427,7 +417,6 @@ export default createStore({
       let Pwd = document.getElementById('Spwd').value;
       let PwdC = document.getElementById('SpwdC').value;
       let Name = document.getElementById('Sname').value;
-      // console.log(Email, Pwd, PwdC, Name);
 
       if(Email !=''){
         commit('setCHKeMail', true);
@@ -454,7 +443,6 @@ export default createStore({
     },
     Subscribe({commit,dispatch}){
       commit('setLoading', true);
-      console.log(this.state.Loading);
       let Email = document.getElementById('Semail').value;
       let Pwd = document.getElementById('Spwd').value;
       let Name = document.getElementById('Sname').value;
@@ -468,7 +456,6 @@ export default createStore({
         bio : Bio
       })
       .then(res => {
-        console.log(res);
         commit('setsubOkay', true);
         // Cleaning
         document.getElementById('Semail').value = '';
@@ -487,18 +474,15 @@ export default createStore({
         dispatch('ResetSignInStats');
       })
       .catch(err => {
-      //WIP
-      console.log(err);
       commit('setsubFailure', true);
+
       // Cleaning
       document.getElementById('Spwd').value = '';
       document.getElementById('SpwdC').value = '';
-      commit('setLoading', false);
-
+      
       // Completed
       commit('setsubCompleted', true);
       commit('setLoading', false);
-      console.log(this.state.Loading);
       });
     },
     ResetSignInStats({commit}){
@@ -513,6 +497,7 @@ export default createStore({
       commit('setCHKeMail', false);
       commit('setCHKpassword', false);
       commit('setCHKuserName', false);
+      commit('setLoading', false);
     },
 
     //Login
@@ -530,30 +515,22 @@ export default createStore({
 
       axios.get(this.state.urlAPI+"/api/users/me")
       .then(res =>{
-        console.log(res);
         commit('setsubOkay', true);
         commit('setsubCompleted', true);
-        console.log("Connected : "+ this.state.Connected);
         commit('setEmail', res.data.email);
-        console.log("E-Mail : "+this.state.email);
         commit('setUserName', res.data.username);
-        console.log("userName : "+this.state.userName);
         commit('setUserID', res.data.id);
-        console.log("userId : "+this.state.userId);
         commit('setIsAdmin', res.data.isAdmin);
-        console.log("User is Admin : "+this.state.isAdmin);
 
         // Completed
         commit('setsubOkay', false);
         commit('setsubCompleted', false);
         commit('setLoading', false);
-        console.log(this.state.Loading);
       })
       .catch(err =>{
         localStorage.removeItem("Connected");
         commit('setConnected', false);
         commit('setTokenExpired', true);
-        console.log(err);
       });
     },
 
@@ -577,7 +554,6 @@ export default createStore({
 
     LogIn({commit,dispatch}){
       commit('setLoading', true);
-      console.log("Loading : "+this.state.Loading);
       let Email = document.getElementById('Lemail').value;
       let Pwd = document.getElementById('Lpwd').value;
 
@@ -588,27 +564,19 @@ export default createStore({
       })
       .then(res =>{
         // Récupération des information du compte de l'utilisateur
-        // console.log(res);
         commit('setsubOkay', true);
         commit('setsubCompleted', true);
         commit('setConnected', true);
         localStorage.setItem("Connected", true);
-        console.log("Connected : "+ this.state.Connected);
         commit('setEmail', res.data.email);
-        console.log("Adress Mail : "+this.state.email);
         document.getElementById('Lemail').value = '';
         document.getElementById('Lpwd').value = '';
         commit('setUserName', res.data.userName);
-        console.log("userName : "+this.state.userName);
         commit('setUserID', res.data.userId);
-        console.log("user Id : "+this.state.userId);
         commit('setToken', res.data.token);
         localStorage.setItem("Token", this.state.Token);
-        console.log("User Token : "+this.state.Token);
         commit('setIsAdmin', res.data.isAdmin);
-        console.log("User is Admin : "+this.state.isAdmin);
         commit('setLoading', false);
-        console.log(this.state.Loading);
 
         // Completed
         commit('setTokenExpired', false);
@@ -622,12 +590,9 @@ export default createStore({
         dispatch("WallLoad");
       })
       .catch(err =>{
-          //WIP
-          console.log(err);
-          localStorage.removeItem("Connected");
-          commit('setConnected', false);
-          commit('setLoading', false);
-          console.log(this.state.Loading);
+        localStorage.removeItem("Connected");
+        commit('setConnected', false);
+        commit('setLoading', false);
       });
     },
 
@@ -694,11 +659,11 @@ export default createStore({
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
-            config.headers.authorization = `Bearer ${this.state.Token}`;
-            return config;
+          config.headers.authorization = `Bearer ${this.state.Token}`;
+          return config;
         },
         error => {
-            return Promise.reject(error);
+          return Promise.reject(error);
         }
       );
 
@@ -708,7 +673,6 @@ export default createStore({
       })
       .then(res =>{
         // Envoie des données en base
-        console.log(res);
         this.bio = BioArea;
 
         //SubOkay
@@ -716,19 +680,15 @@ export default createStore({
         commit('setsubOkay', true);
         commit('setsubCompleted', true);
         commit('setLoading', false);
-        console.log(this.state.Loading);
 
         // Completed
         document.getElementById('Bio').value = '';
         commit('setsubCompleted', true);
         commit('setLoading', false);
-        console.log(this.state.Loading);
       })
       .catch(err =>{
-        console.log(err);
         commit('setsubFailure', true);
         commit('setLoading', false);
-        console.log(this.state.Loading);
       });
 
     },
@@ -764,20 +724,13 @@ export default createStore({
         commit('setsubCompleted', false);
         commit('setConnected', false);
         localStorage.removeItem('Connected');
-        console.log("Connected : "+ this.state.Connected);
         commit('setEmail', '');
-        console.log(this.state.email);
         commit('setUserName', '');
-        console.log(this.state.userName);
         commit('setUserID', 0);
-        console.log(this.state.userId);
         commit('setToken', '');
         localStorage.removeItem('Token');
-        console.log(this.state.Token);
         commit('setIsAdmin', false);
-        console.log(this.state.isAdmin);
         commit('setLoading', false);
-        console.log(this.state.Loading);
 
         // Recharger la page
         dispatch("WallLoad");
@@ -810,21 +763,14 @@ export default createStore({
       commit('setsubCompleted', false);
       commit('setsubFailure', false);
       commit('setEmail', '');
-      console.log(this.state.email);
       commit('setUserName', '');
-      console.log(this.state.userName);
       commit('setUserID', 0);
-      console.log(this.state.userId);
       localStorage.removeItem('Token');
       commit('setToken', '');
-      console.log(this.state.Token);
       commit('setIsAdmin', false);
-      console.log(this.state.isAdmin);
       localStorage.removeItem('Connected');
       commit('setConnected', false);
-      console.log(this.state.Connected);
       commit('setLoading', false);
-      console.log(this.state.Loading);
 
       // Recharger la page internet
       document.location.reload();
@@ -851,12 +797,11 @@ export default createStore({
           Username: searchName,
         })
         .then(res=>{
-          console.log('finded!');
           commit('setfindUser', true);
           commit('setfindUserAdmin', res.data.isAdmin);
         })
         .catch(err=>{
-          console.log('Not Found! ' + err);
+          console.log('Not Found!');
         });
       } else {
         // Ne rien faire
@@ -882,7 +827,6 @@ export default createStore({
         Username : searchName,
       })
       .then(res=>{
-        console.log(res);
         commit('setRightAdded', true);
         commit('setfindUser', false);
         document.getElementById('Search').value = '';
@@ -908,7 +852,6 @@ export default createStore({
           Username : searchName,                
       })
       .then(res=>{
-        console.log(res);
         commit('setRightRemoved', true);
         commit('setfindUser', false);
         document.getElementById('Search').value = '';
@@ -920,10 +863,8 @@ export default createStore({
 
     // New Message
     MsgVerify({commit,dispatch}){
-      console.log("InMsgVerify");
       let CHKtitle = document.getElementById("Title").value;
       let CHKContent = document.getElementById("Content").value;
-      console.log("MSG VERIFY : " + CHKtitle, CHKContent);
 
       if(CHKtitle.length > 2 && CHKContent.length > 4){
         commit('setNtitle', CHKtitle);
@@ -942,21 +883,18 @@ export default createStore({
     UploadPreview({commit}){
       let CHKtitle = document.getElementById("Title").value;
       let CHKContent = document.getElementById("Content").value;
-      console.log(CHKtitle, CHKContent);
       commit('setNtitle', CHKtitle);
       commit('setNcontent', CHKContent);
 
       let Status = document.getElementById("Join").checked;
-      console.log("Status : "+Status);
       
       if(Status){
         commit('setUploadFile', true);
-        console.log("Upload :" + this.state.uploadFile)
       }
       
+      // Initialisation du FormData
       let formData = new FormData();
       let imageFile = document.querySelector("#uploadFile");
-      console.log(imageFile.value, imageFile.files[0]);
       formData.append("image",imageFile.files[0]);
 
       // Configuration de l'en-tete AXIOS (intégration du token)
@@ -977,9 +915,7 @@ export default createStore({
       // Initialisation de la promesse vers l'API via AXIOS
       axios.post(this.state.urlAPI+'/api/messages/new/preview',formData)
       .then(res =>{
-        console.log(res);
         commit("setNpicture",res.data);
-        console.log(this.state.Npicture);
 
         // Completed
         console.log("Completed");
@@ -991,16 +927,13 @@ export default createStore({
     DeletePreview({commit}){
       let CHKtitle = document.getElementById("Title").value;
       let CHKContent = document.getElementById("Content").value;
-      console.log(CHKtitle, CHKContent);
       commit('setNtitle', CHKtitle);
       commit('setNcontent', CHKContent);
 
       let Status = document.getElementById("Join").checked;
-      console.log("Status : "+Status);
       
       if(!Status){
         commit('setUploadFile', false);
-        console.log("Upload : " + this.state.uploadFile)
       }
 
       // Configuration de l'en-tete AXIOS (intégration du token)
@@ -1021,12 +954,9 @@ export default createStore({
       // Initialisation de la promesse vers l'API via AXIOS
       axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.Npicture)
       .then(res =>{
-        console.log(res);
         commit("setNpicture",'');
-        console.log(this.state.Npicture);
 
         // Completed
-        console.log("Completed");
         commit('setUploadFile', false);
       })
       .catch(err =>{
@@ -1035,23 +965,19 @@ export default createStore({
     },
 
     PostPict({commit, dispatch}){
-      console.log("InPostPict");
-      console.log(this.state.Ntitle, this.state.Ncontent, this.state.uploadFile);
       commit('setLoading', true);
-      console.log(this.state.Loading);
 
       if(this.state.uploadFile){
         console.log('Attatched');
         // Récupération du fichier Image
         let formData = new FormData();
         let imageFile = document.querySelector("#uploadFile");
-        // console.log(imageFile.value, imageFile.files[0]);
         formData.append("image",imageFile.files[0]);
+
         // Ajout des autres éléments au FormData ( title, content, attachment )
         formData.append("title",document.getElementById("Title").value);
         formData.append("content",document.getElementById("Content").value);
         formData.append("attachment",true);
-        // console.log(FormData);
 
         // Configuration de l'en-tete AXIOS (intégration du token)
         axios.interceptors.request.use(
@@ -1071,7 +997,6 @@ export default createStore({
         // Initialisation de la promesse vers l'API via AXIOS
         axios.post(this.state.urlAPI+'/api/messages/new/',formData)
         .then(res =>{
-          console.log(res);
           // Sucess
           commit('setsubOkay', true);
 
@@ -1090,7 +1015,6 @@ export default createStore({
           console.log(err);
           commit('setsubFailure', true);
           document.getElementById("Join").checked = false;
-          console.log(this.state.Loading);
         });
 
       } else {
@@ -1148,7 +1072,6 @@ export default createStore({
       document.getElementById('Content').value = '';
       document.getElementById("Join").checked = false;
       document.querySelector("#uploadFile").value = '';
-      console.log('Reset...');
       commit('setNtitle', '');
       commit('setNcontent', '');
       commit('setNpicture','');
@@ -1158,15 +1081,12 @@ export default createStore({
       commit('setsubOkay', false);
       commit('setsubCompleted', false);
       commit('setLoading',false);
-      console.log(this.state.Loading);
     },
 
     // Edit Post | Moderate Post
-
     VerifyEditPost({commit,dispatch}){
       let CHKtitle = document.getElementById("TitleEdit").value;
       let CHKContent = document.getElementById("ContentEdit").value;
-      console.log(CHKtitle, CHKContent);
 
       if(CHKtitle.length > 2 && CHKContent.length > 4){
         commit('setCurrentEtitle', CHKtitle);
@@ -1174,13 +1094,11 @@ export default createStore({
         dispatch("EditPost");
       } else {
         commit('setchkEdit', false);
-        console.log(this.state.chkEdit);
       }
     },
     VerifyModeratePost({commit,dispatch}){
       let CHKtitle = document.getElementById("TitleMod").value;
       let CHKContent = document.getElementById("ContentMod").value;
-      console.log(CHKtitle, CHKContent);
 
       if(CHKtitle.length > 2 && CHKContent.length > 4){
         commit('setCurrentMtitle', CHKtitle);
@@ -1188,27 +1106,23 @@ export default createStore({
         dispatch("ModeratePost");
       } else {
         commit('setchkModerate', false);
-        console.log(this.state.chkModerate);
       }
     },
 
     WallEditPost({commit},PostId){
       commit('setLoading',true);
       let Counter = 0;
+
       // Chargement du post (Axios)
       axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content,attachment")
       .then(res =>{
-        console.log(res);
         commit('setCurrentPostId',PostId);
         Counter = res.data.length;
         for(let i=0; i < Counter; i++){
           if(res.data[i].id == PostId){
             commit('setCurrentEtitle',res.data[i].title);
-            console.log(this.state.Etitle);
             commit('setCurrentEcontent',res.data[i].content);
-            console.log(this.state.Econtent);
             commit('setCurrentEattachment',res.data[i].attachment);
-            console.log(this.state.Eattachment);
             commit('setEDeleteFile', false);
           }
         }
@@ -1222,20 +1136,17 @@ export default createStore({
     WallModeratePost({commit},PostId){
       commit('setLoading',true);
       let Counter = 0;
+
       // Chargement du post (Axios)
       axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content,attachment")
       .then(res =>{
-        console.log(res);
         commit('setCurrentPostId',PostId);
         Counter = res.data.length;
         for(let i=0; i < Counter; i++){
           if(res.data[i].id == PostId){
             commit('setCurrentMtitle',res.data[i].title);
-            console.log(this.state.Mtitle);
             commit('setCurrentMcontent',res.data[i].content);
-            console.log(this.state.Mcontent);
             commit('setCurrentMattachment',res.data[i].attachment);
-            console.log(this.state.Mattachment);
             commit('setMDeleteFile',false);
           }
           commit('setLoading',false);
@@ -1250,14 +1161,11 @@ export default createStore({
     EditPost({commit, dispatch}){
 
       let formData = new FormData();
-      // Ajout des autres éléments au FormData ( title, content, attachment )
+      // Ajout des éléments au FormData ( title, content, attachment )
       formData.append("title",this.state.Etitle);
       formData.append("content",this.state.Econtent);
       formData.append("attachment",this.state.Eattachment);
       formData.append("deleted",JSON.parse(this.state.EDeleteFile));
-      // console.log(FormData);
-
-      console.log(this.state.CurrentPostId);
 
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
@@ -1279,13 +1187,11 @@ export default createStore({
       axios.put(this.state.urlAPI+'/api/messages/'+this.state.CurrentPostId,formData)
       .then(res =>{
         // Envoie des données en base
-        console.log(res);
 
         //Sucess
         commit('setsubOkay', true);
         commit('setsubCompleted', true);
         commit('setLoading', false);
-        console.log(this.state.Loading);
 
         // Completed
         document.getElementById('TitleEdit').value = '';
@@ -1301,7 +1207,6 @@ export default createStore({
         commit('setsubFailure', true);
         commit('setsubCompleted', true);
         commit('setLoading', false);
-        console.log(this.state.Loading);
       });
 
     },
@@ -1309,21 +1214,17 @@ export default createStore({
     EditUploadPreview({commit}){
       let CHKtitle = document.getElementById("TitleEdit").value;
       let CHKContent = document.getElementById("ContentEdit").value;
-      console.log(CHKtitle, CHKContent);
       commit('setCurrentEtitle', CHKtitle);
       commit('setCurrentEcontent', CHKContent);
 
       let Status = document.getElementById("EditJoin").checked;
-      console.log("Status : "+Status);
       
       if(Status){
         commit('setUploadFile', true);
-        console.log("Upload :" + this.state.uploadFile)
       }
-      
+      // Ajout des éléments au FormData (image)
       let formData = new FormData();
       let imageFile = document.querySelector("#EdituploadFile");
-      console.log(imageFile.value, imageFile.files[0]);
       formData.append("image",imageFile.files[0]);
 
       // Configuration de l'en-tete AXIOS (intégration du token)
@@ -1344,9 +1245,7 @@ export default createStore({
       // Initialisation de la promesse vers l'API via AXIOS
       axios.post(this.state.urlAPI+'/api/messages/new/preview',formData)
       .then(res =>{
-        console.log(res);
         commit('setCurrentEattachment',res.data);
-        console.log(this.state.Eattachment);
 
         // Completed
         console.log("Completed");
@@ -1358,16 +1257,13 @@ export default createStore({
     EditDeletePreview({commit}){
       let CHKtitle = document.getElementById("TitleEdit").value;
       let CHKContent = document.getElementById("ContentEdit").value;
-      console.log(CHKtitle, CHKContent);
       commit('setCurrentEtitle', CHKtitle);
       commit('setCurrentEcontent', CHKContent);
 
       let Status = document.getElementById("EditJoin").checked;
-      console.log("Status : "+Status);
       
       if(!Status){
         commit('setUploadFile', false);
-        console.log("Upload : " + this.state.uploadFile)
       }
 
       // Configuration de l'en-tete AXIOS (intégration du token)
@@ -1388,9 +1284,7 @@ export default createStore({
       // Initialisation de la promesse vers l'API via AXIOS
       axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.Npicture)
       .then(res =>{
-        console.log(res);
         commit("setNpicture",'');
-        console.log(this.state.Npicture);
 
         // Completed
         console.log("Completed");
@@ -1405,13 +1299,13 @@ export default createStore({
     },
 
     ModeratePost({commit, dispatch}){
+      // Initialisation du FormData
       let formData = new FormData();
       // Ajout des autres éléments au FormData ( title, content, attachment, delete )
       formData.append("title",this.state.Mtitle);
       formData.append("content",this.state.Mcontent);
       formData.append("attachment",this.state.Mattachment);
       formData.append("deleted",JSON.parse(this.state.MDeleteFile));
-      // console.log(FormData);
 
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
@@ -1433,13 +1327,10 @@ export default createStore({
         axios.put(this.state.urlAPI+'/api/messages/'+this.state.CurrentPostId+'/moderate',formData)
         .then(res =>{
           // Envoie des données en base
-          console.log(res);
 
           //Sucess
           commit('setsubOkay', true);
           commit('setsubCompleted', true);
-          commit('setLoading', false);
-          console.log(this.state.Loading);
 
           // Completed
           document.getElementById('TitleMod').value = '';
@@ -1455,28 +1346,23 @@ export default createStore({
           commit('setsubFailure', true);
           commit('setsubCompleted', true);
           commit('setLoading', false);
-          console.log(this.state.Loading);
         });
       } else {
         commit('setsubFailure', true);
         commit('setsubCompleted', true);
         commit('setLoading',false);
-        console.log(this.state.Loading);
       }
     },
     ModerateDeletePreview({commit}){
       let CHKtitle = document.getElementById("TitleEdit").value;
       let CHKContent = document.getElementById("ContentEdit").value;
-      console.log(CHKtitle, CHKContent);
       commit('setCurrentEtitle', CHKtitle);
       commit('setCurrentEcontent', CHKContent);
 
       let Status = document.getElementById("EditJoin").checked;
-      console.log("Status : "+Status);
       
       if(!Status){
         commit('setUploadFile', false);
-        console.log("Upload : " + this.state.uploadFile)
       }
 
       // Configuration de l'en-tete AXIOS (intégration du token)
@@ -1497,9 +1383,7 @@ export default createStore({
       // Initialisation de la promesse vers l'API via AXIOS
       axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.Npicture)
       .then(res =>{
-        console.log(res);
         commit("setNpicture",'');
-        console.log(this.state.Npicture);
 
         // Completed
         console.log("Completed");
@@ -1508,7 +1392,7 @@ export default createStore({
         console.log(err);
       });
     },
-    RemoveMAttachment({commit, dispatch}){
+    RemoveMAttachment({commit}){
       commit('setMDeleteFile', true);
     },
 
@@ -1546,10 +1430,8 @@ export default createStore({
       .then(res =>{
         // Like le post
         console.log('Liked');
-        console.log(res);
         commit('setLiked', true);
         commit('setLikes', this.state.LikeCounter +=1);
-        console.log(this.state.LikeCounter);
 
         // Rechargement du mur après opération
         dispatch("WallLoad");
@@ -1559,10 +1441,8 @@ export default createStore({
         .then(res=>{
           // Dislike le post
           console.log('Disliked');
-          console.log(res);
           commit('setLiked', false);
           commit('setLikes', this.state.LikeCounter -=1);
-          console.log(this.state.LikeCounter);
 
           // Rechargement du mur après opération
           dispatch("WallLoad");
@@ -1571,7 +1451,7 @@ export default createStore({
 
     },
 
-    DeletePost({commit,dispatch},PostId){
+    DeletePost({dispatch},PostId){
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
@@ -1586,8 +1466,6 @@ export default createStore({
         // Initialisation de la promesse vers l'API via AXIOS
         axios.delete(this.state.urlAPI+'/api/messages/'+PostId+'/moderate')
         .then(res =>{
-          console.log(res);
-
           // Rechargement du mur après opération
           dispatch("WallLoad");
         })
@@ -1599,7 +1477,6 @@ export default createStore({
         // Initialisation de la promesse vers l'API via AXIOS
         axios.delete(this.state.urlAPI+'/api/messages/'+PostId)
         .then(res =>{
-          console.log(res);
           // Rechargement du mur après opération
           dispatch("WallLoad");
         })
@@ -1634,7 +1511,6 @@ export default createStore({
       );
 
       let comment = document.getElementById('CP'+Post.id).value;
-      console.log(comment);
       axios.post(this.state.urlAPI+"/api/messages/comment/"+Post.id+"/new/",{
         comment : comment
       })
@@ -1656,11 +1532,10 @@ export default createStore({
         commit('setsubFailure', true);
         commit('setsubCompleted', true);
       });
-
     },
 
     // Delete Comment
-    DeleteComment({commit,dispatch},Comment){
+    DeleteComment({dispatch},Comment){
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
@@ -1674,7 +1549,6 @@ export default createStore({
       if(this.state.isAdmin){
         axios.delete(this.state.urlAPI+"/api/messages/comment/"+Comment.messageId+"/"+Comment.id+"/moderate/")
         .then(res=>{
-          console.log(res);
           console.log('commentaire supprimé');
 
           // Rechargement du mur après opération
@@ -1687,7 +1561,6 @@ export default createStore({
       } else {
         axios.delete(this.state.urlAPI+"/api/messages/comment/"+Comment.messageId+"/"+Comment.id)
         .then(res=>{
-          console.log(res);
           console.log('commentaire supprimé');
           // Rechargement du mur après opération
           dispatch("WallLoad");
@@ -1709,27 +1582,18 @@ export default createStore({
       ])
       .then(responseArr => {
         commit('setLoading',true);
-        console.log(this.state.Loading);
         commit('setPosts', responseArr[0].data);
-        // this.state.Posts = responseArr[0].data;
-        console.log("Numbers of Posts: "+this.state.Posts.length);
-        console.log(this.state.Posts);
         commit('setComments', responseArr[1].data);
-        console.log("Numbers of Comments: "+this.state.Comments.length);
-        console.log(this.state.Comments);
 
         if(this.state.Posts !=""){
           commit('setNoData', false);
-          console.log("NoData : "+this.state.NoData);
         }
 
         commit('setLoading',false);
-        console.log(this.state.Loading);
       })
       .catch(err =>{
         console.log(err);
         commit('setLoading',false);
-        console.log(this.state.Loading);
       });
     },
 
