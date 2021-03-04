@@ -1033,13 +1033,11 @@ export default createStore({
 
       } else {
         console.log('NoAttatched');
-        console.log(this.state.Ntitle, this.state.Ncontent);
 
         let formData = new FormData();
         formData.append("title",document.getElementById("Title").value);
         formData.append("content",document.getElementById("Content").value);
         formData.append("attachment",false);
-        // console.log(FormData);
 
         // Configuration de l'en-tete AXIOS (intégration du token)
         axios.interceptors.request.use(
@@ -1076,7 +1074,6 @@ export default createStore({
           console.log(err);
           commit('setsubFailure', true);
           commit('setLoading', false);
-          console.log(this.state.Loading);
         });
 
       }      
@@ -1086,8 +1083,8 @@ export default createStore({
       document.getElementById('Content').value = '';
       document.getElementById("Join").checked = false;
       document.querySelector("#uploadFile").value = '';
-      commit('setNtitle', '');
-      commit('setNcontent', '');
+      commit('setNtitle','');
+      commit('setNcontent','');
       commit('setNpicture','');
       commit('setchkCompleted', false);
       commit('setsubFailure', false);
@@ -1196,7 +1193,6 @@ export default createStore({
             'Accept': 'application/json',
             'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
           }
-          // config.headers.authorization = `Bearer ${this.state.Token}`;
           return config;
         },
         error => {
@@ -1242,8 +1238,9 @@ export default createStore({
       if(Status){
         commit('setUploadFile', true);
       }
-      // Ajout des éléments au FormData (image)
+
       let formData = new FormData();
+      // Ajout des éléments au FormData (image)
       let imageFile = document.querySelector("#EdituploadFile");
       formData.append("image",imageFile.files[0]);
 
@@ -1299,8 +1296,6 @@ export default createStore({
             return Promise.reject(error);
         }
       );
-
-      console.log(this.state.Npicture);
 
       // Initialisation de la promesse vers l'API via AXIOS
       axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.Npicture)
@@ -1401,8 +1396,6 @@ export default createStore({
         }
       );
 
-      console.log(this.state.Npicture);
-
       // Initialisation de la promesse vers l'API via AXIOS
       axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.Npicture)
       .then(res =>{
@@ -1491,24 +1484,24 @@ export default createStore({
         // Initialisation de la promesse vers l'API via AXIOS
         axios.delete(this.state.urlAPI+'/api/messages/'+PostId+'/moderate')
         .then(res =>{
+          console.log('Post Deleted');
           // Rechargement du mur après opération
           dispatch("WallLoad");
         })
         .catch(err =>{
           console.log(err);
         });
-        console.log('Post Deleted');
       } else {
         // Initialisation de la promesse vers l'API via AXIOS
         axios.delete(this.state.urlAPI+'/api/messages/'+PostId)
         .then(res =>{
+          console.log('Post Deleted');
           // Rechargement du mur après opération
           dispatch("WallLoad");
         })
         .catch(err =>{
           console.log(err);
         });
-        console.log('Post Deleted');
       }      
     },
 
@@ -1588,6 +1581,7 @@ export default createStore({
         axios.delete(this.state.urlAPI+"/api/messages/comment/"+Comment.messageId+"/"+Comment.id)
         .then(res=>{
           console.log('commentaire supprimé');
+          
           // Rechargement du mur après opération
           dispatch("WallLoad");
         })
