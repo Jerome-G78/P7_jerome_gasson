@@ -5,7 +5,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     urlAPI:'https://shadsoft.fr:3443',
-    footer:'Groupomania 2020 - Tout drois résérvés',
+    footer:'Groupomania 2021 - Tout drois résérvés',
     // Déclaration des données du "store" de vue X
 
     // Profil
@@ -103,27 +103,21 @@ export default createStore({
     setUserID(state, newValue){
       state.userId = newValue;
     },
-
     setUserName(state, newValue){
       state.userName = newValue;
     },
-
     setEmail(state, newValue){
       state.email = newValue;
     },
-
     setIsAdmin(state, newValue){
       state.isAdmin = newValue;
     },
-
     setToken(state, newValue){
       state.Token = newValue;
     },
-
     setTokenExpired(state, newValue){
       state.TokenExpired = newValue;
     },
-
     setBioEdit(state, newValue){
       state.BioEdit = newValue;
     },
@@ -191,7 +185,6 @@ export default createStore({
     setLikes(state, newValue){
       state.LikesCounter =+ newValue;
     },
-
     setLiked(state, newValue){
       state.Liked = newValue;
     },
@@ -205,11 +198,9 @@ export default createStore({
     setPosts(state, newValue){
       state.Posts = newValue;
     },
-
     setComments(state, newValue){
       state.Comments = newValue;
     },
-
     setValueComment(state, newValue){
       state.ValueComment = newValue;
     },
@@ -218,7 +209,6 @@ export default createStore({
     setRightAdded(state, newValue){
       state.RightAdded = newValue;
     },
-
     setRightRemoved(state, newValue){
       state.RightRemoved = newValue;
     },
@@ -244,7 +234,6 @@ export default createStore({
     setsubFailure(state, newValue){
       state.subFailure = newValue;
     },
-
     setMSGfaillure(state,newValue){
       state.MSGfaillure = newValue;
     }
@@ -410,7 +399,6 @@ export default createStore({
     subCompleted(state){
       return state.subCompleted;
     },
-
     MSGfaillure(state){
       return state.MSGfaillure;
     }
@@ -562,7 +550,6 @@ export default createStore({
       } else {
         commit('setCHKpassword', false);
       }
-
     },
 
     LogIn({commit,dispatch}){
@@ -813,7 +800,6 @@ export default createStore({
       );
 
       if(searchName !=''){
-        console.log(searchName);
         // Code faire une recherche dans la BDD
         axios.post(this.state.urlAPI+"/api/users/",{
           Username: searchName,
@@ -823,6 +809,8 @@ export default createStore({
           commit('setfindUserAdmin', res.data.isAdmin);
         })
         .catch(err=>{
+          commit('setfindUser', false);
+          commit('setfindUserAdmin', false);
           console.log('Not Found!');
         });
       } else {
