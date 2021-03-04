@@ -114,6 +114,6 @@ export default {
     },
     mounted(){
         this.$store.dispatch("ResetNewMsgStats");
-    }
+    },
 }
 </script>

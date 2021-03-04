@@ -81,7 +81,6 @@ export default {
 
         // Suppression des commentaires
         DeleteComment(Comment){
-            console.log(Comment);
             this.$store.dispatch("DeleteComment",Comment);
         },
         // Paramètrages d'affichage et d'unicité des Comments
