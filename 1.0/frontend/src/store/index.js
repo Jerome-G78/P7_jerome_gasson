@@ -1078,14 +1078,17 @@ export default createStore({
 
       }      
     },
-    ResetNewMsgStats({commit}){
+    ResetNewMsgStats({commit,dispatch}){
       document.getElementById('Title').value = '';
       document.getElementById('Content').value = '';
       document.getElementById("Join").checked = false;
       document.querySelector("#uploadFile").value = '';
       commit('setNtitle','');
       commit('setNcontent','');
-      commit('setNpicture','');
+      if(this.state.Npicture != ''){
+        dispatch('DeletePreview');
+      }
+      // commit('setNpicture','');
       commit('setchkCompleted', false);
       commit('setsubFailure', false);
       commit('setMSGfaillure',"");
@@ -1413,9 +1416,12 @@ export default createStore({
       commit('setMDeleteFile', true);
     },
 
-    ResetFields({commit}){
+    ResetFields({commit,dispatch}){
       document.getElementById("EditJoin").checked = false;
       document.querySelector("#EdituploadFile").value = '';
+      if(this.state.Npicture != ''){
+        dispatch('EditDeletePreview');
+      }
       commit('setCurrentEtitle','');
       commit('setCurrentEcontent','');
       commit('setCurrentEattachment','');
@@ -1581,7 +1587,7 @@ export default createStore({
         axios.delete(this.state.urlAPI+"/api/messages/comment/"+Comment.messageId+"/"+Comment.id)
         .then(res=>{
           console.log('commentaire supprimé');
-          
+
           // Rechargement du mur après opération
           dispatch("WallLoad");
         })
