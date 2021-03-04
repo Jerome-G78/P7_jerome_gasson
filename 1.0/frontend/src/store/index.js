@@ -1079,16 +1079,16 @@ export default createStore({
       }      
     },
     ResetNewMsgStats({commit,dispatch}){
+      if(this.state.Npicture != ''){
+        dispatch('DeletePreview');
+      }
+
       document.getElementById('Title').value = '';
       document.getElementById('Content').value = '';
       document.getElementById("Join").checked = false;
       document.querySelector("#uploadFile").value = '';
       commit('setNtitle','');
       commit('setNcontent','');
-      if(this.state.Npicture != ''){
-        dispatch('DeletePreview');
-      }
-      // commit('setNpicture','');
       commit('setchkCompleted', false);
       commit('setsubFailure', false);
       commit('setMSGfaillure',"");
@@ -1209,6 +1209,7 @@ export default createStore({
         // Envoie des données en base
 
         //Sucess
+        commit('setNpicture','');
         commit('setsubOkay', true);
         commit('setsubCompleted', true);
         commit('setLoading', false);
@@ -1266,9 +1267,10 @@ export default createStore({
       axios.post(this.state.urlAPI+'/api/messages/new/preview',formData)
       .then(res =>{
         commit('setCurrentEattachment',res.data);
+        commit('setNpicture',res.data);
 
         // Completed
-        console.log("Completed");
+        console.log("Upload Preview Completed");
       })
       .catch(err =>{
         commit('setsubFailure', true);
@@ -1304,17 +1306,24 @@ export default createStore({
       axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.Npicture)
       .then(res =>{
         commit("setNpicture",'');
+        commit('setCurrentEattachment','');
+        document.getElementById("EditJoin").checked = false;
+        document.querySelector("#EdituploadFile").value = '';
 
         // Completed
-        console.log("Completed");
+        console.log("Delete Preview Completed");
       })
       .catch(err =>{
         commit('setsubFailure', true);
         commit('setMSGfaillure',"Imposible de supprimer le preview (fichier introuvable)");
       });
     },
-    RemoveEAttachment({commit}){
-      commit('setEDeleteFile', true);
+    RemoveEAttachment({commit,dispatch}){
+      if(this.state.Npicture == ''){
+        commit('setEDeleteFile', true);
+      } else {
+        dispatch('EditDeletePreview');
+      }
     },
 
     ModeratePost({commit, dispatch}){
@@ -1374,54 +1383,17 @@ export default createStore({
         commit('setLoading',false);
       }
     },
-    ModerateDeletePreview({commit}){
-      let CHKtitle = document.getElementById("TitleEdit").value;
-      let CHKContent = document.getElementById("ContentEdit").value;
-      commit('setCurrentEtitle', CHKtitle);
-      commit('setCurrentEcontent', CHKContent);
-
-      let Status = document.getElementById("EditJoin").checked;
-      
-      if(!Status){
-        commit('setUploadFile', false);
-      }
-
-      // Configuration de l'en-tete AXIOS (intégration du token)
-      axios.interceptors.request.use(
-        config => {
-          config.headers = {
-            'authorization': `Bearer ${this.state.Token}`,
-          }
-          return config;
-        },
-        error => {
-            return Promise.reject(error);
-        }
-      );
-
-      // Initialisation de la promesse vers l'API via AXIOS
-      axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.Npicture)
-      .then(res =>{
-        commit("setNpicture",'');
-
-        // Completed
-        console.log("Completed");
-      })
-      .catch(err =>{
-        commit('setsubFailure', true);
-        commit('setMSGfaillure',"Imposible de supprimer le preview (fichier introuvable)");
-      });
-    },
     RemoveMAttachment({commit}){
       commit('setMDeleteFile', true);
     },
 
     ResetFields({commit,dispatch}){
-      document.getElementById("EditJoin").checked = false;
-      document.querySelector("#EdituploadFile").value = '';
       if(this.state.Npicture != ''){
         dispatch('EditDeletePreview');
       }
+
+      document.getElementById("EditJoin").checked = false;
+      document.querySelector("#EdituploadFile").value = '';
       commit('setCurrentEtitle','');
       commit('setCurrentEcontent','');
       commit('setCurrentEattachment','');
