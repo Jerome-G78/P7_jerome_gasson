@@ -11,7 +11,7 @@
                 <div class=" modal-body">
                     <div class="labelsAlign form-group">
                         <label for="TitleMod">Titre : (Minimum 3 Caractères)</label>
-                        <input type="text" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod" v-model="ModerateTitle">
+                        <input type="text" class="form-control" id="TitleMod" placeholder="Champ de modération" name="TitleMod" v-model="ModerateTitle" maxlength="255"/>
                     </div>
                     <div v-if="ModerateAttachment !='' && !MDeleteFile" class="form-group">
                         <label for="Picture">Image</label>
@@ -20,7 +20,7 @@
                     </div>
                     <div class="labelsAlign form-group">
                         <label for="ContentMod">Contenue : (Minimum 5 Caractères)</label>
-                        <textarea class="form-control" id="ContentMod" placeholder="Champ de modération" name="ContentMod" rows="3" v-model="ModerateContent"></textarea>
+                        <textarea class="form-control" id="ContentMod" placeholder="Champ de modération" name="ContentMod" rows="3" v-model="ModerateContent" maxlength="255"></textarea>
                     </div>
                     <div v-if="subOkay && subCompleted" class="alert alert-info">
                         <strong><i class="fas fa-info-circle"></i></strong> {{OnSucess}}.

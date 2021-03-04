@@ -12,7 +12,7 @@
 
                     <div class="form-group">
                         <label for="title">Titre (Minimum 3 Caractères) <span class ="text-danger"> * </span>:</label>
-                        <input type="text" class="form-control" id="Title" placeholder="Ajoutez un Titre" name="title" v-model="Ntitle">
+                        <input type="text" class="form-control" id="Title" placeholder="Ajoutez un Titre" name="title" v-model="Ntitle" maxlength="255"/>
                     </div>
 
                     <div class="form-group">
@@ -24,7 +24,7 @@
 
                     <div class="form-group">
                         <label for="Content"> Contenue du message (Minimum 5 Caractères) <span class ="text-danger"> * </span> :</label>
-                        <textarea class="form-control" id="Content" placeholder="Contenue de votre message" rows="3" v-model="Ncontent"></textarea>
+                        <textarea class="form-control" id="Content" placeholder="Contenue de votre message" rows="3" v-model="Ncontent" maxlength="255"></textarea>
                     </div>
 
                     <p class ="text-danger"><small><i>* : Champs obligatoires</i></small></p>
