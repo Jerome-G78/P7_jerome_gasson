@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-for="Comment in Comments" :key="Comment.id" class="row justify-content-end">
+        <div v-for="Comment in Comments" :key="Comment.id" class="row justify-content-end"> 
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)" class="CommentDeleteButton col-9">
                 <p class="Comment">
                     <span class="CommentBackground">{{Comment.username}}<br/><span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
@@ -17,7 +17,6 @@
                 </p>
             </div>
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && !Connected" class="col-12">
-                <hr/>
                 <p class="Comment">
                     <span class="CommentBackground">{{Comment.username}}<br/><span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
                     {{Comment.comment}}
