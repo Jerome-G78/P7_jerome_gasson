@@ -34,7 +34,7 @@
             ...mapGetters([
                 'userName',
                 'Connected',
-                'TokenExpired'
+                'TokenExpired',
             ]),
         },
         // Création de la logique du module

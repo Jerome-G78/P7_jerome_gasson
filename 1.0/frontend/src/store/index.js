@@ -1570,6 +1570,7 @@ export default createStore({
 
     // Load & Reload Wall
     WallLoad({commit}){
+      commit('setLoading',true);
       // Lors du chargement du composant, appeler les messages dans la BDD
       // Initialisation de la promesse vers l'API via AXIOS
 
@@ -1590,6 +1591,8 @@ export default createStore({
       })
       .catch(err =>{
         console.log(err);
+        commit('setsubFailure', true);
+        commit('setMSGfaillure',"Impossible de se connecter a la base de données, veuillez réésayer ulterieurement.");
         commit('setLoading',false);
       });
     },
