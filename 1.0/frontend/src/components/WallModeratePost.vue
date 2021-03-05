@@ -106,3 +106,41 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+/* Ajustement du Design Mobile 320px à 574px */
+@media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
+{
+    h4
+    {
+        font-size : 1.3em;
+    }
+
+    input, textarea, label
+    {
+        font-size : 1.1em;
+    }
+
+    .alert 
+    {
+        font-size : 0.745em;
+    }
+}
+@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
+{
+    h4
+    {
+        font-size : 1.12em;
+    }
+
+    input, textarea, label
+    {
+        font-size : 0.97em;
+    }
+
+    .alert 
+    {
+        font-size : 0.62em;
+    }
+}
+</style>

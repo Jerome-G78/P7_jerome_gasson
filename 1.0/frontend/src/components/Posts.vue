@@ -3,7 +3,7 @@
         <div v-for="Post in Posts" :key="Post.id" :id="Post.id" class="Space row justify-content-center">
             <div  class="Mbody col-10 col-sm-10 col-md-11 bg-info text-white media border p-4 m-0">
                 <div class="media-body">
-                    <h4 class="UserBackground">{{Post.User.username}} <span class="inf"><span><i>(Créer le {{FormatDateTime(Post.createdAt)}})</i></span></span></h4>
+                    <h4 class="UserBackground">{{Post.User.username}} <br/><span class="inf"><span><i>(Créer le {{FormatDateTime(Post.createdAt)}})</i></span></span></h4>
                     <h5 class="TitleBackground"><i>{{Post.title}}</i></h5>
                     <hr/>
                     <img class="justify-content-center rounded img-fluid d-flex" :src="Post.attachment"/>
@@ -25,7 +25,7 @@
                             <button v-if="ValueComment" :id="'CPS'+Post.id" @click="Submit(Post)" type="button" title="Envoyer" class="btn btn-primary text-center"><i class="far fa-paper-plane"></i></button>
                         </div>
                     </div>
-                    <hr>
+                    <hr/>
                     <Comments :Post="Post" :Comments="Comments" />
                 </div>
             </div>
@@ -141,5 +141,31 @@ export default {
 	background:-o-linear-gradient(to right, #d2515b 30%, #2f3855);
 	background:linear-gradient(to right, #d2515b 30%, #2f3855);
     opacity: 0.8;
+}
+
+/* Ajustement du Design Mobile 320px à 574px */
+@media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
+{
+    h4, h5
+    {
+        font-size : 1.4em;
+    }
+
+    input, label
+    {
+        font-size : 1.1em;
+    }
+}
+@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
+{
+    h4, h5
+    {
+        font-size : 1.2em;
+    }
+
+    input, label
+    {
+        font-size : 0.97em;
+    }
 }
 </style>

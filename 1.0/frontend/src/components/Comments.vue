@@ -3,7 +3,7 @@
         <div v-for="Comment in Comments" :key="Comment.id" class="row justify-content-end">
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && (isAdmin || Comment.username == userName)" class="CommentDeleteButton col-9">
                 <p class="Comment">
-                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
+                    <span class="CommentBackground">{{Comment.username}}<br/><span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
                     {{Comment.comment}}
                 </p>
             </div>
@@ -12,13 +12,14 @@
             </div>
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && Connected && !isAdmin && Comment.username != userName" class="col-12">
                 <p class="Comment">
-                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
+                    <span class="CommentBackground">{{Comment.username}}<br/><span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
                     {{Comment.comment}}
                 </p>
             </div>
             <div v-if="getCommentById(Comment.messageId, Post.id) == Post.id && !Connected" class="col-12">
+                <hr/>
                 <p class="Comment">
-                    <span class="CommentBackground">{{Comment.username}}<span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
+                    <span class="CommentBackground">{{Comment.username}}<br/><span class="inf"><i> (Le {{FormatDateTime(Comment.createdAt)}})</i></span></span><br/>
                     {{Comment.comment}}
                 </p>
             </div>
@@ -103,5 +104,21 @@ export default {
 	background:-o-linear-gradient(to right, #424241 60%,#2f3855);
 	background:linear-gradient(to right, #424241 60%,#2f3855);
     opacity: 0.8;
+}
+
+/* Ajustement du Design Mobile 320px à 574px */
+@media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
+{
+    i
+    {
+        font-size : 1em;
+    }
+}
+@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
+{
+    i
+    {
+        font-size : 0.854em;
+    }
 }
 </style>

@@ -10,7 +10,7 @@
         
                 <div class="modal-body">
                     <div class="labelsAlign form-group">
-                        <label for="TitleEdit">Titre : (Minimum 3 Caractères)</label>
+                        <label for="TitleEdit">Titre (Minimum 3 Caractères) :</label>
                         <input type="text" class="form-control" id="TitleEdit" placeholder="Champ d'édition" name="TitleEdit" v-model="EditTitle" maxlength="255"/>
                     </div>
                     <div v-if="EditAttachment !='' && !EDeleteFile" class="form-group">
@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="labelsAlign form-group">
-                        <label for="ContentEdit">Contenue (Minimum 5 Caractères):</label>
+                        <label for="ContentEdit">Contenue (Minimum 5 Caractères) :</label>
                         <textarea class="form-control" id="ContentEdit" placeholder="Champ d'édition" name="ContentEdit" rows="3" v-model="EditContent" maxlength="255"></textarea>
                     </div>
                     <div v-if="subOkay && subCompleted" class="alert alert-info">
@@ -126,3 +126,36 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+/* Ajustement du Design Mobile 320px à 574px */
+@media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
+{
+    input, textarea, label
+    {
+        font-size : 1.1em;
+    }
+
+    .alert 
+    {
+        font-size : 0.745em;
+    }
+}
+@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
+{
+    h4
+    {
+        font-size : 1.3em;
+    }
+
+    input, textarea, label
+    {
+        font-size : 0.97em;
+    }
+
+    .alert 
+    {
+        font-size : 0.591em;
+    }
+}
+</style>
