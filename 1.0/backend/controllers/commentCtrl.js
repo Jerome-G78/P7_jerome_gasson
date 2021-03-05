@@ -2,9 +2,10 @@
 "use strict";
 
 // Imports
-let models = require('../models')
+let models = require('../models');
 let jwtUtils = require('../utils/jwt.utils');
 let asyncLib = require('async');
+let url = require('url');
 
 // Routes
 
@@ -18,7 +19,9 @@ module.exports = {
         let messageId = parseInt(req.params.messageId);
 
         // Params (recupération du commentaire)
-        let comment = req.body.comment;
+        const queryObject = url.parse(req.url,true).query;
+        let comment = queryObject.comment;
+        console.log('Commentaire : '+ comment);
 
         if(comment.length == 0){
             return res.status(400).json({'error':'invalid parameters'})

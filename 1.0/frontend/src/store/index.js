@@ -1495,6 +1495,8 @@ export default createStore({
     },
 
     SubmitComment({commit,dispatch},Post){
+      let comment = document.getElementById('CP'+Post.id).value;
+
       // Configuration de l'en-tete AXIOS (intégration du token)
       axios.interceptors.request.use(
         config => {
@@ -1506,10 +1508,7 @@ export default createStore({
         }
       );
 
-      let comment = document.getElementById('CP'+Post.id).value;
-      axios.post(this.state.urlAPI+"/api/messages/comment/"+Post.id+"/new/",{
-        comment : comment
-      })
+      axios.post(this.state.urlAPI+"/api/messages/comment/"+Post.id+"/new/?comment="+comment)
       .then(res =>{
         // Sucess
         document.getElementById('CP'+Post.id).value = '';
