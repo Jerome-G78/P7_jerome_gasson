@@ -53,94 +53,94 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex'
 
-export default {
-    name: 'WallModeratePost',
-    data(){
-        return {
-            // Variables locales
+    export default {
+        name: 'WallModeratePost',
+        data(){
+            return {
+                // Variables locales
 
-            // Messages
-            OnError:'Une erreur est survenue',
-            OnSucess:'Le message à été modéré',
-        }
-    },
-
-    computed:{
-        // Récupération de l'état des "Getters" pour actualiser la page
-        ...mapGetters([
-            // Moderate Post
-            'chkModerate',
-            'ModerateTitle',
-            'ModerateContent',
-            'ModerateAttachment',
-            'MDeleteFile',
-
-            // Status
-            'WallReload',
-            'Loading',
-            'subOkay',
-            'subCompleted',
-
-            'subFailure',
-            'MSGfaillure'
-        ]),
-    },
-
-    // Création de la logique du module
-    methods:{
-        MsgVerify(){
-            this.$store.dispatch("MsgVerifyFail");
+                // Messages
+                OnError:'Une erreur est survenue',
+                OnSucess:'Le message à été modéré',
+            }
         },
 
-        RemoveAttachment(){
-            this.$store.dispatch("RemoveMAttachment");
+        computed:{
+            // Récupération de l'état des "Getters" pour actualiser la page
+            ...mapGetters([
+                // Moderate Post
+                'chkModerate',
+                'ModerateTitle',
+                'ModerateContent',
+                'ModerateAttachment',
+                'MDeleteFile',
+
+                // Status
+                'WallReload',
+                'Loading',
+                'subOkay',
+                'subCompleted',
+
+                'subFailure',
+                'MSGfaillure'
+            ]),
         },
-        Submit(){
-            this.$store.dispatch("VerifyModeratePost");
+
+        // Création de la logique du module
+        methods:{
+            MsgVerify(){
+                this.$store.dispatch("MsgVerifyFail");
+            },
+
+            RemoveAttachment(){
+                this.$store.dispatch("RemoveMAttachment");
+            },
+            Submit(){
+                this.$store.dispatch("VerifyModeratePost");
+            },
+            ResetStats(){
+                this.$store.dispatch("ResetFields");
+            },
         },
-        ResetStats(){
-            this.$store.dispatch("ResetFields");
-        },
-    },
-}
+    }
 </script>
 
 <style scoped>
-/* Ajustement du Design Mobile 320px à 574px */
-@media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    h4
+    /* Ajustement du Design Mobile 320px à 574px */
+    @media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
     {
-        font-size : 1.3em;
-    }
+        h4
+        {
+            font-size : 1.3em;
+        }
 
-    input, textarea, label
-    {
-        font-size : 1.1em;
-    }
+        input, textarea, label
+        {
+            font-size : 1.1em;
+        }
 
-    .alert 
-    {
-        font-size : 0.745em;
+        .alert 
+        {
+            font-size : 0.745em;
+        }
     }
-}
-@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    h4
+    @media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
     {
-        font-size : 1.12em;
-    }
+        h4
+        {
+            font-size : 1.12em;
+        }
 
-    input, textarea, label
-    {
-        font-size : 0.97em;
-    }
+        input, textarea, label
+        {
+            font-size : 0.97em;
+        }
 
-    .alert 
-    {
-        font-size : 0.62em;
+        .alert 
+        {
+            font-size : 0.62em;
+        }
     }
-}
 </style>

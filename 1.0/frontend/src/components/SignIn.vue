@@ -68,87 +68,87 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex'
 
-export default {
-    name: 'SignIn',
-    data(){
-        return {
-            // Messages
-            email: "Veuillez renseigner un e-mail",
-            username: "Veuillez renseigner un Pseudonyme",
-            Mdp: "Requis : 1 Majuscule, 1 Minuscule, 1 Nombre",
-            MDPFail: "Les mots de passes ne sont pas identiques",
-            subOK: "Votre inscription a bien été prise en compte",
-            subFail: "Une erreur est survenue lors de l'inscription!"
-        }
-    },
-
-    computed:{
-        // Récupération de l'état des "Getters" pour actualiser la page
-        ...mapGetters([
-            // SignIn
-            'CHKeMail',
-            'CHKpassword',
-            'ComparePwds',
-            'CHKuserName',
-
-            // Status
-            'Loading',
-            'subOkay',
-            'subCompleted',
-
-            'subFailure',
-            'MSGfaillure'
-        ]),
-    },
-    // Création de la logique du module
-    methods:{
-        SignInVerify(){
-            this.$store.dispatch("SignInVerify");
+    export default {
+        name: 'SignIn',
+        data(){
+            return {
+                // Messages
+                email: "Veuillez renseigner un e-mail",
+                username: "Veuillez renseigner un Pseudonyme",
+                Mdp: "Requis : 1 Majuscule, 1 Minuscule, 1 Nombre",
+                MDPFail: "Les mots de passes ne sont pas identiques",
+                subOK: "Votre inscription a bien été prise en compte",
+                subFail: "Une erreur est survenue lors de l'inscription!"
+            }
         },
-        Subscribe(){
-            this.$store.dispatch("Subscribe");
+
+        computed:{
+            // Récupération de l'état des "Getters" pour actualiser la page
+            ...mapGetters([
+                // SignIn
+                'CHKeMail',
+                'CHKpassword',
+                'ComparePwds',
+                'CHKuserName',
+
+                // Status
+                'Loading',
+                'subOkay',
+                'subCompleted',
+
+                'subFailure',
+                'MSGfaillure'
+            ]),
         },
-        ResetStats(){
-            this.$store.dispatch("ResetSignInStats");
-        }
-    },
-}
+        // Création de la logique du module
+        methods:{
+            SignInVerify(){
+                this.$store.dispatch("SignInVerify");
+            },
+            Subscribe(){
+                this.$store.dispatch("Subscribe");
+            },
+            ResetStats(){
+                this.$store.dispatch("ResetSignInStats");
+            }
+        },
+    }
 </script>
 
 <style scoped>
-/* Ajustement du Design Mobile 320px à 574px */
-@media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    h4
+    /* Ajustement du Design Mobile 320px à 574px */
+    @media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
     {
-        font-size : 1.352em;
-    }
+        h4
+        {
+            font-size : 1.352em;
+        }
 
-    label
-    {
-        font-size : 1.01em;
+        label
+        {
+            font-size : 1.01em;
+        }
+        .alert 
+        {
+            font-size : 0.745em;
+        }
     }
-    .alert 
+    @media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
     {
-        font-size : 0.745em;
-    }
-}
-@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    h4
-    {
-        font-size : 1.16em;
-    }
+        h4
+        {
+            font-size : 1.16em;
+        }
 
-    label
-    {
-        font-size : 0.863em;
+        label
+        {
+            font-size : 0.863em;
+        }
+        .alert 
+        {
+            font-size : 0.591em;
+        }
     }
-    .alert 
-    {
-        font-size : 0.591em;
-    }
-}
 </style>

@@ -60,102 +60,102 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex'
 
-export default {
-    name: 'WallEditPost',
-    data(){
-        return {
-            // Variables locales
+    export default {
+        name: 'WallEditPost',
+        data(){
+            return {
+                // Variables locales
 
-            // Messages
-            OnError:'Une erreur est survenue',
-            OnSucess:'Le message à été modifié',
-        }
-    },
-
-    computed:{
-        // Récupération de l'état des "Getters" pour actualiser la page
-        ...mapGetters([
-            // Edit Post
-            'chkEdit',
-            'EditTitle',
-            'EditContent',
-            'EditAttachment',
-            'EDeleteFile',
-            'uploadFile',
-            'Npicture',
-
-            // Status
-            'WallReload',
-            'Loading',
-            'subOkay',
-            'subCompleted',
-
-            'subFailure',
-            'MSGfaillure'
-            
-        ]),
-    },
-
-    // Création de la logique du module
-    methods:{
-        MsgVerify(){
-            this.$store.dispatch("MsgVerifyFail");
-        },
-        
-        RemoveAttachment(){
-            this.$store.dispatch("RemoveEAttachment");
-        },
-
-        handleFileUpload(){
-            let Stat = document.getElementById("EditJoin").checked;
-            if(Stat){
-                this.$store.dispatch("EditUploadPreview");
-            } else {
-                this.$store.dispatch("EditDeletePreview");
+                // Messages
+                OnError:'Une erreur est survenue',
+                OnSucess:'Le message à été modifié',
             }
         },
 
-        Submit(){
-            this.$store.dispatch("VerifyEditPost");
+        computed:{
+            // Récupération de l'état des "Getters" pour actualiser la page
+            ...mapGetters([
+                // Edit Post
+                'chkEdit',
+                'EditTitle',
+                'EditContent',
+                'EditAttachment',
+                'EDeleteFile',
+                'uploadFile',
+                'Npicture',
+
+                // Status
+                'WallReload',
+                'Loading',
+                'subOkay',
+                'subCompleted',
+
+                'subFailure',
+                'MSGfaillure'
+                
+            ]),
         },
-        ResetStats(){
-            this.$store.dispatch("ResetFields");
+
+        // Création de la logique du module
+        methods:{
+            MsgVerify(){
+                this.$store.dispatch("MsgVerifyFail");
+            },
+            
+            RemoveAttachment(){
+                this.$store.dispatch("RemoveEAttachment");
+            },
+
+            handleFileUpload(){
+                let Stat = document.getElementById("EditJoin").checked;
+                if(Stat){
+                    this.$store.dispatch("EditUploadPreview");
+                } else {
+                    this.$store.dispatch("EditDeletePreview");
+                }
+            },
+
+            Submit(){
+                this.$store.dispatch("VerifyEditPost");
+            },
+            ResetStats(){
+                this.$store.dispatch("ResetFields");
+            },
         },
-    },
-}
+    }
 </script>
 
 <style scoped>
-/* Ajustement du Design Mobile 320px à 574px */
-@media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    input, textarea, label
+    /* Ajustement du Design Mobile 320px à 574px */
+    @media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
     {
-        font-size : 1.1em;
-    }
+        input, textarea, label
+        {
+            font-size : 1.1em;
+        }
 
-    .alert 
-    {
-        font-size : 0.745em;
+        .alert 
+        {
+            font-size : 0.745em;
+        }
     }
-}
-@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    h4
+    @media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
     {
-        font-size : 1.3em;
-    }
+        h4
+        {
+            font-size : 1.3em;
+        }
 
-    input, textarea, label
-    {
-        font-size : 0.97em;
-    }
+        input, textarea, label
+        {
+            font-size : 0.97em;
+        }
 
-    .alert 
-    {
-        font-size : 0.591em;
+        .alert 
+        {
+            font-size : 0.591em;
+        }
     }
-}
 </style>

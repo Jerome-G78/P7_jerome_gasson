@@ -34,138 +34,138 @@
 </template>
 
 <script>
-import moment from 'moment'
-import { mapGetters } from 'vuex'
-import Comments from '@/components/Comments.vue'
+    import moment from 'moment'
+    import { mapGetters } from 'vuex'
+    import Comments from '@/components/Comments.vue'
 
-export default {
-    name: 'PostS',
+    export default {
+        name: 'PostS',
 
-    props:{
-        Posts:{
-            type:Array
-        },
+        props:{
+            Posts:{
+                type:Array
+            },
 
-        Comments:{
-            type:Object
-        }
-    },
-
-    components: {
-        Comments
-    },
-
-    computed:{
-        // Récupération de l'état des "Getters" pour actualiser la page
-        ...mapGetters([
-            
-            // Utilisateur
-            'Connected',
-            'isAdmin',
-            'userName',
-            'Liked',
-
-            // Like Counters
-            'LikesCounter',
-
-            // Edit & Moderate
-            'EditTitle',
-            'EditContent',
-            'Editattachment',
-            'ModerateTitle',
-            'ModerateContent',
-            'Moderateattachment',
-
-            // Status
-            'Loading',
-            'subOkay',
-            'subFailure',
-            'subCompleted',
-
-            // Comments
-            'ValueComment'
-        ]),
-    },
-
-    // Création de la logique du module
-    methods:{
-        CommentVerify(PostId){
-            this.$store.dispatch("CommentVerify",PostId);
-        },
-        Submit(Post){
-            this.$store.dispatch("SubmitComment",Post);
-        },
-        Like(PostId){
-            this.$store.dispatch("LikePost",PostId);
-        },
-        DeletePost(PostId){
-            this.$store.dispatch("DeletePost",PostId);
-        },
-        EditPost(PostId){
-            this.$store.dispatch("WallEditPost", PostId);
-        },
-        ModeratePost(PostId){
-            this.$store.dispatch("WallModeratePost", PostId);
-        },
-        // Paramètrages d'affichage et d'unicité des Posts
-        FormatDateTime(DateTime){
-            // Mise à jour du format de la date
-            if (DateTime) {
-                return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
+            Comments:{
+                type:Object
             }
-        }
-    },
-}
+        },
+
+        components: {
+            Comments
+        },
+
+        computed:{
+            // Récupération de l'état des "Getters" pour actualiser la page
+            ...mapGetters([
+                
+                // Utilisateur
+                'Connected',
+                'isAdmin',
+                'userName',
+                'Liked',
+
+                // Like Counters
+                'LikesCounter',
+
+                // Edit & Moderate
+                'EditTitle',
+                'EditContent',
+                'Editattachment',
+                'ModerateTitle',
+                'ModerateContent',
+                'Moderateattachment',
+
+                // Status
+                'Loading',
+                'subOkay',
+                'subFailure',
+                'subCompleted',
+
+                // Comments
+                'ValueComment'
+            ]),
+        },
+
+        // Création de la logique du module
+        methods:{
+            CommentVerify(PostId){
+                this.$store.dispatch("CommentVerify",PostId);
+            },
+            Submit(Post){
+                this.$store.dispatch("SubmitComment",Post);
+            },
+            Like(PostId){
+                this.$store.dispatch("LikePost",PostId);
+            },
+            DeletePost(PostId){
+                this.$store.dispatch("DeletePost",PostId);
+            },
+            EditPost(PostId){
+                this.$store.dispatch("WallEditPost", PostId);
+            },
+            ModeratePost(PostId){
+                this.$store.dispatch("WallModeratePost", PostId);
+            },
+            // Paramètrages d'affichage et d'unicité des Posts
+            FormatDateTime(DateTime){
+                // Mise à jour du format de la date
+                if (DateTime) {
+                    return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
+                }
+            }
+        },
+    }
 </script>
 
 <style scoped>
-/* Design du Post */
+    /* Design du Post */
 
-.Space{
-    margin-top:1em;
-    margin-bottom:1em;
-}
-
-.UserBackground
-{
-    background-image:url(../assets/PostDesign/Background-PostUser.png);
-    background-position:right bottom;
-    background-repeat:no-repeat;
-    opacity: 0.8;
-}
-
-.TitleBackground
-{
-    background:-webkit-linear-gradient(to right, #d2515b 30%, #2f3855);
-	background:-moz-linear-gradient(to right, #d2515b 30%, #2f3855);
-	background:-o-linear-gradient(to right, #d2515b 30%, #2f3855);
-	background:linear-gradient(to right, #d2515b 30%, #2f3855);
-    opacity: 0.8;
-}
-
-/* Ajustement du Design Mobile 320px à 574px */
-@media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    h4, h5
-    {
-        font-size : 1.4em;
+    .Space{
+        margin-top:1em;
+        margin-bottom:1em;
     }
 
-    input, label
+    .UserBackground
     {
-        font-size : 1.1em;
-    }
-}
-@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    h4, h5
-    {
-        font-size : 1.2em;
+        background-image:url(../assets/PostDesign/Background-PostUser.png);
+        background-position:right bottom;
+        background-repeat:no-repeat;
+        opacity: 0.8;
     }
 
-    input, label
+    .TitleBackground
     {
-        font-size : 0.97em;
+        background:-webkit-linear-gradient(to right, #d2515b 30%, #2f3855);
+        background:-moz-linear-gradient(to right, #d2515b 30%, #2f3855);
+        background:-o-linear-gradient(to right, #d2515b 30%, #2f3855);
+        background:linear-gradient(to right, #d2515b 30%, #2f3855);
+        opacity: 0.8;
     }
-}
+
+    /* Ajustement du Design Mobile 320px à 574px */
+    @media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
+    {
+        h4, h5
+        {
+            font-size : 1.4em;
+        }
+
+        input, label
+        {
+            font-size : 1.1em;
+        }
+    }
+    @media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
+    {
+        h4, h5
+        {
+            font-size : 1.2em;
+        }
+
+        input, label
+        {
+            font-size : 0.97em;
+        }
+    }
 </style>

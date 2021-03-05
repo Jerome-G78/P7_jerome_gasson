@@ -48,45 +48,45 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex'
 
-export default {
-    name: 'Login',
-    data(){
-        return {
-            // Messages
-            subOK: "Connexion réussi.",
-        }
-    },
-
-    computed:{
-        // Récupération de l'état des "Getters" pour actualiser la page
-        ...mapGetters([
-            // Login
-            'CHKeMail',
-            'CHKpassword',
-            'Connected',
-
-            // Status
-            'Loading',
-            'subOkay',
-            'subCompleted',
-
-            'subFailure',
-            'MSGfaillure'
-        ]),
-    },
-    // Création de la logique du module
-    methods:{
-        LogInVerify(){
-            this.$store.dispatch("LogInVerify");
+    export default {
+        name: 'Login',
+        data(){
+            return {
+                // Messages
+                subOK: "Connexion réussi.",
+            }
         },
-        LogIn(){
-            this.$store.dispatch("LogIn");
+
+        computed:{
+            // Récupération de l'état des "Getters" pour actualiser la page
+            ...mapGetters([
+                // Login
+                'CHKeMail',
+                'CHKpassword',
+                'Connected',
+
+                // Status
+                'Loading',
+                'subOkay',
+                'subCompleted',
+
+                'subFailure',
+                'MSGfaillure'
+            ]),
         },
-        ResetStats(){
-            this.$store.dispatch("ResetLoginStats");
-        }
-    },
-}
+        // Création de la logique du module
+        methods:{
+            LogInVerify(){
+                this.$store.dispatch("LogInVerify");
+            },
+            LogIn(){
+                this.$store.dispatch("LogIn");
+            },
+            ResetStats(){
+                this.$store.dispatch("ResetLoginStats");
+            }
+        },
+    }
 </script>

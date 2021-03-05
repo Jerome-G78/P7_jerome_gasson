@@ -28,96 +28,96 @@
 </template>
 
 <script>
-import moment from 'moment'
-import { mapGetters } from 'vuex'
+    import moment from 'moment'
+    import { mapGetters } from 'vuex'
 
-export default {
-    name: 'CommentS',
+    export default {
+        name: 'CommentS',
 
-    props:{
-        Post:{
-            type:Object
-        },
+        props:{
+            Post:{
+                type:Object
+            },
 
-         Comments:{
-            type:Array
-        }
-    },
-
-    data(){
-        return {
-            // Variables Local
-            
-            // Messages
-            NoComments:"Aucuns commentaires à afficher"
-        }
-    },
-
-    computed:{
-        ...mapGetters([
-            
-            // Utilisateur
-            'Connected',
-            'isAdmin',
-            'userName',
-
-            // Status
-            'Loading',
-            'subOkay',
-            'subFailure',
-            'subCompleted',
-        ]),
-    },
-
-    // Création de la logique du module
-    methods:{
-
-        // Dissociation des commentaires en fonction des Messages ID
-        getCommentById(CMid, Pid){
-            if(this.$store.state.Comments.filter(comment => comment.messageId === Pid)){
-                return CMid;
+            Comments:{
+                type:Array
             }
         },
 
-        // Suppression des commentaires
-        DeleteComment(Comment){
-            this.$store.dispatch("DeleteComment",Comment);
-        },
-        // Paramètrages d'affichage et d'unicité des Comments
-        FormatDateTime(DateTime){
-            // Mise à jour du format de la date
-            if (DateTime) {
-                return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
+        data(){
+            return {
+                // Variables Local
+                
+                // Messages
+                NoComments:"Aucuns commentaires à afficher"
             }
         },
-    },
-}
+
+        computed:{
+            ...mapGetters([
+                
+                // Utilisateur
+                'Connected',
+                'isAdmin',
+                'userName',
+
+                // Status
+                'Loading',
+                'subOkay',
+                'subFailure',
+                'subCompleted',
+            ]),
+        },
+
+        // Création de la logique du module
+        methods:{
+
+            // Dissociation des commentaires en fonction des Messages ID
+            getCommentById(CMid, Pid){
+                if(this.$store.state.Comments.filter(comment => comment.messageId === Pid)){
+                    return CMid;
+                }
+            },
+
+            // Suppression des commentaires
+            DeleteComment(Comment){
+                this.$store.dispatch("DeleteComment",Comment);
+            },
+            // Paramètrages d'affichage et d'unicité des Comments
+            FormatDateTime(DateTime){
+                // Mise à jour du format de la date
+                if (DateTime) {
+                    return moment(String(DateTime)).format('DD/MM/YYYY HH:mm')
+                }
+            },
+        },
+    }
 </script>
 
 <style scoped>
-/* Design CSS du Commentaire */
-.CommentBackground
-{
-    background:-webkit-linear-gradient(to right, #424241 60%,#2f3855);
-	background:-moz-linear-gradient(to right, #424241 60%,#2f3855);
-	background:-o-linear-gradient(to right, #424241 60%,#2f3855);
-	background:linear-gradient(to right, #424241 60%,#2f3855);
-    opacity: 0.8;
-}
+    /* Design CSS du Commentaire */
+    .CommentBackground
+    {
+        background:-webkit-linear-gradient(to right, #424241 60%,#2f3855);
+        background:-moz-linear-gradient(to right, #424241 60%,#2f3855);
+        background:-o-linear-gradient(to right, #424241 60%,#2f3855);
+        background:linear-gradient(to right, #424241 60%,#2f3855);
+        opacity: 0.8;
+    }
 
-/* Ajustement du Design Mobile 320px à 574px */
-@media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    i
+    /* Ajustement du Design Mobile 320px à 574px */
+    @media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
     {
-        font-size : 1em;
+        i
+        {
+            font-size : 1em;
+        }
     }
-}
-@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    i
+    @media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
     {
-        font-size : 0.854em;
+        i
+        {
+            font-size : 0.854em;
+        }
     }
-}
 </style>

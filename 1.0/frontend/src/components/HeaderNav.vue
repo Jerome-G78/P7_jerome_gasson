@@ -24,24 +24,24 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex'
 
-export default {
-    name: 'HeaderNav',
+    export default {
+        name: 'HeaderNav',
 
-    computed:{
-        // Récupération de l'état des "Getters" pour actualiser la page (render)
-        ...mapGetters([
-            'userName',
-            'Connected',
-            'TokenExpired'
-        ]),
-    },
-    // Création de la logique du module
-    methods:{
-        LoadProfil(){
-            this.$store.dispatch("GetProfil");
+        computed:{
+            // Récupération de l'état des "Getters" pour actualiser la page (render)
+            ...mapGetters([
+                'userName',
+                'Connected',
+                'TokenExpired'
+            ]),
         },
+        // Création de la logique du module
+        methods:{
+            LoadProfil(){
+                this.$store.dispatch("GetProfil");
+            },
+        }
     }
-}
 </script>

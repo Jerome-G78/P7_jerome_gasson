@@ -13,34 +13,32 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import PostS from '@/components/Posts.vue'
-import CommentS from '@/components/Comments.vue'
+    import { mapGetters } from 'vuex'
+    import PostS from '@/components/Posts.vue'
+    import CommentS from '@/components/Comments.vue'
 
-export default {
-    name: 'Wall',
-    components: {
-        PostS, CommentS
-    },
-    
-    computed:{
+    export default {
+        name: 'Wall',
+        components: {
+            PostS, CommentS
+        },
+        
+        computed:{
 
-        ...mapGetters([
-            
-            // Utilisateur
-            'Connected',
-            'isAdmin',
-
-            // Status
-            'Loading',
-
-            // Posts & Comments
-            'Posts',
-            'Comments',
-            'NoData'
-        ]),
-    },
-}
-
+            ...mapGetters([
                 
+                // Utilisateur
+                'Connected',
+                'isAdmin',
+
+                // Status
+                'Loading',
+
+                // Posts & Comments
+                'Posts',
+                'Comments',
+                'NoData'
+            ]),
+        },
+    }        
 </script>

@@ -113,82 +113,82 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex'
 
-export default {
-    name: 'Profil',
+    export default {
+        name: 'Profil',
 
-    data(){
-        return {
-            // Variables locales
+        data(){
+            return {
+                // Variables locales
 
-            // Messages
-            subOK: "Connexion réussi.",
-            RightAdd: "Droit accordé à l'utilisateur",
-            RightRemove: "Droit supprimé à l'utilisateur",
-        }
-    },
+                // Messages
+                subOK: "Connexion réussi.",
+                RightAdd: "Droit accordé à l'utilisateur",
+                RightRemove: "Droit supprimé à l'utilisateur",
+            }
+        },
 
-    computed:{
-        // Récupération de l'état des "Getters" pour actualiser la page
-        ...mapGetters([
-            // Profil
-            'Connected',
-            'userName',
-            'Email',
-            'Bio',
-            'BioEdit',
-            'isAdmin',
-            'ChkConfirm',
+        computed:{
+            // Récupération de l'état des "Getters" pour actualiser la page
+            ...mapGetters([
+                // Profil
+                'Connected',
+                'userName',
+                'Email',
+                'Bio',
+                'BioEdit',
+                'isAdmin',
+                'ChkConfirm',
 
-            //Administration
-            'findUser',
-            'findUserAdmin',
-            'findedUser',
-            'RightAdded',
-            'RightRemoved',
+                //Administration
+                'findUser',
+                'findUserAdmin',
+                'findedUser',
+                'RightAdded',
+                'RightRemoved',
 
-            // Status
-            'Loading',
-            'subOkay',
-            'subCompleted',
+                // Status
+                'Loading',
+                'subOkay',
+                'subCompleted',
 
-            'subFailure',
-            'MSGfaillure'
-            
+                'subFailure',
+                'MSGfaillure'
+                
 
-        ]),
-    },
+            ]),
+        },
 
-    // Création de la logique du module
-    methods:{
-        checkBio(){     
-            this.$store.dispatch("checkBio");
+        // Création de la logique du module
+        methods:{
+            checkBio(){     
+                this.$store.dispatch("checkBio");
+            },
+            updateBio(){
+                this.$store.dispatch("BioUpdate");
+            },
+            checkNameExist(){
+                this.$store.dispatch("CheckNameExist");
+            },
+            addRight(){
+                this.$store.dispatch("addRight");
+            },
+            removeRight(){
+                this.$store.dispatch("removeRight");
+            },
+            checkConfirm(){
+                this.$store.dispatch("CheckConfirm");
+            },
+            Unsubscribe(){
+                this.$store.dispatch("Unsubscribe");
+            },
+            ResetStats(){
+                this.$store.dispatch("ResetProfilStats");
+            },
+            GoOut(){
+                this.$store.dispatch("GoOut");
+            },
         },
-        updateBio(){
-            this.$store.dispatch("BioUpdate");
-        },
-        checkNameExist(){
-            this.$store.dispatch("CheckNameExist");
-        },
-        addRight(){
-            this.$store.dispatch("addRight");
-        },
-        removeRight(){
-            this.$store.dispatch("removeRight");
-        },
-        checkConfirm(){
-            this.$store.dispatch("CheckConfirm");
-        },
-        Unsubscribe(){
-            this.$store.dispatch("Unsubscribe");
-        },
-        ResetStats(){
-            this.$store.dispatch("ResetProfilStats");
-        },
-        GoOut(){
-            this.$store.dispatch("GoOut");
-        },
-    },
-}
+    }
 </script>

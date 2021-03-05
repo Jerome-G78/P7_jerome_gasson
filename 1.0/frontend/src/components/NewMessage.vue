@@ -55,103 +55,103 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+    import { mapGetters } from 'vuex'
 
-export default {
-    name: 'NewMessage',
-    data(){
-        return {
-            // Messages
-            subOK: "Message envoyé!",
-            // subFail: "Une erreur est survenue!",
-        }
-        
-    },
-
-    computed:{
-        // Récupération de l'état des "Getters" pour actualiser la page
-        ...mapGetters([
-            // New Message
-            'Ntitle',
-            'Ncontent',
-            'chkCompleted',
-            'uploadFile',
-            'Npicture',
-
-            // Status
-            'Loading',
-            'subOkay',
-            'subCompleted',
-
-            'subFailure',
-            'MSGfaillure'
+    export default {
+        name: 'NewMessage',
+        data(){
+            return {
+                // Messages
+                subOK: "Message envoyé!",
+                // subFail: "Une erreur est survenue!",
+            }
             
-        ]),
-    },
-
-    // Création de la logique du module
-    methods:{
-        MsgVerify(){
-            this.$store.dispatch("MsgVerifyFail");
         },
 
-        handleFileUpload(){
-            let Stat = document.getElementById("Join").checked;
-            if(Stat){
-                this.$store.dispatch("UploadPreview");
-            } else {
-                this.$store.dispatch("DeletePreview");
+        computed:{
+            // Récupération de l'état des "Getters" pour actualiser la page
+            ...mapGetters([
+                // New Message
+                'Ntitle',
+                'Ncontent',
+                'chkCompleted',
+                'uploadFile',
+                'Npicture',
+
+                // Status
+                'Loading',
+                'subOkay',
+                'subCompleted',
+
+                'subFailure',
+                'MSGfaillure'
+                
+            ]),
+        },
+
+        // Création de la logique du module
+        methods:{
+            MsgVerify(){
+                this.$store.dispatch("MsgVerifyFail");
+            },
+
+            handleFileUpload(){
+                let Stat = document.getElementById("Join").checked;
+                if(Stat){
+                    this.$store.dispatch("UploadPreview");
+                } else {
+                    this.$store.dispatch("DeletePreview");
+                }
+            },
+
+            Post(){
+                this.$store.dispatch("MsgVerify");
+            },
+
+            ResetStats(){
+                this.$store.dispatch("ResetNewMsgStats");
             }
         },
-
-        Post(){
-            this.$store.dispatch("MsgVerify");
-        },
-
-        ResetStats(){
+        mounted(){
             this.$store.dispatch("ResetNewMsgStats");
-        }
-    },
-    mounted(){
-        this.$store.dispatch("ResetNewMsgStats");
-    },
-}
+        },
+    }
 </script>
 
 <style scoped>
-/* Ajustement du Design Mobile 320px à 574px */
-@media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    label
+    /* Ajustement du Design Mobile 320px à 574px */
+    @media screen and (min-width:360px) and (max-width:574px) and (orientation: portrait)       /* 20em - Mobiles           */
     {
-        font-size : 0.8em;
-    }
+        label
+        {
+            font-size : 0.8em;
+        }
 
-    .alert 
-    {
-        font-size : 0.745em;
+        .alert 
+        {
+            font-size : 0.745em;
+        }
     }
-}
-@media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
-{
-    h4
+    @media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
     {
-        font-size : 1.16em;
-    }
+        h4
+        {
+            font-size : 1.16em;
+        }
 
-    input, textarea
-    {
-        font-size : 0.8em;
-    }
+        input, textarea
+        {
+            font-size : 0.8em;
+        }
 
-    label
-    {
-        font-size : 0.7em;
-    }
+        label
+        {
+            font-size : 0.7em;
+        }
 
-    .alert 
-    {
-        font-size : 0.591em;
+        .alert 
+        {
+            font-size : 0.591em;
+        }
     }
-}
 </style>
