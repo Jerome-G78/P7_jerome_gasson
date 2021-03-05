@@ -50,7 +50,7 @@ server.use('/api/', apiRouter);
 
 // Launch Server
 server.listen(3000, function(){
-    console.log('Server HTTP online - 3001');
+    console.log('Server HTTP online - 3000');
 });
 
 // HTTPS access
