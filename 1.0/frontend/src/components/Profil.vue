@@ -65,7 +65,7 @@
                             <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <button type="button" href="#" data-toggle="modal" data-target="#ConfirmDeleteProfil" title="Désinscription" class="btn btn-danger" data-dismiss="modal">Désinscription</button>
+                        <button type="button" data-toggle="modal" data-target="#ConfirmDeleteProfil" title="Désinscription" class="btn btn-danger" data-dismiss="modal">Désinscription</button>
                         <button @click="GoOut" type="button" title="Déconnexion" class="btn btn-primary" data-dismiss="modal">Déconnexion</button>
                     </div>
             
@@ -106,6 +106,24 @@
                         <button @click="ResetStats" type="button" title="Annuler" class="btn btn-primary" data-dismiss="modal">Annuler</button>
                     </div>
                     
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="Cleaning">
+            <div class="modal-dialog">
+                <div class="modal-content">
+            
+                    <div class="modal-header">
+                        <h4 class="modal-title"><i class="fas fa-info-circle"></i> Désinscription </h4>
+                        <button @click="ResetStats" type="button" title="Fermer" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+            
+                    <div class="labelsAlign modal-body">
+                        <p class="alert alert-success"> 
+                            <strong> Confirmation : </strong> Votre compte a bien été supprimé! <br/>
+                        </p>
+                    </div>
+
                 </div>
             </div>
         </div>

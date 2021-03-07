@@ -733,6 +733,7 @@ export default createStore({
             }
         },
         Unsubscribe({ commit, dispatch }) {
+
             // Authentification de l'utilisateur...
 
             // Configuration de l'en-tete AXIOS (intégration du token)
@@ -749,6 +750,7 @@ export default createStore({
             // Suppression du compte utilisateur...
             axios.delete(this.state.urlAPI + "/api/users/unsubscribe/")
             .then(res => {
+                document.getElementById("Confirmation").value ='';
                 localStorage.clear();
                 localStorage.removeItem('Connected');
                 localStorage.removeItem('Token');
@@ -766,6 +768,7 @@ export default createStore({
 
                 // Masquer la fenêtre Modal
                 $('#ConfirmDeleteProfil').modal('hide');
+                $('#Cleaning').modal('show');
 
                 // Recharger la page
                 dispatch("WallLoad");
@@ -796,8 +799,6 @@ export default createStore({
         GoOut({ commit }) {
             // Réinitialisation des paramètres Vue X...
             // Supression des informations de session utilisateur...
-            localStorage.removeItem('Token');
-            localStorage.removeItem('Connected');
 
             commit('setsubOkay', false);
             commit('setsubCompleted', false);
@@ -809,6 +810,9 @@ export default createStore({
             commit('setIsAdmin', false);
             commit('setConnected', false);
             commit('setLoading', false);
+
+            localStorage.removeItem('Token');
+            localStorage.removeItem('Connected');
 
             // Recharger la page internet
             document.location.reload();
