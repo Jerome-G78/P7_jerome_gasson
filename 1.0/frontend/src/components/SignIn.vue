@@ -147,7 +147,7 @@
 
         label
         {
-            font-size : 1.01em;
+            font-size : 0.991em;
         }
         .alert 
         {
