@@ -80,7 +80,6 @@
                 Mdp: "Requis : 1 Majuscule, 1 Minuscule, 1 Nombre",
                 MDPFail: "Les mots de passes ne sont pas identiques",
                 subOK: "Votre inscription a bien été prise en compte",
-                subFail: "Une erreur est survenue lors de l'inscription!"
             }
         },
 

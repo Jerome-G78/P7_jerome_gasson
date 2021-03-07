@@ -7,7 +7,7 @@
         <div v-if="!Loading && Connected && NoData" class="spinner-border text-primary text-center" id="WallLoad">
             <p>Aucuns messages a charger ... a vous de jouer! :D </p>
         </div>
-        <div v-if="subFailure" class="alert alert-danger">
+        <div v-if="subFailure && WallFailure" class="alert alert-danger">
             <i class="fas fa-exclamation-triangle"></i> {{MSGfaillure}}
         </div>
         <!--POST START-->
@@ -36,6 +36,7 @@
                 'isAdmin',
 
                 // Status
+                'WallFailure',
                 'subFailure',
                 'MSGfaillure',
                 'Loading',

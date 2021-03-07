@@ -27,19 +27,18 @@
         
                 <div class="modal-footer">
                     <button @click="LogIn" v-if="CHKeMail && CHKpassword && !subOkay && !subFailure" type="submit" title="M'identifier" class="btn btn-primary">M'identifer...</button>
-
-                    <div v-if="subOkay" class="alert alert-success">
-                        {{subOK}}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div v-if="subFailure" class="alert alert-danger">
-                        {{MSGfaillure}}
-                        <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+                </div>
+                <div v-if="subOkay" class="alert alert-success">
+                    {{subOK}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div v-if="subFailure" class="alert text-align-center alert-danger">
+                    {{MSGfaillure}}
+                    <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
         
             </div>

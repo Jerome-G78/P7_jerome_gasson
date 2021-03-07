@@ -74,7 +74,7 @@
 
             // Dissociation des commentaires en fonction des Messages ID
             getCommentById(CMid, Pid){
-                if(this.$store.state.Comments.filter(comment => comment.messageId === Pid)){
+                if(this.$store.state.PostComments.Comments.filter(comment => comment.messageId === Pid)){
                     return CMid;
                 }
             },

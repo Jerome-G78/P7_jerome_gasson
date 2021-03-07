@@ -102,7 +102,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button @click="Unsubscribe" v-if="ChkConfirm" type="button" title="Confirmer" class="btn btn-danger" data-dismiss="modal">Confirmer</button>
+                        <button @click="Unsubscribe" v-if="ChkConfirm" type="button" title="Confirmer" class="btn btn-danger">Confirmer</button>
                         <button @click="ResetStats" type="button" title="Annuler" class="btn btn-primary" data-dismiss="modal">Annuler</button>
                     </div>
                     

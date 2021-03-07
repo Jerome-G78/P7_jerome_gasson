@@ -14,16 +14,17 @@ const { isDate } = require('util');
 
 // Regex
 const EMAIL_REGEX = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-// Minimum height characters, at least one uppercase letter, one lowercase letter and one number.
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/ ///^(?=.*\d).{6,}$/;
+// Minimum six characters, at least one uppercase letter, one lowercase letter and one number.
 
 // Routes
 
 module.exports = {
   register: function(req, res, next){
     // Params
-
-    // Récupération des paramètres envoyés dans la requête
+    /* 
+        Récupération des paramètres envoyés dans la requête
+    */
     let email = req.body.email;
     let username = req.body.username;
     let password = req.body.password;
@@ -115,6 +116,8 @@ module.exports = {
     if (email == null || password == null) {
         return res.status(400).json({'error':'missing parameters'});
     }
+
+    // TODO verify mail regex & password length
 
     // L'utilisateur existe-t-il dans la base ? (promesse)
 
@@ -248,6 +251,7 @@ module.exports = {
   },
 
   deleteProfile: function(req, res, next){
+    // Regarder la doc Sequelize
     // delete cascade : true
 
     // Récupération de l'en-tête d'authorisation
@@ -259,7 +263,6 @@ module.exports = {
     asyncLib.waterfall([
       function(done){
         console.log(1 + ": Récupérer l'utilisateur dans la base de données");
-      
         // Récupérer l'utilisateur dans la base de données
         models.User.findOne({
           attributes : ['id','email','username'],
@@ -283,6 +286,8 @@ module.exports = {
           .then(function(isLiked){
             console.log(2-1 + ": Décrémentation des compteurs...");
             // Décrémentation du compteur liée...
+            // console.log(Liked);
+            // console.log(Liked[0].messageId);
             for(let likeFound in isLiked){
               models.Message.findOne({
                 where: {id:isLiked[likeFound].messageId}
@@ -329,7 +334,7 @@ module.exports = {
         })
         .then(function(messages){
           console.log(5 + ": Supression des likes & commentaires liés aux messages...");
-          for(message in messages){
+          for(let message in messages){
             models.Like.destroy({
               where: { messageId : messages[message].id }
             })
@@ -350,7 +355,7 @@ module.exports = {
         })
         .then(function(messages){
           console.log(6 + ": Supression des attatchement des messages...");
-          for(message in messages){
+          for(let message in messages){
             let filename = messages[message].attachment.split('/images/')[1];
             if(filename !=null){
                 fs.unlinkSync(`images/${filename}`);
@@ -521,7 +526,7 @@ module.exports = {
               done(userFound);
             })
             .catch(function(err){
-              return res.status(500).json({'error':'Unable to modify Rights! '});
+              return res.status(500).json({'error':'Unable to modify Rights! ' + err});
             });
           } else {
             res.status(403).json({'error':'user is Already Moderator'});
@@ -598,7 +603,6 @@ module.exports = {
           where: {username: Username}
         })
         .then(function(userFound){
-          // Si l'utilisateur est trouvé, modification de ses droits
           console.log(userFound.isAdmin);
           if(userFound.isAdmin){
             userFound.update({
@@ -629,5 +633,5 @@ module.exports = {
         return res.status(500).json({'error':'Unable to modify Rights!'});
       }
     });
-  },
+  }
 }
