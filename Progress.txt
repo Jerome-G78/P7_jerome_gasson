@@ -1,4 +1,0 @@
-> Gestion des Props (enfant / parents)
-> Vue X
-	> Getters
-	> Centralisation des APIs
