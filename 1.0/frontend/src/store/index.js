@@ -752,7 +752,6 @@ export default createStore({
             axios.delete(this.state.urlAPI + "/api/users/unsubscribe/")
             .then(res => {
                 document.getElementById("Confirmation").value ='';
-                localStorage.clear();
                 localStorage.removeItem('Connected');
                 localStorage.removeItem('Token');
 
