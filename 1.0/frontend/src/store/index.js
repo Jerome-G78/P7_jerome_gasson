@@ -490,6 +490,7 @@ export default createStore({
 
                 // Masquer la fenêtre Modal
                 $('#registrationModal').modal('hide');
+                $('#Registred').modal('show');
                 dispatch('ResetSignInStats');
             })
             .catch(err => {
