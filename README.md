@@ -20,7 +20,8 @@ Il contient :
 - Pour le faire fonctionner vous devez disposer d'un Navigateur récent (Firefox 80+/Chrome 86+/ Safari 14+...)
 
 [Serveur]
-- Production (Betâ) : https://shadsoft.fr/projets/P7_jerome_gasson/frontend/dist/ 
+- Production : https://shadsoft.fr/projets/P7_jerome_gasson/frontend/dist/ 
+- Production : https://jerome-g78.github.io/P7_jerome_gasson/dist/ 
 
 [Local]
 - Pour faire fonctionner ce projet en local (frontend & Backend), il vous faut :
