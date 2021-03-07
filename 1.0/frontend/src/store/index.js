@@ -706,7 +706,6 @@ export default createStore({
             })
                 .then(res => {
                     // Envoie des données en base
-                    this.bio = BioArea;
                     //SubOkay
                     commit('setBio', BioArea);
                     commit('setsubOkay', true);
@@ -780,7 +779,9 @@ export default createStore({
             });
         },
         ResetProfilStats({ commit }) {
-            document.getElementById('Search').value = '';
+            if(this.state.profil.isAdmin){
+                document.getElementById('Search').value = '';
+            }
             document.getElementById('Bio').value = '';
             document.getElementById('Confirmation').value = '';
 
@@ -954,7 +955,6 @@ export default createStore({
                 axios.get(this.state.urlAPI + '/api/messages/comment?fields=id,messageId,username,comment,createdAt&order=createdAt:DESC')
             ])
             .then(responseArr => {
-                commit('setLoading',true);
                 commit('setPosts', responseArr[0].data);
                 commit('setComments', responseArr[1].data);
 

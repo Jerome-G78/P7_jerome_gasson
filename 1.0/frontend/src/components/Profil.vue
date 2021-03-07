@@ -23,7 +23,7 @@
 
                             <div v-if="subOkay" class="alert alert-success">
                                 <strong><i class="fas fa-check-circle"></i></strong> votre profil est à jour.
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <button @click="ResetStats" type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
