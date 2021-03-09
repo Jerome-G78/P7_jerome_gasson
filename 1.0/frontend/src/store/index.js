@@ -680,7 +680,6 @@ export default createStore({
             .catch(err => {
                 commit('setsubFailure', true);
                 commit('setMSGfaillure',"Votre profil n'as pas été récupéré!");
-                commit('setLoading', false);
             });
         },
         BioUpdate({ commit }) {
