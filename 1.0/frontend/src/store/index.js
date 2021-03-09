@@ -685,7 +685,6 @@ export default createStore({
         },
         BioUpdate({ commit }) {
             let BioArea = document.getElementById("Bio").value;
-            commit('setLoading', true);
             commit('setBioEdit', false);
 
             // Configuration de l'en-tete AXIOS (intégration du token)
@@ -712,12 +711,10 @@ export default createStore({
                     // Completed
                     document.getElementById('Bio').value = '';
                     commit('setsubCompleted', true);
-                    commit('setLoading', false);
                 })
                 .catch(err => {
                     commit('setsubFailure', true);
                     commit('setMSGfaillure',"Votre profil n'as pas été mis à jour!");
-                    commit('setLoading', false);
                 });
 
         },
