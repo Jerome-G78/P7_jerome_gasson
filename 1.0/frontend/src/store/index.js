@@ -661,7 +661,6 @@ export default createStore({
 
             axios.get(this.state.urlAPI + '/api/users/me')
             .then(res => {
-                // console.log(res)
                 let UserProfil = {
                     'userID': res.data.id,
                     'UserName': res.data.username,
@@ -705,7 +704,6 @@ export default createStore({
                 bio: BioArea,
             })
                 .then(res => {
-                    // Envoie des données en base
                     //SubOkay
                     commit('setBio', BioArea);
                     commit('setsubOkay', true);
