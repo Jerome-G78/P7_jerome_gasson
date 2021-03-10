@@ -4,7 +4,7 @@
 ## I - UTILISATEUR
 
 	1.	POST /api/users/register/ ------: Permet de vous inscrire sur le site
-	2.	POST /api/users/login/ ---------: Permet de vous authentifiés sur le site
+	2.	POST /api/users/login/ ---------: Permet de vous authentifier sur le site
     3.	GET /api/users/me/ -------------: Permet d'accéder à votre profil
     4.	PUT /api/users/me/ -------------: Permet de modifier votre profil
     5.	DELETE /api/users/unsubscribe/ -: Permet de vous désinscrire
@@ -62,7 +62,7 @@
 
 2.	POST /api/users/register/
 > POST http://NomDuSite.com/api/users/login/
-- Permet de vous authentifiés sur le site
+- Permet de vous authentifier sur le site
 
 - Attendu : 
     > BODY | x-www-form-urlencoded
@@ -111,7 +111,7 @@
 ## [MESSAGES]
 1.	GET /api/messages/
 > GET http://NomDuSite.com/api/messages/
-- Permet de récupérer les messages (paramètrage possible)
+- Permet de récupérer les messages (paramétrage possible)
 
 - Attendu : 
     > BODY | x-www-form-urlencoded
@@ -315,7 +315,7 @@
 
 2.	PUT /api/users/add/
 > PUT http://NomDuSite.com/api/users/add/
-- Permet d'accorder les droits administrateur a un utilisateur (via son nom)
+- Permet d'accorder les droits administrateur à un utilisateur (via son nom)
 
 - Attendu : 
     > Headers 
@@ -329,7 +329,7 @@
 
 3.	PUT /api/users/remove/
 > PUT http://NomDuSite.com/api/users/remove/
-- Permet de retirer les droits administrateur a un utilisateur (via son nom)
+- Permet de retirer les droits administrateur à un utilisateur (via son nom)
 
 - Attendu : 
     > Headers 

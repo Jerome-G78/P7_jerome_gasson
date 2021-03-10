@@ -12,7 +12,7 @@ Il contient :
 - Un module pour commenter les messages
 - Un module pour éditer/modérer les messages
 - Un système de "Like/Dislike"
-- Un système de Suppression des Messages/Commentaires (inclus la supresion par modération)
+- Un système de Suppression des Messages/Commentaires (inclus la suppression par modération)
 - Un "Mur" qui liste l'ensemble des messages & commentaires de façon Ascendante
 
 [prérequis]
@@ -30,10 +30,10 @@ Il contient :
 - > Frontend : installez Vue.js 3+ (intégrez VueX)
 - Une base de données MySQL (WAMP ou autres)
 
-- i- Le fichier : \backend\config.json, doit être modifié pour correspondre a vos bases
+- i- Le fichier : \backend\config.json, doit être modifié pour correspondre à vos bases
 - i- La base de données doit exister avant d'intégrer le projet via sequelize
 
-- Depuis le dossier \backend\ Intégrez la base de donnée sur le serveur via :
+- Depuis le dossier \backend\ Intégrez la base de données sur le serveur via :
     > sequelize db:migrate
 
 [Execution]
@@ -43,25 +43,25 @@ Il contient :
 
 - Pour le frontend, vous devez vous trouver dans le dossier : \frontend\
 
-- Option 1 : Verifiez dans le fichier frontend\src\store\index.js ligne 5 : 
+- Option 1 : Vérifiez dans le fichier frontend\src\store\index.js ligne 5 : 
     > urlAPI: 'http://localhost:3000/'
 
-    executer la commande :
+    exécuter la commande :
     > npm run serve
     - Le serveur est en ecoute par défaut sur le port 8080. (http://localhost:8080)
 
 - Option 2 : Vous disposez d'un serveur apache (ou WAMP) :
-    - Verifiez dans le fichier frontend\src\store\index.js ligne 5 : 
+    - Vérifiez dans le fichier frontend\src\store\index.js ligne 5 : 
     > urlAPI: 'http://adresseDubackend:3000/'
-    - Verifiez le fichier frontend\vue.config.js ligne 3 :
+    - Vérifiez le fichier frontend\vue.config.js ligne 3 :
     > ? '/Chemin/DuServeur/Vers/LeDossier/dist' : '/'
 
-    executer la commande :
+    exécuter la commande :
     > npm run build
     - Copiez l'ensemble du dossier "\dist\" créé localement "frontend\dist" sur votre serveur.
 
 [Utilisation]
-- Une fois le backend/frontend chargés et disponible
+- Une fois les backend & frontend chargés et disponibles
     > Depuis votre navigateur internet veuillez vous rendre sur le site suivant : 
    - Option 1 : http://localhost:8080/
    - Option 2 : http://Chemin/DuServeur/Vers/LeDossier/dist
