@@ -959,7 +959,7 @@ export default createStore({
             .catch(err => {
                 commit('setWallFailure', true);
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Impossible de se connecter a la base de données, veuillez réésayer ulterieurement.");
+                commit('setMSGfaillure',"Impossible de se connecter à la base de données, veuillez réessayer ultérieurement.");
                 commit('setLoading',false);
                 console.log(err);
             });
@@ -1070,7 +1070,7 @@ export default createStore({
             })
             .catch(err => {
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Impossible de charger l'image selectionnée (Format supportés : jpg, jpeg, png)");
+                commit('setMSGfaillure',"Impossible de charger l'image sélectionnée (Formats supportés : jpg, jpeg, png)");
             });
         },
         DeletePreview({ commit }) {
@@ -1368,7 +1368,7 @@ export default createStore({
             })
             .catch(err =>{
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Imposible de charger l'image selectionnée (Format supportés : jpg, jpeg, png)");
+                commit('setMSGfaillure',"Imposible de charger l'image sélectionnée (Formats supportés : jpg, jpeg, png)");
             });
         },
         EditDeletePreview({commit}){

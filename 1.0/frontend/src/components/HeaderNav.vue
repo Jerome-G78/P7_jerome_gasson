@@ -18,7 +18,7 @@
             </button>
         </div>
         <div id="Warning" v-if="TokenExpired" class="alert alert-danger">
-            Bonjour {{userName}}, votre session à exiprer, veuillez vous reconnecter.
+            Bonjour {{userName}}, votre session a expirer, veuillez vous reconnecter.
         </div>
     </header>
 </template>

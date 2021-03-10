@@ -21,7 +21,7 @@ module.exports = {
         // Vérifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
-        // Params (recupération du title & du contenue) et de l'image si existante
+        // Params (récupération du title & du contenue) et de l'image si existante
         let title = req.body.title;
         let content = req.body.content;
         let image = req.body.image;
@@ -68,11 +68,11 @@ module.exports = {
                         UserId : userFound.id
                     })
                     .then(function(newMessage){
-                        // Si tout c'est bien passé, le message est envoyé.
+                        // Si tout s'est bien passé, le message est envoyé.
                         done(newMessage);
                     })
                     .catch(function(err){
-                        // En d'erreur serveur, un message d'erreur est retourné.
+                        // En cas d'erreur serveur, un message d'erreur est retourné.
                         return res.status(500).json({'error':'unable to create message in DB'});
                     });
                 } else {
@@ -254,7 +254,7 @@ module.exports = {
                         attachment : (mediaUrl? mediaUrl : mediaUrl)
                     })
                     .then(function(moderateMessage){
-                        // Si tout c'est bien passé, le message est envoyé.
+                        // Si tout s'est bien passé, le message est envoyé.
                         done(moderateMessage.id);
                     })
                     .catch(function(err){
@@ -365,7 +365,7 @@ module.exports = {
             },
 
             function(done){
-                // Suppression des images uploadés (si présentes)
+                // Suppression des images uploadées (si présentes)
                 models.Message.findOne({
                     where : {id : messageId}
                 })
@@ -382,7 +382,7 @@ module.exports = {
             },
 
             function(messageId, done){
-                // S'il y a des likes liée aux messages, ils seront supprimés.
+                // S'il y a des likes liés aux messages, ils seront supprimés.
                 if(messageId){
                     models.Like.destroy({
                         where: {messageId : messageId.id}
@@ -399,7 +399,7 @@ module.exports = {
             },
 
             function(messageId, done){
-                // S'il y a des Commentaires liée aux messages, ils seront supprimés.
+                // S'il y a des Commentaires liés aux messages, ils seront supprimés.
                 if(messageId){
                     models.Comment.destroy({
                         where: {messageId : messageId.id}
@@ -422,7 +422,7 @@ module.exports = {
                         where : {id: messageId.id}
                     })
                     .then(function(deleteMessage){
-                        // Si tout c'est bien passé, une information de réussite est envoyée.
+                        // Si tout s'est bien passé, une information de réussite est envoyée.
                         done(deleteMessage);
                     })
                     .catch(function(err){
@@ -537,7 +537,7 @@ module.exports = {
                         attachment : (mediaUrl? mediaUrl : mediaUrl)
                     })
                     .then(function(putMessage){
-                        // Si tout c'est bien passé, le message est envoyé.
+                        // Si tout s'est bien passé, le message est envoyé.
                         done(putMessage.id);
                     })
                     .catch(function(err){
@@ -669,7 +669,7 @@ module.exports = {
                     }
                 })
                 .then(function(deleteMessage){
-                    // Si tout c'est bien passé, une information de réussite est envoyée.
+                    // Si tout s'est bien passé, une information de réussite est envoyée.
                     done(deleteMessage);
                 })
                 .catch(function(err){

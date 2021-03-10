@@ -226,7 +226,7 @@ module.exports = {
               bio: (bio? bio : userFound.bio)
           })
           .then(function(){
-              // Opération réussi
+              // Opération réussie
               done(userFound);
           })
           .catch(function(err){
@@ -272,7 +272,7 @@ module.exports = {
         })
         .then(userFound => {
           console.log(2 + ": Verification des likes liées pour suppression...");
-          // Vérification des likes liées pour suppression
+          // Vérification des likes liés pour suppression
           models.Like.findAll({
             attributes: ['id','userId', 'messageId'],
             where: {
@@ -282,7 +282,7 @@ module.exports = {
           })
           .then(function(isLiked){
             console.log(2-1 + ": Décrémentation des compteurs...");
-            // Décrémentation du compteur liée...
+            // Décrémentation du compteur lié...
             for(let likeFound in isLiked){
               models.Message.findOne({
                 where: {id:isLiked[likeFound].messageId}
@@ -306,7 +306,7 @@ module.exports = {
         })
         .then(likeFound => {
           console.log(3 + ": Verification des Comment liées pour suppression...");
-          // Vérification des Comment liées pour suppression
+          // Vérification des Comment liés pour suppression
           models.Comment.destroy({
             where: { userId },
             cascade : true,

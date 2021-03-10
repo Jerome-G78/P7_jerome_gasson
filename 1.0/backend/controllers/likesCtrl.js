@@ -114,7 +114,7 @@ module.exports = {
             }
         ], function(messageFound){
             if(messageFound){
-                // Affichage de la propriété like qui sera incrémenté
+                // Affichage de la propriété like qui sera incrémentée
                 return res.status(201).json(messageFound);
             } else {
                 return res.status(500).json({'error':'cannot update message'});

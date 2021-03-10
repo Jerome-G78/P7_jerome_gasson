@@ -22,7 +22,7 @@ module.exports = {
     },
 
     parseAuthorization: function(authorisation){
-        // On verifie si la chaine n'est pas null, si tel est le cas on remplace "Bearer "
+        // On vérifie si la chaine n'est pas null, si tel est le cas on remplace "Bearer "
         // par une chaine vide pour récupérer le Token.
         return (authorisation !=null) ? authorisation.replace('Bearer ','') :null;
     },
