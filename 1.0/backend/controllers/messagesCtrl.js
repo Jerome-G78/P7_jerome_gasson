@@ -137,7 +137,7 @@ module.exports = {
         // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
-        // Verifier que ce token est valide pour faire une requête en BDD
+        // Vérifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
         // Params récupération de l'image
@@ -221,7 +221,7 @@ module.exports = {
             },
 
             function(userFound, done){
-                // Verifier si l'utilisateur dispose des droits admin
+                // Vérifier si l'utilisateur dispose des droits admin
                 models.User.findOne({
                     attributes : ['isAdmin'],
                     where : {isAdmin: userFound.isAdmin}

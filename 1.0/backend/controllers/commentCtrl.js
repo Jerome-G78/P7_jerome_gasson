@@ -52,7 +52,7 @@ module.exports = {
                         comment : comment
                     })
                     .then(function(newComment){
-                        // Si tout c'est bien passé, le message est envoyé.
+                        // Si tout s'est bien passé, le message est envoyé.
                         done(newComment);
                     })
                     .catch(function(err){
@@ -164,7 +164,7 @@ module.exports = {
                         }
                     })
                     .then(function(deleteComment){
-                        // Si tout c'est bien passé, un information de réussite est envoyée.
+                        // Si tout s'est bien passé, un information de réussite est envoyée.
                         done(deleteComment);
                     })
                     .catch(function(err){
@@ -225,7 +225,7 @@ module.exports = {
                     }
                 })
                 .then(function(deleteComment){
-                    // Si tout c'est bien passé, un information de réussite est envoyée.
+                    // Si tout s'est bien passé, un information de réussite est envoyée.
                     done(deleteComment);
                 })
                 .catch(function(err){

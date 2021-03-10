@@ -388,7 +388,7 @@ module.exports = {
     let Username = req.body.Username;
     console.log(Username);
 
-    // Verifier que ce token est valide pour faire une requête en BDD
+    // Vérifier que ce token est valide pour faire une requête en BDD
     let userId = jwtUtils.getUserId(headerAuth);
 
     // Vérifier que userId n'est pas négatif (par sécurité)
@@ -412,7 +412,7 @@ module.exports = {
       },
 
       function(userFound, done){
-        // Verifier si l'utilisateur dispose des droits admin
+        // Vérifier si l'utilisateur dispose des droits admin
         models.User.findOne({
             attributes : ['isAdmin'],
             where : {isAdmin: userFound.isAdmin}
