@@ -5,7 +5,7 @@
 
 	1.	POST /api/users/register/ ------: Permet de vous inscrire sur le site
 	2.	POST /api/users/login/ ---------: Permet de vous authentifiés sur le site
-    3.	GET /api/users/me/ -------------: Permet d'acceder a votre profil
+    3.	GET /api/users/me/ -------------: Permet d'accéder à votre profil
     4.	PUT /api/users/me/ -------------: Permet de modifier votre profil
     5.	DELETE /api/users/unsubscribe/ -: Permet de vous désinscrire
 
@@ -74,7 +74,7 @@
 
 3.	GET /api/users/me/
 > GET http://NomDuSite.com/api/users/me/
-- Permet d'acceder a votre profil
+- Permet d'accéder à votre profil
 
 - Attendu : 
     > Headers 
