@@ -33,7 +33,6 @@ exports.router = (function(){
     apiRouter.delete('/messages/:messageId/', multer, messagesCtrl.deleteMyMessage);
     apiRouter.delete('/messages/new/preview/', multer, messagesCtrl.DeletePreview);
     
-
     // Comments routes
     apiRouter.get('/messages/comment/', commentCtrl.listComment);
     apiRouter.post('/messages/comment/:messageId/new/', commentCtrl.createComment);

@@ -46,7 +46,7 @@ module.exports = {
         return res.status(400).json({'error':'email is not valid'});
     }
 
-    // Verification du mot de passe via le Regex
+    // Vérification du mot de passe via le Regex
     if (!PASSWORD_REGEX.test(password)){
         return res.status(400).json({'error':'Password must be minimum 8 digits at least one uppercase letter, one lowercase letter and one number.'});
     }
