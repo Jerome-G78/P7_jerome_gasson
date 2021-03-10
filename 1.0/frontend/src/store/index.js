@@ -494,12 +494,11 @@ export default createStore({
                 dispatch('ResetSignInStats');
             })
             .catch(err => {
-                // console.log(err.message);
                 if(err.message == 'Request failed with status code 409'){
                     commit('setMSGfaillure', "Cette adresse e-mail est déjà utilisée.")
                     commit('setsubFailure', true);
                 } else {
-                    commit('setMSGfaillure', "Veillez a bien remplir les champs du formulaire d'inscription.");
+                    commit('setMSGfaillure', "Veillez à bien remplir les champs du formulaire d'inscription.");
                     commit('setsubFailure', true);
                 }
 
@@ -593,7 +592,7 @@ export default createStore({
                 document.getElementById('Lemail').value = '';
                 document.getElementById('Lpwd').value = '';
 
-                // Récupération des information du compte de l'utilisateur
+                // Récupération des informations du compte de l'utilisateur
                 commit('setsubOkay', true);
                 commit('setsubCompleted', true);
                 commit('setConnected', true);
@@ -679,7 +678,7 @@ export default createStore({
             })
             .catch(err => {
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Votre profil n'as pas été récupéré!");
+                commit('setMSGfaillure',"Votre profil n'a pas été récupéré!");
             });
         },
         BioUpdate({ commit }) {
@@ -713,7 +712,7 @@ export default createStore({
                 })
                 .catch(err => {
                     commit('setsubFailure', true);
-                    commit('setMSGfaillure',"Votre profil n'as pas été mis à jour!");
+                    commit('setMSGfaillure',"Votre profil n'a pas été mis à jour!");
                 });
 
         },
@@ -729,7 +728,6 @@ export default createStore({
         Unsubscribe({ commit, dispatch }) {
 
             // Authentification de l'utilisateur...
-
             // Configuration de l'en-tete AXIOS (intégration du token)
             axios.interceptors.request.use(
                 config => {
@@ -1072,7 +1070,7 @@ export default createStore({
             })
             .catch(err => {
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Imposible de charger l'image selectionnée (Format supportés : jpg, jpeg, png)");
+                commit('setMSGfaillure',"Impossible de charger l'image selectionnée (Format supportés : jpg, jpeg, png)");
             });
         },
         DeletePreview({ commit }) {
@@ -1112,7 +1110,7 @@ export default createStore({
             })
             .catch(err => {
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Imposible de supprimer le preview (fichier introuvable)");
+                commit('setMSGfaillure',"Impossible de supprimer le preview (fichier introuvable)");
             });
         },
         PostPict({ commit, dispatch }) {
@@ -1412,7 +1410,7 @@ export default createStore({
             })
             .catch(err =>{
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Imposible de supprimer le preview (fichier introuvable)");
+                commit('setMSGfaillure',"Impossible de supprimer le preview (fichier introuvable)");
             });
         },
         RemoveEAttachment({commit,dispatch}){

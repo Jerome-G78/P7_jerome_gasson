@@ -63,7 +63,6 @@
             return {
                 // Messages
                 subOK: "Message envoyé!",
-                // subFail: "Une erreur est survenue!",
             }
             
         },

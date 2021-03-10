@@ -5,7 +5,7 @@
             <span class="spinner-border"></span>
         </div>
         <div v-if="!Loading && Connected && NoData" class="spinner-border text-primary text-center" id="WallLoad">
-            <p>Aucuns messages a charger ... a vous de jouer! :D </p>
+            <p>Aucuns messages à charger ... à vous de jouer! :D </p>
         </div>
         <div v-if="subFailure && WallFailure" class="alert alert-danger">
             <i class="fas fa-exclamation-triangle"></i> {{MSGfaillure}}

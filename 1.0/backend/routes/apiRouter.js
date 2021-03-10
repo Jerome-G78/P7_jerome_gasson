@@ -14,7 +14,7 @@ exports.router = (function(){
 
     // Assignation des différentes routes
     /*
-    Appeler la methode route de apiRouter.suivi du verbe HTTP,
+    Appeler la méthode route de apiRouter.suivi du verbe HTTP,
     Renseigner la route, Depuis le controller concerné, exectuer la fonction voulu [Ex. usersCtrl.register]
     */
 
@@ -39,7 +39,7 @@ exports.router = (function(){
     apiRouter.post('/messages/comment/:messageId/new/', commentCtrl.createComment);
     apiRouter.delete('/messages/comment/:messageId/:commentId/', commentCtrl.deleteMyComment);
 
-    // Moderation
+    // Moderation routes
     apiRouter.put('/messages/:messageId/moderate/', multer, messagesCtrl.moderateMessage);
     apiRouter.delete('/messages/:messageId/moderate/', multer, messagesCtrl.deleteMessage);
     apiRouter.delete('/messages/comment/:messageId/:commentId/moderate/', multer, commentCtrl.deleteComment);
@@ -48,7 +48,7 @@ exports.router = (function(){
     apiRouter.post('/messages/:messageId/vote/like', likesCtrl.likePost);
     apiRouter.post('/messages/:messageId/vote/dislike', likesCtrl.dislikePost);
 
-    // Administration
+    // Administration routes
     apiRouter.post('/users/', usersCtrl.getOneUserProfile);
     apiRouter.put('/users/add', usersCtrl.updateUserAddRights);
     apiRouter.put('/users/remove', usersCtrl.updateUserRemoveRights);

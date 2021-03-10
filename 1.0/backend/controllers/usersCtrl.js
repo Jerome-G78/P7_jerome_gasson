@@ -21,28 +21,27 @@ const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
 module.exports = {
   register: function(req, res, next){
-    // Params
-    /* 
-        Récupération des paramètres envoyés dans la requête
-    */
+    // Params 
+
+    //  Récupération des paramètres envoyés dans la requête
     let email = req.body.email;
     let username = req.body.username;
     let password = req.body.password;
     let bio = req.body.bio;
 
-    // Vérification si les données obligatoires sont bien récupérés
+    // Vérifier que les données obligatoires ont bien été récupérées
     if(email == null || username == null || password == null){
       return res.status(400).json({'error':'missing parameters'});
     }
 
     // Vérification des variables envoyés
 
-    // Si le pseudo est égal ou plus grand que 16, ou inferrieur ou égal à 4 on rejette la demande
+    // Si le pseudo est égal ou plus grand que 16, ou infèrieur ou égal à 4 on rejette la demande
     if (username.length >= 16 || username.length <= 4){
       return res.status(400).json({'error':'username must be length 5 - 15'});
     }
 
-    // Verification de l'adresse E-Mail via le Regex
+    // Vérification de l'adresse E-Mail via le Regex
     if (!EMAIL_REGEX.test(email)){
         return res.status(400).json({'error':'email is not valid'});
     }
@@ -52,7 +51,7 @@ module.exports = {
         return res.status(400).json({'error':'Password must be minimum 8 digits at least one uppercase letter, one lowercase letter and one number.'});
     }
 
-    // Après verifications, Ajout de l'utilisateur dans la base de données
+    // Après vérifications, Ajout de l'utilisateur dans la base de données
 
     // L'utilisateur existe-t-il dans la base ? (promesse)
        
@@ -166,10 +165,10 @@ module.exports = {
   },
 
   getUserProfile: function(req, res, next){
-    // Récupération de l'en-tête d'authorisation
+    // Récupération de l'en-tête d'autorisation
     let headerAuth = req.headers['authorization'];
 
-    // Verifier que ce token est valide pour faire une requête en BDD
+    // Vérifier que ce token est valide pour faire une requête en BDD
     let userId = jwtUtils.getUserId(headerAuth);
 
     // Vérifier que userId n'est pas négatif (par sécurité)
@@ -194,10 +193,10 @@ module.exports = {
   },
 
   updateUserProfile: function(req, res, next){
-    // Récupération de l'en-tête d'authorisation
+    // Récupération de l'en-tête d'autorisation
     let headerAuth = req.headers['authorization'];
 
-    // Verifier que ce token est valide pour faire une requête en BDD
+    // Vérifier que ce token est valide pour faire une requête en BDD
     let userId = jwtUtils.getUserId(headerAuth);
 
     // Params : Récupération des données du Frontend.
@@ -220,14 +219,14 @@ module.exports = {
         });
       },
       function(userFound, done){
-        // Verifier si l'utilisateur est valide
+        // Vérifier si l'utilisateur est valide
         if(userFound) {
-          // Après verification, mise à jour des données concernés
+          // Après vérification, mise à jour des données concernées
           userFound.update({
               bio: (bio? bio : userFound.bio)
           })
           .then(function(){
-              // Opération reussi
+              // Opération réussi
               done(userFound);
           })
           .catch(function(err){
@@ -241,7 +240,7 @@ module.exports = {
     ],
     function(userFound){
       if(userFound){
-          // Mise a jour effectuée
+          // Mise à jour effectuée
           return res.status(201).json(userFound);
       } else {
           // Une erreur est survenue
@@ -251,13 +250,11 @@ module.exports = {
   },
 
   deleteProfile: function(req, res, next){
-    // Regarder la doc Sequelize
-    // delete cascade : true
 
-    // Récupération de l'en-tête d'authorisation
+    // Récupération de l'en-tête d'autorisation
     let headerAuth = req.headers['authorization'];
 
-    // Verifier que ce token est valide pour faire une requête en BDD
+    // Vérifier que ce token est valide pour faire une requête en BDD
     let userId = jwtUtils.getUserId(headerAuth);
 
     asyncLib.waterfall([
@@ -275,7 +272,7 @@ module.exports = {
         })
         .then(userFound => {
           console.log(2 + ": Verification des likes liées pour suppression...");
-          // Verification des likes liées pour suppression
+          // Vérification des likes liées pour suppression
           models.Like.findAll({
             attributes: ['id','userId', 'messageId'],
             where: {
@@ -286,8 +283,6 @@ module.exports = {
           .then(function(isLiked){
             console.log(2-1 + ": Décrémentation des compteurs...");
             // Décrémentation du compteur liée...
-            // console.log(Liked);
-            // console.log(Liked[0].messageId);
             for(let likeFound in isLiked){
               models.Message.findOne({
                 where: {id:isLiked[likeFound].messageId}
@@ -311,7 +306,7 @@ module.exports = {
         })
         .then(likeFound => {
           console.log(3 + ": Verification des Comment liées pour suppression...");
-          // Verification des Comment liées pour suppression
+          // Vérification des Comment liées pour suppression
           models.Comment.destroy({
             where: { userId },
             cascade : true,
@@ -327,7 +322,7 @@ module.exports = {
 
       function(done){
         console.log(4 + ": Récupératon des messages de l'utilisateur...");
-        // Récuperation de tous les messages de l'utilisateur...
+        // Récupération de tous les messages de l'utilisateur...
         models.Message.findAll({
           attributes:['id'],
           where: { userId },
@@ -372,8 +367,8 @@ module.exports = {
       },
 
       function(completed, done){
-        console.log(8 + ": Supression du compte de l'utilisateur");
-        // Supression du compte de l'utilisateur
+        console.log(8 + ": Suppression du compte de l'utilisateur");
+        // Suppression du compte de l'utilisateur
         models.User.destroy({
           where: { id : userId }
         })
@@ -388,7 +383,7 @@ module.exports = {
   },
 
   getOneUserProfile: function(req, res, next){
-    // Récupération de l'en-tête d'authorisation
+    // Récupération de l'en-tête d'autorisation
     let headerAuth = req.headers['authorization'];
     let Username = req.body.Username;
     console.log(Username);
@@ -464,11 +459,11 @@ module.exports = {
   },
 
   updateUserAddRights: function(req, res, next){
-    // Récupération de l'en-tête d'authorisation
+    // Récupération de l'en-tête d'autorisation
     let headerAuth = req.headers['authorization'];
     let Username = req.body.Username;
 
-    // Verifier que ce token est valide pour faire une requête en BDD
+    // Vérifier que ce token est valide pour faire une requête en BDD
     let userId = jwtUtils.getUserId(headerAuth);
 
     // Vérifier que userId n'est pas négatif (par sécurité)
@@ -492,7 +487,7 @@ module.exports = {
       },
 
       function(userFound, done){
-        // Verifier si l'utilisateur dispose des droits admin
+        // Vérifier que l'utilisateur dispose des droits admin
         models.User.findOne({
           attributes : ['isAdmin'],
           where : {isAdmin: userFound.isAdmin}
@@ -531,7 +526,6 @@ module.exports = {
           } else {
             res.status(403).json({'error':'user is Already Moderator'});
           }
-            // res.status(200).json(user);
         })
         .catch(function(err){
             return res.status(500).json({'error':'unable to set Admin Right!'});
@@ -540,7 +534,7 @@ module.exports = {
 
     ], function(userFound){
       if(userFound){
-          // Mise a jour effectuée
+          // Mise à jour effectuée
           return res.status(201).json(userFound);
       } else {
           // Une erreur est survenue
@@ -550,11 +544,11 @@ module.exports = {
   },
 
   updateUserRemoveRights: function(req, res, next){
-    // Récupération de l'en-tête d'authorisation
+    // Récupération de l'en-tête d'autorisation
     let headerAuth = req.headers['authorization'];
     let Username = req.body.Username;
 
-    // Verifier que ce token est valide pour faire une requête en BDD
+    // Vérifier que ce token est valide pour faire une requête en BDD
     let userId = jwtUtils.getUserId(headerAuth);
 
     // Vérifier que userId n'est pas négatif (par sécurité)
@@ -578,7 +572,7 @@ module.exports = {
       },
 
       function(userFound, done){
-        // Verifier si l'utilisateur dispose des droits admin
+        // Vérifier si l'utilisateur dispose des droits admin
         models.User.findOne({
             attributes : ['isAdmin'],
             where : {isAdmin: userFound.isAdmin}
@@ -617,7 +611,6 @@ module.exports = {
           } else {
             res.status(403).json({'error':'user is not Moderator'});
           }
-            // res.status(200).json(user);
         })
         .catch(function(err){
             return res.status(500).json({'error':'unable to remove Admin Right!'});
@@ -626,7 +619,7 @@ module.exports = {
 
     ], function(userFound){
       if(userFound){
-        // Mise a jour effectuée
+        // Mise à jour effectuée
         return res.status(201).json(userFound);
       } else {
         // Une erreur est survenue

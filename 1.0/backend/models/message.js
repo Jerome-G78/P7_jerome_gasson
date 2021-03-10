@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       // Le model actuel.typeDeRelation(models.référence)
       models.Message.belongsTo(models.User,{
-        // La clé étrangère ne doit pas être égal a Null.
+        // La clé étrangère ne doit pas être égale à Null.
         foreignKey :{
           allowNull : false
         }

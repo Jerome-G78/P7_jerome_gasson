@@ -46,7 +46,7 @@ export default {
   },
 
   mounted(){
-    // Vérifier si l'utilisateur est déjà connécté
+    // Vérifier si l'utilisateur est déjà connecté
     if(JSON.parse(localStorage.getItem("Connected"))){
       // Chargement des paramètres utilisateur...
       console.log("Chargement des paramètres utilisateur...");

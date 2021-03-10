@@ -13,7 +13,7 @@ module.exports = {
             userId: userData.id,
             isAdmin : userData.isAdmin 
         },
-        // génération & paramètrage du TOKEN
+        // génération & paramétrage du TOKEN
         JWT_SIGN_SECRET,
         {
             // Durée de validité
@@ -29,7 +29,7 @@ module.exports = {
 
     getUserId: function(authorisation){
         // Récupérer l'ID de l'utilisateur
-        // Fixer la variable userId à -1 pour être sûr que la requête ne pointe pas nulle part. 
+        // Fixer la variable userId a -1 pour être sûr que la requête ne pointe pas nulle part. 
         let userId = -1;
 
         // Récupérer le module parseAuthorization dans la variable token
@@ -37,7 +37,7 @@ module.exports = {
         
         if(token!= null){
             try{
-                // verifier si le token est valide
+                // Vérifier si le token est valide
                 let jwtToken = jwt.verify(token, JWT_SIGN_SECRET);
                 if(jwtToken !=null)
                     userId = jwtToken.userId;

@@ -89,7 +89,6 @@
                         </p>
 
                         <div class="form-group">
-                            <!-- <h5>Demande de confirmation</h5> -->
                             <label for="Confirmation"><i class="fas fa-pen"></i> Veuillez confirmer votre demande : </label>
                             <input @keyup="checkConfirm" type="text" class="form-control" id="Confirmation" placeholder="Tapez : J'accepte" name="Confirmation">
                         </div>

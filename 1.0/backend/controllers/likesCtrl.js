@@ -12,23 +12,23 @@ let asyncLib = require('async');
 
 module.exports = {
     likePost: function(req, res, next){
-        // Récupération de l'en-tête d'authorisation
+        // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
-        // Verifier que ce token est valide pour faire une requête en BDD
+        // Vérifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
         //Params
         let messageId = parseInt(req.params.messageId);
 
-        // Verifier si l'ID du message est valide
+        // Vérifier si l'ID du message est valide
         if(messageId <= 0){
             return res.status(400).json({'error':'invalid parameters'});
         }
 
         asyncLib.waterfall([
             function(done){
-                // Verifier dans la BDD si le message existe (id du msg)
+                // Vérifier dans la BDD si le message existe (id du msg)
                 models.Message.findOne({
                     where: {id:messageId}
                 })
@@ -59,7 +59,7 @@ module.exports = {
             },
             function(messageFound, userFound, done){
                 if(userFound){
-                    // rechercher si on trouve une entrée qui corresponds a la fois a l'ID de l'utilisateur qui fait la requête
+                    // Rechercher si l'on trouve une entrée qui correspond à la fois à l'ID de l'utilisateur qui fait la requête
                     // Ainsi qu'au message concerné
                     models.Like.findOne({
                         where: {
@@ -80,7 +80,7 @@ module.exports = {
             },
             function(messageFound, userFound, isUserAlreadyLiked, done) {
                 console.log("Inf:" + isUserAlreadyLiked);
-                    // S'assurer qu l'utilisateur n'as pas déjà Like le message
+                    // S'assurer que l'utilisateur n'as pas déjà Like le message
                     if(!isUserAlreadyLiked){
                         // Ajouter la relation qui uni le message et l'utilisateur
                         models.Like.create({
@@ -100,7 +100,7 @@ module.exports = {
                     }
             },
             function (messageFound, userFound, done) {
-                // mise a jour de l'objet (le message), incrémente les likes de 1
+                // Mise à jour de l'objet (le message), incrémente les likes de 1
                 messageFound.update({
                     likes: messageFound.likes + 1,
                 })
@@ -123,23 +123,23 @@ module.exports = {
     },
 
     dislikePost: function(req, res, next){
-        // Récupération de l'en-tête d'authorisation
+        // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
-        // Verifier que ce token est valide pour faire une requête en BDD
+        // Vérifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
         //Params
         let messageId = parseInt(req.params.messageId);
 
-        // Verifier si l'ID du message est valide
+        // Vérifier que l'ID du message est valide
         if(messageId <= 0){
             return res.status(400).json({'error':'invalid parameters'});
         }
 
         asyncLib.waterfall([
             function(done){
-                // Verifier dans la BDD si le message existe (id du msg)
+                // Vérifier dans la BDD si le message existe (id du msg)
                 models.Message.findOne({
                     where: {id:messageId}
                 })
@@ -170,7 +170,7 @@ module.exports = {
             },
             function(messageFound, userFound, done){
                 if(userFound){
-                    // rechercher si on trouve une entrée qui corresponds a la fois a l'ID de l'utilisateur qui fait la requête
+                    // Rechercher si l'on trouve une entrée qui correspond à la fois à l'ID de l'utilisateur qui fait la requête
                     // Ainsi qu'au message concerné
                     models.Like.findOne({
                         where: {
@@ -190,7 +190,7 @@ module.exports = {
                 }
             },
             function(messageFound, userFound, isUserAlreadyLiked, done) {
-                    // S'assurer qu l'utilisateur a déjà Like le message
+                    // S'assurer que l'utilisateur a déjà Like le message
                     if(isUserAlreadyLiked){
                         // Supprimer la relation qui uni le message et l'utilisateur
                         isUserAlreadyLiked.destroy()
@@ -206,7 +206,7 @@ module.exports = {
                     }
             },
             function (messageFound, userFound, done) {
-                // mise a jour de l'objet (le message), decrémenter les likes de 1
+                // Mise à jour de l'objet (le message), décrémenter les likes de 1
                 messageFound.update({
                     likes: messageFound.likes - 1,
                 })
@@ -219,7 +219,7 @@ module.exports = {
             }
         ], function(messageFound){
             if(messageFound){
-                // Modification de la propriété like qui sera decrémenter
+                // Modification de la propriété like qui sera décrémenter
                 return res.status(201).json(messageFound);
             } else {
                 return res.status(500).json({'error':'cannot update message'});

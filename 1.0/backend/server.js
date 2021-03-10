@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 
-// intégration de la couche SSL
+// Intégration de la couche SSL
 const fs = require('fs');
 const https = require('https');
 const privateKey  = fs.readFileSync('/etc/ssl/private/File.key', 'utf8');
@@ -19,7 +19,7 @@ const apiRouter = require('./routes/apiRouter').router;
 const server = express();
 server.use(cors());
 
-// Cette partie configure et autorise les requêtes Multi-Origin; définit les Headers & les Methodes
+// Cette partie configure et autorise les requêtes Multi-Origin; définit les Headers & les Méthodes
 server.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');

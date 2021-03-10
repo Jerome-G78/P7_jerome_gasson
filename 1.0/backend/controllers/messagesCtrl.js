@@ -15,10 +15,10 @@ const CONTENT_LIMIT = 4;
 
 module.exports = {
     createMessage: function(req, res, next){
-        // Récupération de l'en-tête d'authorisation
+        // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
-        // Verifier que ce token est valide pour faire une requête en BDD
+        // Vérifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
         // Params (recupération du title & du contenue) et de l'image si existante
@@ -33,7 +33,7 @@ module.exports = {
             mediaUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
         }
 
-        // Verification de données non null & cohérente
+        // Vérification de données non null & cohérente
         if (title == null || content == null){
             return res.status(400).json({'error':'invalid parameters'})
         }
@@ -93,10 +93,10 @@ module.exports = {
     },
 
     Preview:function(req,res,next){
-        // Récupération de l'en-tête d'authorisation
+        // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
-        // Verifier que ce token est valide pour faire une requête en BDD
+        // Vérifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
         // Params récupération de l'image
@@ -134,7 +134,7 @@ module.exports = {
     },
 
     DeletePreview:function(req,res,next){
-        // Récupération de l'en-tête d'authorisation
+        // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
         // Verifier que ce token est valide pour faire une requête en BDD
@@ -176,10 +176,10 @@ module.exports = {
     },
 
     moderateMessage: function(req, res, next){
-        // Récupération de l'en-tête d'authorisation
+        // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
-        // Verifier que ce token est valide pour faire une requête en BDD
+        // Vérifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
         // Params (recupération du title & du contenue) & de l'état Admin - et de l'image si existante
@@ -246,7 +246,7 @@ module.exports = {
                     where : {id: messageId}
                 })
                 .then(function(messageId){
-                    // Si le message est trouvé, procéder a la modification
+                    // Si le message est trouvé, procéder à la modification
 
                     messageId.update({
                         title : (title? title : userFound.title),
@@ -283,9 +283,9 @@ module.exports = {
 
     listMessage: function(req, res, next){
         // Récupération des paramètres dans l'Url
-        // fields, permet de selectionner les collones a afficher
+        // fields, permet de sélectionner les colonnes à afficher
         // limit & offset, permet de récupérer les messages par ségmentation (pour limiter la qté)
-        // Order, sert a sortir les messages via un ordre particulier
+        // Order, sert à sortir les messages via un ordre particulier
         let fields = req.query.fields;
         let limit = parseInt(req.query.limit);
         let offset = parseInt(req.query.offset);
@@ -293,7 +293,7 @@ module.exports = {
 
         // Récupération de tous les messages via findAll
         models.Message.findAll({
-            // Verification des entrées utilisateurs, si vide mettre des données par défaut.
+            // Vérification des entrées utilisateurs, si vide mettre des données par défaut.
             order: [(order != null) ? order.split(':'):['title','ASC']],
             attributes : (fields !== '*' && fields != null) ? fields.split(',') :null,
             limit: (!isNaN(limit)) ? limit : null,
@@ -306,9 +306,9 @@ module.exports = {
             }]
         })
         .then(function(messages){
-            // Verification non null
+            // Vérification non null
             if(messages){
-                // retour des données en json
+                // retour des données en JSON
                 res.status(200).json(messages);
             } else {
                 res.status(404).json({'error':'no messages found'});
@@ -321,10 +321,10 @@ module.exports = {
     },
 
     deleteMessage: function(req, res, next){
-        // Récupération de l'en-tête d'authorisation
+        // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
-        // Verifier que ce token est valide pour faire une requête en BDD
+        // Vérifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
         // Récupération des paramètres
@@ -347,7 +347,7 @@ module.exports = {
             },
 
             function(userFound, done){
-                // Verifier si l'utilisateur dispose des droits admin
+                // Vérifier si l'utilisateur dispose des droits admin
                 models.User.findOne({
                     attributes : ['isAdmin'],
                     where : {isAdmin: userFound.isAdmin}
@@ -365,7 +365,7 @@ module.exports = {
             },
 
             function(done){
-                // Suppression des images uploadés (si presentes)
+                // Suppression des images uploadés (si présentes)
                 models.Message.findOne({
                     where : {id : messageId}
                 })
@@ -382,7 +382,7 @@ module.exports = {
             },
 
             function(messageId, done){
-                // S'il y a des likes liée au messages, il seront supprimés.
+                // S'il y a des likes liée aux messages, ils seront supprimés.
                 if(messageId){
                     models.Like.destroy({
                         where: {messageId : messageId.id}
@@ -399,7 +399,7 @@ module.exports = {
             },
 
             function(messageId, done){
-                // S'il y a des Commentaires liée au messages, il seront supprimés.
+                // S'il y a des Commentaires liée aux messages, ils seront supprimés.
                 if(messageId){
                     models.Comment.destroy({
                         where: {messageId : messageId.id}
@@ -422,7 +422,7 @@ module.exports = {
                         where : {id: messageId.id}
                     })
                     .then(function(deleteMessage){
-                        // Si tout c'est bien passé, un information de réussite est envoyée.
+                        // Si tout c'est bien passé, une information de réussite est envoyée.
                         done(deleteMessage);
                     })
                     .catch(function(err){
@@ -447,10 +447,10 @@ module.exports = {
     },
 
     putMyMessage: function(req, res, next){
-        // Récupération de l'en-tête d'authorisation
+        // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
-        // Verifier que ce token est valide pour faire une requête en BDD
+        // Vérifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
         // Params (recupération du title & du contenue) et de l'image si existante
@@ -463,7 +463,7 @@ module.exports = {
 
         if(deleted){
             console.log('data: ' + attachment);
-            // Supprimer l'immage
+            // Supprimer l'image
             let filename = attachment.split('/images/')[1];
                 if(filename !=null){
                     fs.unlinkSync(`images/${filename}`);
@@ -475,7 +475,7 @@ module.exports = {
             mediaUrl = attachment;
         }
 
-        // Verification de données non null & cohérente
+        // Vérification de données non null & cohérente
         if (title == null || content == null){
             return res.status(400).json({'error':'invalid parameters'})
         }
@@ -529,7 +529,7 @@ module.exports = {
                     where : {id: messageId}
                 })
                 .then(function(messageId){
-                    // Si le message est trouvé, procéder a la modification
+                    // Si le message est trouvé, procéder à la modification
 
                     messageId.update({
                         title : (title? title : userFound.title),
@@ -564,10 +564,10 @@ module.exports = {
     },
 
     deleteMyMessage: function(req, res, next){
-        // Récupération de l'en-tête d'authorisation
+        // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
-        // Verifier que ce token est valide pour faire une requête en BDD
+        // Vérifier que ce token est valide pour faire une requête en BDD
         let userId = jwtUtils.getUserId(headerAuth);
 
         // Récupération des paramètres
@@ -627,7 +627,7 @@ module.exports = {
             },
 
             function(messageId, done){
-                // S'il y a des likes liée au messages, il seront supprimés.
+                // S'il y a des likes liée aux messages, ils seront supprimés.
                 if(messageId){
                     models.Like.destroy({
                         where: {messageId : messageId.id}
@@ -644,7 +644,7 @@ module.exports = {
             },
 
             function(messageId, done){
-                // S'il y a des Commentaires liée au messages, il seront supprimés.
+                // S'il y a des Commentaires liée aux messages, ils seront supprimés.
                 if(messageId){
                     models.Comment.destroy({
                         where: {messageId : messageId.id}
@@ -669,7 +669,7 @@ module.exports = {
                     }
                 })
                 .then(function(deleteMessage){
-                    // Si tout c'est bien passé, un information de réussite est envoyée.
+                    // Si tout c'est bien passé, une information de réussite est envoyée.
                     done(deleteMessage);
                 })
                 .catch(function(err){

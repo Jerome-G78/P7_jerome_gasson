@@ -83,7 +83,7 @@
             DeleteComment(Comment){
                 this.$store.dispatch("DeleteComment",Comment);
             },
-            // Paramètrages d'affichage et d'unicité des Comments
+            // Paramétrages d'affichage et d'unicité des Comments
             FormatDateTime(DateTime){
                 // Mise à jour du format de la date
                 if (DateTime) {
