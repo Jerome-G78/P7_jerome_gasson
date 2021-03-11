@@ -45,3 +45,13 @@
         }
     }
 </script>
+
+<style scoped>
+    /* Ajustement du Design Mobile 320px */
+    @media screen and (min-width:320px) and (max-width:359px) and (orientation: portrait)       /* 20em - Mobiles           */
+    {
+        .nav-link{
+            font-size: 0.924em;
+        }
+    }
+</style>
