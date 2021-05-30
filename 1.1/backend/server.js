@@ -35,12 +35,12 @@ server.use((req, res, next) => {
     celui-ci permet de récupérer les arguments & paramètres fournis dans le BODY d'une requête HTTP  
     On lui indique que l'on souhaite "parser" du JSON 
 */
-server.use(bodyParser.urlencoded({extended:true}));
+server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
 // Configure Routes (with callBack functions)
-server.get ('/', function(req, res, next){
-    res.setHeader('Content-Type','text/html');                          // Entête de ma réponse HTTP
+server.get('/', function (req, res, next) {
+    res.setHeader('Content-Type', 'text/html');                          // Entête de ma réponse HTTP
     res.status(200).send('<h1> Vous êtes connecté au serveur </h1>');   // Message de réponse avec le code 200
 });
 
@@ -51,14 +51,14 @@ server.use('/images', express.static(path.join(__dirname, 'images')));
 server.use('/api/', apiRouter);
 
 // Launch Server
-server.listen(3000, function(){
+server.listen(3000, () => {
     console.log('Server HTTP online - 3000');
 });
 
 // HTTPS access
 /*
 let httpsServer = https.createServer(credentials, server);
-httpsServer.listen(3443, function(){
+httpsServer.listen(3443, () => {
     console.log('Server HTTPS online - 3443');
 });
 */

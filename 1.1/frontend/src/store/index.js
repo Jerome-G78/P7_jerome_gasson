@@ -461,6 +461,13 @@ export default createStore({
             if (Pwd == '' || PwdC == '') {
                 commit('setCHKpassword', false);
             }
+
+            if(Email = '' || Name.length < 4 || Pwd == '' || PwdC == '' || (Pwd != PwdC)){
+                document.getElementById('SignIn').disabled = true;
+            } else {
+                document.getElementById('SignIn').disabled = false;
+            }
+            
         },
         Subscribe({ commit, dispatch }) {
             commit('setLoading', true);
@@ -495,10 +502,20 @@ export default createStore({
                 dispatch('ResetSignInStats');
             })
             .catch(err => {
+                console.log(err);
                 if(err.message == 'Request failed with status code 409'){
+                    document.getElementById('Semail').value = '';
+                    document.getElementById('Semail').focus();
+                    commit('setCHKeMail', false);
                     commit('setMSGfaillure', "Cette adresse e-mail est déjà utilisée.")
                     commit('setsubFailure', true);
-                } else {
+                }   else if(err.message == 'Request failed with status code 406'){
+                    document.getElementById('Sname').value = '';
+                    document.getElementById('Sname').focus();
+                    commit('setCHKuserName', false);
+                    commit('setMSGfaillure', "Ce pseudonyme est déjà utilisé.");
+                    commit('setsubFailure', true);
+                }   else {
                     commit('setMSGfaillure', "Veillez à bien remplir les champs du formulaire d'inscription.");
                     commit('setsubFailure', true);
                 }
@@ -526,6 +543,15 @@ export default createStore({
             commit('setCHKeMail', false);
             commit('setCHKpassword', false);
             commit('setCHKuserName', false);
+            commit('setLoading', false);
+        },
+        ResetSignInStatsFail({ commit }) {
+            document.getElementById('Spwd').value = '';
+            document.getElementById('SpwdC').value = '';
+
+            commit('setCHKpassword', false);
+            commit('setsubFailure', false);
+            commit('setMSGfaillure','');
             commit('setLoading', false);
         },
 
@@ -577,6 +603,12 @@ export default createStore({
                 commit('setCHKpassword', true);
             } else {
                 commit('setCHKpassword', false);
+            }
+
+            if(Email = '' || Pwd.length < 8){
+                document.getElementById('LogIn').disabled = true;
+            } else {
+                document.getElementById('LogIn').disabled = false;
             }
         },
         LogIn({ commit, dispatch }) {
@@ -721,8 +753,10 @@ export default createStore({
             let Confirm = document.getElementById("Confirmation").value;
 
             if (Confirm == "J'accepte") {
+                document.getElementById("Confirm").disabled = false;
                 commit("setChkConfirm", true);
             } else {
+                document.getElementById("Confirm").disabled = true;
                 commit("setChkConfirm", false);
             }
         },
@@ -921,18 +955,31 @@ export default createStore({
                     Username: searchName,
                 })
                 .then(res => {
+
                     commit('setfindUser', true);
                     commit('setfindUserAdmin', res.data.isAdmin);
+
+                    if(this.state.profil.findUserAdmin){
+                        document.getElementById("AddRight").disabled = true;
+                        document.getElementById("RemoveRight").disabled = false;
+                    } else {
+                        document.getElementById("AddRight").disabled = false;
+                        document.getElementById("RemoveRight").disabled = true;
+                    }
                 })
                 .catch(err => {
                     commit('setfindUser', false);
                     commit('setfindUserAdmin', false);
+                    document.getElementById("AddRight").disabled = true;
+                    document.getElementById("RemoveRight").disabled = true;
                     console.log('Not Found!');
                 });
             } else {
                 // Ne rien faire
                 commit('setfindUser', false);
                 commit('setfindUserAdmin', false);
+                document.getElementById("AddRight").disabled = true;
+                document.getElementById("RemoveRight").disabled = true;
                 console.log('Not Found!');
             }
         },
