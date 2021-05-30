@@ -103,7 +103,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button id="Confirm" @click="Unsubscribe" type="button" title="Confirmer" class="btn btn-danger">Confirmer</button>
+                        <button id="Confirm" @click="Unsubscribe" type="button" title="Confirmer" class="btn btn-danger" disabled>Confirmer</button>
                         <button @click="ResetStats" type="button" title="Annuler" class="btn btn-primary" data-dismiss="modal">Annuler</button>
                     </div>
                     

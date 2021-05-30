@@ -48,7 +48,7 @@
             
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button id="SignIn" @click="Subscribe" v-if="!subOkay && !subFailure" type="submit" title="M'inscrire" class="btn btn-primary">M'inscrire...</button>
+                        <button id="SignIn" @click="Subscribe" v-if="!subOkay && !subFailure" type="submit" title="M'inscrire" class="btn btn-primary" disabled>M'inscrire...</button>
                     </div>
                     <div v-if="subOkay" class="alert alert-success">
                         {{subOK}}
