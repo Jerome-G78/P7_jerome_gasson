@@ -170,7 +170,7 @@ module.exports = {
         console.log(1 + ": Récupérer l'utilisateur dans la base de données");
         // Récupérer l'utilisateur dans la base de données
         models.User.findOne({
-          attributes: ['id', 'email', 'username'], 
+          attributes: ['id', 'email', 'username'],
           where: { id: userId },
           include: [{
             model: models.Comment,
