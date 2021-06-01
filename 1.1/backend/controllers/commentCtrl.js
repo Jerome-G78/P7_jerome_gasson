@@ -4,13 +4,17 @@
 // Imports
 let models = require('../models');
 let jwtUtils = require('../utils/jwt.utils');
-let asyncLib = require('async');
+// let asyncLib = require('async');
 let url = require('url');
+// Import du fichier de promises (externe)
+let Promises = require('./Promises');
 
 // Routes
 
 module.exports = {
+
     createComment: (req, res) => {
+
         // Récupération de l'en-tête d'autorisation
         let headerAuth = req.headers['authorization'];
 
@@ -27,52 +31,21 @@ module.exports = {
             return res.status(400).json({ 'error': 'invalid parameters' })
         }
 
-        asyncLib.waterfall([
-            // Récupérer l'utilisateur dans la base de données (correspondant au token)
-            // Function (callback)
-            done => {
-                models.User.findOne({
-                    where: { id: userId }
-                })
-                    .then(userFound => {
-                        // Si l'utilisateur est trouvé, on continue (premier paramètre null)
-                        done(null, userFound);
-                    })
-                    .catch(err => {
-                        // Sinon, on retourne une erreur
-                        return res.status(500).json({ 'error': 'unable to verify user' });
-                    });
-            },
-            (userFound, done) => {
-                if (userFound) {
-                    models.Comment.create({
-                        userId: userFound.id,
-                        messageId: messageId,
-                        username: userFound.username,
-                        comment: comment
-                    })
-                        .then(newComment => {
-                            // Si tout s'est bien passé, le message est envoyé.
-                            done(newComment);
-                        })
-                        .catch((err) => {
-                            // En d'erreur serveur, un message d'erreur est retourné.
-                            return res.status(500).json({ 'error': 'unable to create comment in DB - ' + err });
-                        });
-                } else {
-                    // En cas de problème, un message d'erreur est retourné.
-                    res.status(404).json({ 'error': 'user not found' });
-                }
-            },
-        ],
-            newComment => {
-                if (newComment) {
-                    // post du commentaire OK
-                    return res.status(201).json(newComment);
-                } else {
-                    // Le commentaire n'est pas passé.
-                    return res.status(500).json({ 'error': 'cannot post message' });
-                }
+        // ---------------------------------- //
+        // Promises
+        // ---------------------------------- //
+
+        const User = Promises.UserExist(userId);
+        const Send = User.then(userFound => Promises.SendComment(userFound, messageId, comment));
+
+        Promise.all([User, Send])
+            .then(newComment => {
+                // post du commentaire OK
+                return res.status(201).json({ 'message': 'Comment Sucessful send!' });
+            })
+            .catch(err => {
+                // Le commentaire n'est pas passé.
+                return res.status(err.status).json(err);
             });
     },
 
@@ -120,72 +93,23 @@ module.exports = {
         let messageId = parseInt(req.params.messageId);
         let commentId = parseInt(req.params.commentId);
 
-        asyncLib.waterfall([
-            // Récupérer l'utilisateur dans la base de données (correspondant au token)
-            done => {
-                models.User.findOne({
-                    where: { id: userId }
-                })
-                    .then(userFound => {
-                        // Si l'utilisateur est trouvé, on continue (premier paramètre null)
-                        done(null, userFound);
-                    })
-                    .catch(err => {
-                        // Sinon, on retourne une erreur
-                        return res.status(500).json({ 'error': 'unable to verify user' });
-                    });
-            },
+        // ---------------------------------- //
+        // Promises
+        // ---------------------------------- //
 
-            userFound, done => {
-                // Vérifier si l'utilisateur dispose des droits admin
-                models.User.findOne({
-                    attributes: ['isAdmin'],
-                    where: { isAdmin: userFound.isAdmin }
-                })
-                    .then(userFound => {
-                        if (userFound.isAdmin == true) {
-                            done(null, commentId);
-                        } else {
-                            return res.status(403).json({ 'error': 'you do not have sufficient privileges' });
-                        }
-                    })
-                    .catch(err => {
-                        return res.status(500).json({ err });
-                    });
-            },
+        const User = Promises.UserExist(userId);
+        const IsAdmin = User.then(userFound => Promises.IsAdmin(userFound));
+        const DeleteComment = IsAdmin.then(Completed => Promises.DeleteCommentAdmin(commentId, messageId));
 
-            (commentFound, done) => {
-                // Récupérer l'id du commentaire concerné
-                if (commentFound) {
-                    models.Comment.destroy({
-                        where: {
-                            id: commentId,
-                            messageId
-                        }
-                    })
-                        .then(deleteComment => {
-                            // Si tout s'est bien passé, un information de réussite est envoyée.
-                            done(deleteComment);
-                        })
-                        .catch(err => {
-                            // En cas de problème, un message d'erreur est retourné.
-                            res.status(500).json({ 'error': 'unable to delete comment in DB' + err });
-                        });
-                } else {
-                    // En cas de problème, un message d'erreur est retourné.
-                    res.status(404).json({ 'error': 'comment not found' });
-                }
-            },
-
-        ], deleteComment => {
-            if (deleteComment) {
-                // delete du message OK
+        Promise.all([User, IsAdmin, DeleteComment])
+            .then(DeleteSucess => {
+                // post du commentaire OK
                 return res.status(201).json({ 'message': 'comment deleted successfully' });
-            } else {
-                // Le message n'est pas présent.
-                return res.status(500).json({ 'error': 'comment not found' });
-            }
-        });
+            })
+            .catch(err => {
+                // Le commentaire n'est pas passé.
+                return res.status(err.status).json(err);
+            });
     },
 
     deleteMyComment: (req, res) => {
@@ -199,49 +123,21 @@ module.exports = {
         let messageId = parseInt(req.params.messageId);
         let commentId = parseInt(req.params.commentId);
 
-        asyncLib.waterfall([
-            // Récupérer l'utilisateur dans la base de données (correspondant au token)
-            done => {
-                models.User.findOne({
-                    where: { id: userId }
-                })
-                    .then(userFound => {
-                        // Si l'utilisateur est trouvé, on continue (premier paramètre null)
-                        done(null, userFound);
-                    })
-                    .catch(err => {
-                        // Sinon, on retourne une erreur
-                        return res.status(500).json({ 'error': 'unable to verify user' });
-                    });
-            },
+        // ---------------------------------- //
+        // Promises
+        // ---------------------------------- //
 
-            (userFound, done) => {
-                // suppression du commentaire concerné
-                models.Comment.destroy({
-                    where: {
-                        id: commentId,
-                        messageId,
-                        username: userFound.username
-                    }
-                })
-                    .then(deleteComment => {
-                        // Si tout s'est bien passé, un information de réussite est envoyée.
-                        done(deleteComment);
-                    })
-                    .catch(err => {
-                        // En cas de problème, un message d'erreur est retourné.
-                        res.status(500).json({ 'error': 'unable to delete comment in DB' + err });
-                    });
-            },
+        const User = Promises.UserExist(userId);
+        const DeleteComment = User.then(UserFound => Promises.DeleteComment(commentId, messageId, UserFound));
 
-        ], deleteComment => {
-            if (deleteComment) {
-                // delete du message OK
+        Promise.all([User, DeleteComment])
+            .then(DeleteSucess => {
+                // post du commentaire OK
                 return res.status(201).json({ 'message': 'comment deleted successfully' });
-            } else {
-                // Le message n'est pas présent.
-                return res.status(404).json({ 'error': 'comment not found' });
-            }
-        });
+            })
+            .catch(err => {
+                // Le commentaire n'est pas passé.
+                return res.status(err.status).json({ err });
+            });
     }
 }

@@ -2,10 +2,12 @@
 "use strict";
 
 // Imports
-let bcrypt = require('bcrypt');
+// let bcrypt = require('bcrypt');
 let jwtUtils = require('../utils/jwt.utils');
 let models = require('../models');
 let asyncLib = require('async');
+let Promises = require('./Promises');
+let UserPromises = require('./usersPromises');
 let fs = require('fs');
 const { where } = require('sequelize');
 const { DataTypes } = require('sequelize');
@@ -43,7 +45,7 @@ module.exports = {
 
     // Vérification de l'adresse E-Mail via le Regex
     if (!EMAIL_REGEX.test(email)) {
-      return res.status(400).json({ 'error': 'email is not valid' });
+      return res.status(400).json({ 'error': 'email is not valid ' });
     }
 
     // Vérification du mot de passe via le Regex
@@ -52,72 +54,21 @@ module.exports = {
     }
 
     // Après vérifications, Ajout de l'utilisateur dans la base de données
+    // --------------------------
+    // Promises
+    // --------------------------
 
-    // L'utilisateur existe-t-il dans la base ? (promesse)
+    const verifyUser = UserPromises.FindUser(username);
+    const verifyMail = UserPromises.FindMail(email);
+    const passCrypt = verifyMail.then(() => UserPromises.PassEncrypt(password));
+    const regAccount = passCrypt.then(BCRYPTED => UserPromises.RegisterAccount(email, username, BCRYPTED, bio));
 
-    asyncLib.waterfall([
-      // Le nom d'utilisateur est-il déjà utilisée?
-      done => {
-        models.User.findAll({
-          attributes: ['username'],
-        })
-          .then(userNames => {
-            for (let userName in userNames) {
-              if (userNames[userName].username == username) {
-                return res.status(406).json({ 'error': 'username already used' });
-              }
-            }
-            done(null);
-          })
-          .catch(err => {
-            return res.status(500).json({ 'error': 'unable to verify username' });
-          });
-      },
-      done => {
-        models.User.findOne({
-          attributes: ['email'],
-          where: { email: email }
-        })
-          .then(userFound => {
-            done(null, userFound);
-          })
-          .catch(err => {
-            return res.status(500).json({ 'error': 'unable to verify user' });
-          });
-      },
-      (userFound, done) => {
-        if (!userFound) {
-          bcrypt.hash(password, 5, (err, bcryptedPassword) => {
-            done(null, userFound, bcryptedPassword);
-          });
-        } else {
-          return res.status(409).json({ 'error': 'user already exist' });
-        }
-      },
-      (userFound, bcryptedPassword, done) => {
-        let newUser = models.User.create({
-          email: email,
-          username: username,
-          password: bcryptedPassword,
-          bio: bio,
-          isAdmin: 0
-        })
-          .then(newUser => {
-            done(newUser);
-          })
-          .catch(err => {
-            return res.status(500).json({ 'error': 'cannot add user' });
-          });
-      }
-    ],
-      newUser => {
-        if (newUser) {
-          return res.status(201).json({
-            'userId': newUser.id
-          });
-        } else {
-          return res.status(500).json({ 'error': 'cannot add user' });
-        }
+    Promise.all([verifyUser, verifyMail, passCrypt, regAccount])
+      .then(() => {
+        return res.status(201).json({ 'message': 'Registration Completed' });
+      })
+      .catch(err => {
+        return res.status(err.status).json({ 'error': err.error });
       });
   },
 
@@ -135,49 +86,20 @@ module.exports = {
 
     // TODO verify mail regex & password length
 
-    // L'utilisateur existe-t-il dans la base ? (promesse)
+    // --------------------------
+    // Promises
+    // --------------------------
 
-    asyncLib.waterfall([
-      done => {
-        models.User.findOne({
-          where: { email: email }
-        })
-          .then(userFound => {
-            done(null, userFound);
-          })
-          .catch(err => {
-            return res.status(500).json({ 'error': 'unable to verify user' });
-          });
-      },
-      (userFound, done) => {
-        if (userFound) {
-          bcrypt.compare(password, userFound.password, (errBycrypt, resBycrypt) => {
-            done(null, userFound, resBycrypt);
-          });
-        } else {
-          return res.status(404).json({ 'error': 'user not exist in DB' });
-        }
-      },
-      (userFound, resBycrypt, done) => {
-        if (resBycrypt) {
-          done(userFound);
-        } else {
-          return res.status(403).json({ 'error': 'invalid password' });
-        }
-      }
-    ],
-      userFound => {
-        if (userFound) {
-          return res.status(201).json({
-            'isAdmin': userFound.isAdmin,
-            'email': userFound.email,
-            'userName': userFound.username,
-            'userId': userFound.id,
-            'token': jwtUtils.generateTokenForUser(userFound)
-          });
-        } else {
-          return res.status(500).json({ 'error': 'cannot log on user' });
-        }
+    const UserExist = UserPromises.UserExist(email);
+    const ComparePassword = UserExist.then(UserFound => UserPromises.ComparePassword(UserFound, password));
+
+    Promise.all([UserExist, ComparePassword])
+      .then(userFound => {
+        return res.status(201).json(userFound[1]);
+      })
+      .catch(Error => {
+        console.log(Error);
+        return res.status(Error.status).json({ 'error': 'cannot log on user' + Error });
       });
   },
 
@@ -219,50 +141,19 @@ module.exports = {
     // Params : Récupération des données du Frontend.
     let bio = req.body.bio;
 
-    asyncLib.waterfall([
-      done => {
-        // Récupérer l'utilisateur dans la base de données
-        models.User.findOne({
-          attributes: ['id', 'bio'],
-          where: { id: userId }
-        })
-          .then(userFound => {
-            // Si l'utilisateur est trouvé, le retourner
-            done(null, userFound);
-          })
-          .catch(err => {
-            // Sinon envoyer une erreur
-            return res.status(500).json({ 'error': 'unable to verify user' });
-          });
-      },
-      (userFound, done) => {
-        // Vérifier si l'utilisateur est valide
-        if (userFound) {
-          // Après vérification, mise à jour des données concernées
-          userFound.update({
-            bio: (bio ? bio : userFound.bio)
-          })
-            .then(() => {
-              // Opération réussie
-              done(userFound);
-            })
-            .catch(err => {
-              res.status(500).json({ 'error': 'cannot update user' });
-            });
-        } else {
-          // si celui-ci n'existe pas, retourner une erreur
-          res.status(404).json({ 'error': 'user not found' });
-        }
-      },
-    ],
-      userFound => {
-        if (userFound) {
-          // Mise à jour effectuée
-          return res.status(201).json(userFound);
-        } else {
-          // Une erreur est survenue
-          return res.status(500).json({ 'error': 'cannot update user profile' });
-        }
+    // --------------------------
+    // Promises
+    // --------------------------
+
+    const UserExist = Promises.UserExist(userId);
+    const UpdateBio = UserExist.then((userFound) => UserPromises.UpdateBio(userFound, bio));
+
+    Promise.all([UserExist, UpdateBio])
+      .then((userFound) => {
+        return res.status(201).json({ 'message': 'Registration Completed' });
+      })
+      .catch(err => {
+        return res.status(err.status).json({ 'error': err.error });
       });
   },
 

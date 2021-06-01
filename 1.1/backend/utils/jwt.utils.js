@@ -11,20 +11,20 @@ module.exports = {
         return jwt.sign({
             // Dans ce 'Payload' on renseigne les éléments :
             userId: userData.id,
-            isAdmin : userData.isAdmin 
+            isAdmin: userData.isAdmin
         },
-        // génération & paramétrage du TOKEN
-        JWT_SIGN_SECRET,
-        {
-            // Durée de validité
-            expiresIn: '24h'
-        })
+            // génération & paramétrage du TOKEN
+            JWT_SIGN_SECRET,
+            {
+                // Durée de validité
+                expiresIn: '24h'
+            })
     },
 
     parseAuthorization: authorisation => {
         // On vérifie si la chaine n'est pas null, si tel est le cas on remplace "Bearer "
         // par une chaine vide pour récupérer le Token.
-        return (authorisation !=null) ? authorisation.replace('Bearer ','') :null;
+        return (authorisation != null) ? authorisation.replace('Bearer ', '') : null;
     },
 
     getUserId: authorisation => {
@@ -34,14 +34,14 @@ module.exports = {
 
         // Récupérer le module parseAuthorization dans la variable token
         let token = module.exports.parseAuthorization(authorisation);
-        
-        if(token!= null){
-            try{
+
+        if (token != null) {
+            try {
                 // Vérifier si le token est valide
                 let jwtToken = jwt.verify(token, JWT_SIGN_SECRET);
-                if(jwtToken !=null)
-                    userId = jwtToken.userId;
-            } catch(err){
+                if (jwtToken != null)
+                userId = jwtToken.userId;
+            } catch (err) {
 
             }
             // Si tout va bien, retourner l'userID

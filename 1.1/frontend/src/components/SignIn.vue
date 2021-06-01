@@ -13,16 +13,17 @@
                     <!-- Modal body -->
                     <div class="modal-body">
                         <form class="labelsAlign" action="/action_page.php">
-                            <div class="form-group">
-                                <label for="Sname">Pseudonyme (entre 5 et 15 caractères) <span class ="text-danger"> * </span>:</label>
-                                <input @keyup="SignInVerify" @change="SignInVerify" type="text" class="form-control" id="Sname" placeholder="Ex. Lewis" name="name" maxlength="15"><br/>
-                                <span class="alert alert-info" v-if="!CHKuserName"><strong><i class="fas fa-info-circle"></i></strong> {{username}}</span>
-                            </div>
 
                             <div class="form-group">
                                 <label for="Semail">Email <span class ="text-danger"> * </span>:</label>
                                 <input @keyup="SignInVerify" @change="SignInVerify" type="email" class="form-control" id="Semail" placeholder="Tom@centuryFlop.com" name="email"><br/>
                                 <span class="alert alert-info" v-if="!CHKeMail"><strong><i class="fas fa-info-circle"></i></strong> {{email}}</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Sname">Pseudonyme (entre 5 et 15 caractères) <span class ="text-danger"> * </span>:</label>
+                                <input @keyup="SignInVerify" @change="SignInVerify" type="text" class="form-control" id="Sname" placeholder="Ex. Lewis" name="name" maxlength="15"><br/>
+                                <span class="alert alert-info" v-if="!CHKuserName"><strong><i class="fas fa-info-circle"></i></strong> {{username}}</span>
                             </div>
 
                             <div class="form-group">

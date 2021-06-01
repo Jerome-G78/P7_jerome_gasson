@@ -3,8 +3,8 @@ import { createStore } from 'vuex'
 export default createStore({
     state: {
         // Paramètres généraux
-        urlAPI: 'https://shadsoft.fr:3443',
-        // urlAPI: 'http://localhost:3000',
+        // urlAPI: 'https://shadsoft.fr:3443',
+        urlAPI: 'http://localhost:3000',
         footer: 'Groupomania 2021 - Tout drois résérvés',
 
         // Déclaration des données du "store" de vue X
@@ -257,7 +257,7 @@ export default createStore({
         setMSGfaillure(state, newValue) {
             state.Status.MSGfaillure = newValue;
         },
-        
+
     },
 
     getters: {
@@ -462,12 +462,12 @@ export default createStore({
                 commit('setCHKpassword', false);
             }
 
-            if(Email = '' || Name.length < 4 || Pwd == '' || PwdC == '' || (Pwd != PwdC)){
+            if (Email = '' || Name.length < 4 || Pwd == '' || PwdC == '' || (Pwd != PwdC)) {
                 document.getElementById('SignIn').disabled = true;
             } else {
                 document.getElementById('SignIn').disabled = false;
             }
-            
+
         },
         Subscribe({ commit, dispatch }) {
             commit('setLoading', true);
@@ -483,51 +483,51 @@ export default createStore({
                 password: Pwd,
                 bio: Bio
             })
-            .then(res => {
-                commit('setsubOkay', true);
-                // Cleaning
-                document.getElementById('Semail').value = '';
-                document.getElementById('Spwd').value = '';
-                document.getElementById('SpwdC').value = '';
-                document.getElementById('Sname').value = '';
-                document.getElementById('SBio').value = '';
-
-                // Completed
-                commit('setsubCompleted', true);
-                commit('setLoading', false);
-
-                // Masquer la fenêtre Modal
-                $('#registrationModal').modal('hide');
-                $('#Registred').modal('show');
-                dispatch('ResetSignInStats');
-            })
-            .catch(err => {
-                console.log(err);
-                if(err.message == 'Request failed with status code 409'){
+                .then(res => {
+                    commit('setsubOkay', true);
+                    // Cleaning
                     document.getElementById('Semail').value = '';
-                    document.getElementById('Semail').focus();
-                    commit('setCHKeMail', false);
-                    commit('setMSGfaillure', "Cette adresse e-mail est déjà utilisée.")
-                    commit('setsubFailure', true);
-                }   else if(err.message == 'Request failed with status code 406'){
+                    document.getElementById('Spwd').value = '';
+                    document.getElementById('SpwdC').value = '';
                     document.getElementById('Sname').value = '';
-                    document.getElementById('Sname').focus();
-                    commit('setCHKuserName', false);
-                    commit('setMSGfaillure', "Ce pseudonyme est déjà utilisé.");
-                    commit('setsubFailure', true);
-                }   else {
-                    commit('setMSGfaillure', "Veillez à bien remplir les champs du formulaire d'inscription.");
-                    commit('setsubFailure', true);
-                }
+                    document.getElementById('SBio').value = '';
 
-                // Cleaning
-                document.getElementById('Spwd').value = '';
-                document.getElementById('SpwdC').value = '';
+                    // Completed
+                    commit('setsubCompleted', true);
+                    commit('setLoading', false);
 
-                // Completed
-                commit('setsubCompleted', true);
-                commit('setLoading', false);
-            });
+                    // Masquer la fenêtre Modal
+                    $('#registrationModal').modal('hide');
+                    $('#Registred').modal('show');
+                    dispatch('ResetSignInStats');
+                })
+                .catch(err => {
+                    console.log(err);
+                    if (err.message == 'Request failed with status code 409') {
+                        document.getElementById('Semail').value = '';
+                        document.getElementById('Semail').focus();
+                        commit('setCHKeMail', false);
+                        commit('setMSGfaillure', "Cette adresse e-mail est déjà utilisée.")
+                        commit('setsubFailure', true);
+                    } else if (err.message == 'Request failed with status code 406') {
+                        document.getElementById('Sname').value = '';
+                        document.getElementById('Sname').focus();
+                        commit('setCHKuserName', false);
+                        commit('setMSGfaillure', "Ce pseudonyme est déjà utilisé.");
+                        commit('setsubFailure', true);
+                    } else {
+                        commit('setMSGfaillure', "Veillez à bien remplir les champs du formulaire d'inscription.");
+                        commit('setsubFailure', true);
+                    }
+
+                    // Cleaning
+                    document.getElementById('Spwd').value = '';
+                    document.getElementById('SpwdC').value = '';
+
+                    // Completed
+                    commit('setsubCompleted', true);
+                    commit('setLoading', false);
+                });
         },
         ResetSignInStats({ commit }) {
             document.getElementById('Semail').value = '';
@@ -537,7 +537,7 @@ export default createStore({
             document.getElementById('SBio').value = '';
 
             commit('setsubFailure', false);
-            commit('setMSGfaillure','');
+            commit('setMSGfaillure', '');
             commit('setsubOkay', false);
             commit('setsubCompleted', false);
             commit('setCHKeMail', false);
@@ -551,7 +551,7 @@ export default createStore({
 
             commit('setCHKpassword', false);
             commit('setsubFailure', false);
-            commit('setMSGfaillure','');
+            commit('setMSGfaillure', '');
             commit('setLoading', false);
         },
 
@@ -605,7 +605,7 @@ export default createStore({
                 commit('setCHKpassword', false);
             }
 
-            if(Email = '' || Pwd.length < 8){
+            if (Email = '' || Pwd.length < 8 || (Email = '' && Pwd.length == 0)) {
                 document.getElementById('LogIn').disabled = true;
             } else {
                 document.getElementById('LogIn').disabled = false;
@@ -621,48 +621,48 @@ export default createStore({
                 email: Email,
                 password: Pwd
             })
-            .then(res => {
-                document.getElementById('Lemail').value = '';
-                document.getElementById('Lpwd').value = '';
+                .then(res => {
+                    document.getElementById('Lemail').value = '';
+                    document.getElementById('Lpwd').value = '';
 
-                // Récupération des informations du compte de l'utilisateur
-                commit('setsubOkay', true);
-                commit('setsubCompleted', true);
-                commit('setConnected', true);
-                commit('setEmail', res.data.email);
-                commit('setUserName', res.data.userName);
-                commit('setUserID', res.data.userId);
-                commit('setToken', res.data.token);
-                commit('setIsAdmin', res.data.isAdmin);
-                commit('setTokenExpired', false);
+                    // Récupération des informations du compte de l'utilisateur
+                    commit('setsubOkay', true);
+                    commit('setsubCompleted', true);
+                    commit('setConnected', true);
+                    commit('setEmail', res.data.email);
+                    commit('setUserName', res.data.userName);
+                    commit('setUserID', res.data.userId);
+                    commit('setToken', res.data.token);
+                    commit('setIsAdmin', res.data.isAdmin);
+                    commit('setTokenExpired', false);
 
-                localStorage.setItem("Connected", true);
-                localStorage.setItem("Token", this.state.profil.Token);
+                    localStorage.setItem("Connected", true);
+                    localStorage.setItem("Token", this.state.profil.Token);
 
-                commit('setsubOkay', false);
-                commit('setsubCompleted', false);
-                commit('setLoading', false);
+                    commit('setsubOkay', false);
+                    commit('setsubCompleted', false);
+                    commit('setLoading', false);
 
-                // Masquer la fenêtre Modal
-                $('#logginModal').modal('hide');
+                    // Masquer la fenêtre Modal
+                    $('#logginModal').modal('hide');
 
-                // Recharger le mur
-                dispatch("WallLoad");
-            })
-            .catch(err => {
-                localStorage.removeItem("Connected");
-                
-                commit('setMSGfaillure', 'E-mail ou Mot de passe incorrect');
-                commit('setsubFailure', true);
-                commit('setConnected', false);
-                commit('setLoading', false);
-            });
+                    // Recharger le mur
+                    dispatch("WallLoad");
+                })
+                .catch(err => {
+                    localStorage.removeItem("Connected");
+
+                    commit('setMSGfaillure', 'E-mail ou Mot de passe incorrect');
+                    commit('setsubFailure', true);
+                    commit('setConnected', false);
+                    commit('setLoading', false);
+                });
         },
         ResetLoginStats({ commit }) {
             document.getElementById('Lemail').value = '';
             document.getElementById('Lpwd').value = '';
 
-            commit('setMSGfaillure','');
+            commit('setMSGfaillure', '');
             commit('setsubFailure', false);
             commit('setCHKeMail', false);
             commit('setCHKpassword', false);
@@ -692,27 +692,27 @@ export default createStore({
             );
 
             axios.get(this.state.urlAPI + '/api/users/me')
-            .then(res => {
-                let UserProfil = {
-                    'userID': res.data.id,
-                    'UserName': res.data.username,
-                    'Email': res.data.email,
-                    'Bio': res.data.bio
-                };
+                .then(res => {
+                    let UserProfil = {
+                        'userID': res.data.id,
+                        'UserName': res.data.username,
+                        'Email': res.data.email,
+                        'Bio': res.data.bio
+                    };
 
-                if (res.data.bio != '') {
-                    commit('setBio', UserProfil.Bio);
-                }
+                    if (res.data.bio != '') {
+                        commit('setBio', UserProfil.Bio);
+                    }
 
-                // Sucess
-                commit('setUserID',UserProfil.userID);
-                commit('setUserName',UserProfil.UserName);
-                commit('setEmail',UserProfil.Email);
-            })
-            .catch(err => {
-                commit('setsubFailure', true);
-                commit('setMSGfaillure',"Votre profil n'a pas été récupéré!");
-            });
+                    // Sucess
+                    commit('setUserID', UserProfil.userID);
+                    commit('setUserName', UserProfil.UserName);
+                    commit('setEmail', UserProfil.Email);
+                })
+                .catch(err => {
+                    commit('setsubFailure', true);
+                    commit('setMSGfaillure', "Votre profil n'a pas été récupéré!");
+                });
         },
         BioUpdate({ commit }) {
             let BioArea = document.getElementById("Bio").value;
@@ -745,7 +745,7 @@ export default createStore({
                 })
                 .catch(err => {
                     commit('setsubFailure', true);
-                    commit('setMSGfaillure',"Votre profil n'a pas été mis à jour!");
+                    commit('setMSGfaillure', "Votre profil n'a pas été mis à jour!");
                 });
 
         },
@@ -776,37 +776,37 @@ export default createStore({
 
             // Suppression du compte utilisateur...
             axios.delete(this.state.urlAPI + "/api/users/unsubscribe/")
-            .then(res => {
-                document.getElementById("Confirmation").value ='';
-                localStorage.removeItem('Connected');
-                localStorage.removeItem('Token');
+                .then(res => {
+                    document.getElementById("Confirmation").value = '';
+                    localStorage.removeItem('Connected');
+                    localStorage.removeItem('Token');
 
-                commit('setsubOkay', false);
-                commit('setsubCompleted', false);
-                commit('setConnected', false);
-                commit('setEmail', '');
-                commit('setUserName', '');
-                commit('setUserID', 0);
-                commit('setToken', '');
-                commit('setIsAdmin', false);
-                commit('setLoading', false);
-                commit('setsubFailure', false);
+                    commit('setsubOkay', false);
+                    commit('setsubCompleted', false);
+                    commit('setConnected', false);
+                    commit('setEmail', '');
+                    commit('setUserName', '');
+                    commit('setUserID', 0);
+                    commit('setToken', '');
+                    commit('setIsAdmin', false);
+                    commit('setLoading', false);
+                    commit('setsubFailure', false);
 
-                // Masquer la fenêtre Modal
-                $('#ConfirmDeleteProfil').modal('hide');
-                $('#Cleaning').modal('show');
+                    // Masquer la fenêtre Modal
+                    $('#ConfirmDeleteProfil').modal('hide');
+                    $('#Cleaning').modal('show');
 
-                // Recharger la page
-                dispatch("WallLoad");
-            })
-            .catch(err => {
-                commit('setsubFailure', true);
-                commit('setMSGfaillure',"Erreur lors de la désinscription!");
-                console.log(err);
-            });
+                    // Recharger la page
+                    dispatch("WallLoad");
+                })
+                .catch(err => {
+                    commit('setsubFailure', true);
+                    commit('setMSGfaillure', "Erreur lors de la désinscription!");
+                    console.log(err);
+                });
         },
         ResetProfilStats({ commit }) {
-            if(this.state.profil.isAdmin){
+            if (this.state.profil.isAdmin) {
                 document.getElementById('Search').value = '';
             }
             document.getElementById('Bio').value = '';
@@ -818,7 +818,7 @@ export default createStore({
             commit('setfindedUser', '');
             commit('setsubOkay', false);
             commit('setsubFailure', false);
-            commit('setMSGfaillure',"");
+            commit('setMSGfaillure', "");
             commit('setsubCompleted', false);
             commit('setRightAdded', false);
             commit('setRightRemoved', false);
@@ -859,27 +859,27 @@ export default createStore({
             );
 
             axios.post(this.state.urlAPI + "/api/messages/" + PostId + "/vote/like")
-            .then(res => {
-                // Like le post
-                console.log('Liked');
-                commit('setLiked', true);
-                commit('setLikes', this.state.PostComments.LikeCounter +=1);
-
-                // Rechargement du mur après opération
-                dispatch("WallLoad");
-            })
-            .catch(err => {
-                axios.post(this.state.urlAPI + "/api/messages/" + PostId + "/vote/dislike")
                 .then(res => {
-                    // Dislike le post
-                    console.log('Disliked');
-                    commit('setLiked', false);
-                    commit('setLikes', this.state.PostComments.LikeCounter -=1);
+                    // Like le post
+                    console.log('Liked');
+                    commit('setLiked', true);
+                    commit('setLikes', this.state.PostComments.LikeCounter += 1);
 
                     // Rechargement du mur après opération
                     dispatch("WallLoad");
                 })
-            });
+                .catch(err => {
+                    axios.post(this.state.urlAPI + "/api/messages/" + PostId + "/vote/dislike")
+                        .then(res => {
+                            // Dislike le post
+                            console.log('Disliked');
+                            commit('setLiked', false);
+                            commit('setLikes', this.state.PostComments.LikeCounter -= 1);
+
+                            // Rechargement du mur après opération
+                            dispatch("WallLoad");
+                        })
+                });
 
         },
         // Moderation
@@ -926,14 +926,14 @@ export default createStore({
             axios.put(this.state.urlAPI + "/api/users/remove", {
                 Username: searchName,
             })
-            .then(res => {
-                document.getElementById('Search').value = '';
-                commit('setRightRemoved', true);
-                commit('setfindUser', false);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+                .then(res => {
+                    document.getElementById('Search').value = '';
+                    commit('setRightRemoved', true);
+                    commit('setfindUser', false);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         },
         // FindUser
         CheckNameExist({ commit }) {
@@ -954,26 +954,26 @@ export default createStore({
                 axios.post(this.state.urlAPI + "/api/users/", {
                     Username: searchName,
                 })
-                .then(res => {
+                    .then(res => {
 
-                    commit('setfindUser', true);
-                    commit('setfindUserAdmin', res.data.isAdmin);
+                        commit('setfindUser', true);
+                        commit('setfindUserAdmin', res.data.isAdmin);
 
-                    if(this.state.profil.findUserAdmin){
+                        if (this.state.profil.findUserAdmin) {
+                            document.getElementById("AddRight").disabled = true;
+                            document.getElementById("RemoveRight").disabled = false;
+                        } else {
+                            document.getElementById("AddRight").disabled = false;
+                            document.getElementById("RemoveRight").disabled = true;
+                        }
+                    })
+                    .catch(err => {
+                        commit('setfindUser', false);
+                        commit('setfindUserAdmin', false);
                         document.getElementById("AddRight").disabled = true;
-                        document.getElementById("RemoveRight").disabled = false;
-                    } else {
-                        document.getElementById("AddRight").disabled = false;
                         document.getElementById("RemoveRight").disabled = true;
-                    }
-                })
-                .catch(err => {
-                    commit('setfindUser', false);
-                    commit('setfindUserAdmin', false);
-                    document.getElementById("AddRight").disabled = true;
-                    document.getElementById("RemoveRight").disabled = true;
-                    console.log('Not Found!');
-                });
+                        console.log('Not Found!');
+                    });
             } else {
                 // Ne rien faire
                 commit('setfindUser', false);
@@ -994,23 +994,23 @@ export default createStore({
                 axios.get(this.state.urlAPI + '/api/messages/?order=createdAt:DESC'),
                 axios.get(this.state.urlAPI + '/api/messages/comment?fields=id,messageId,username,comment,createdAt&order=createdAt:DESC')
             ])
-            .then(responseArr => {
-                commit('setPosts', responseArr[0].data);
-                commit('setComments', responseArr[1].data);
+                .then(responseArr => {
+                    commit('setPosts', responseArr[0].data);
+                    commit('setComments', responseArr[1].data);
 
-                if (this.state.PostComments.Posts != "") {
-                    commit('setNoData', false);
-                }
+                    if (this.state.PostComments.Posts != "") {
+                        commit('setNoData', false);
+                    }
 
-                commit('setLoading', false);
-            })
-            .catch(err => {
-                commit('setWallFailure', true);
-                commit('setsubFailure', true);
-                commit('setMSGfaillure',"Impossible de se connecter à la base de données, veuillez réessayer ultérieurement.");
-                commit('setLoading',false);
-                console.log(err);
-            });
+                    commit('setLoading', false);
+                })
+                .catch(err => {
+                    commit('setWallFailure', true);
+                    commit('setsubFailure', true);
+                    commit('setMSGfaillure', "Impossible de se connecter à la base de données, veuillez réessayer ultérieurement.");
+                    commit('setLoading', false);
+                    console.log(err);
+                });
         },
         CommentVerify({ commit }, PostId) {
             let Comment = document.getElementById('CP' + PostId).value;
@@ -1036,24 +1036,24 @@ export default createStore({
             );
 
             axios.post(this.state.urlAPI + "/api/messages/comment/" + Post.id + "/new/?comment=" + comment)
-            .then(res => {
-                // Sucess
-                document.getElementById('CP' + Post.id).value = '';
-                commit('setValueComment', false);
-                commit('setsubOkay', true);
-                commit('setsubCompleted', true);
-                commit('setsubOkay', false);
-                commit('setsubCompleted', false);
+                .then(res => {
+                    // Sucess
+                    document.getElementById('CP' + Post.id).value = '';
+                    commit('setValueComment', false);
+                    commit('setsubOkay', true);
+                    commit('setsubCompleted', true);
+                    commit('setsubOkay', false);
+                    commit('setsubCompleted', false);
 
-                // Rechargement du mur après opération
-                dispatch("WallLoad");
-            })
-            .catch(err => {
-                // Faillure
-                console.log(err);
-                commit('setsubFailure', true);
-                commit('setsubCompleted', true);
-            });
+                    // Rechargement du mur après opération
+                    dispatch("WallLoad");
+                })
+                .catch(err => {
+                    // Faillure
+                    console.log(err);
+                    commit('setsubFailure', true);
+                    commit('setsubCompleted', true);
+                });
         },
 
         // New Message
@@ -1068,13 +1068,13 @@ export default createStore({
                 dispatch('PostPict');
             } else {
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Veuillez vérifier le(s) champ(s) de formulaire");
+                commit('setMSGfaillure', "Veuillez vérifier le(s) champ(s) de formulaire");
                 commit('setchkCompleted', false);
             }
         },
         MsgVerifyFail({ commit }) {
             commit('setsubFailure', false);
-            commit('setMSGfaillure',"");
+            commit('setMSGfaillure', "");
         },
         UploadPreview({ commit }) {
             let CHKtitle = document.getElementById("Title").value;
@@ -1110,16 +1110,16 @@ export default createStore({
 
             // Initialisation de la promesse vers l'API via AXIOS
             axios.post(this.state.urlAPI + '/api/messages/new/preview', formData)
-            .then(res => {
-                commit("setNpicture", res.data);
+                .then(res => {
+                    commit("setNpicture", res.data);
 
-                // Completed
-                console.log("Completed");
-            })
-            .catch(err => {
-                commit('setsubFailure', true);
-                commit('setMSGfaillure',"Impossible de charger l'image sélectionnée (Formats supportés : jpg, jpeg, png)");
-            });
+                    // Completed
+                    console.log("Completed");
+                })
+                .catch(err => {
+                    commit('setsubFailure', true);
+                    commit('setMSGfaillure', "Impossible de charger l'image sélectionnée (Formats supportés : jpg, jpeg, png)");
+                });
         },
         DeletePreview({ commit }) {
             let CHKtitle = document.getElementById("Title").value;
@@ -1150,16 +1150,16 @@ export default createStore({
 
             // Initialisation de la promesse vers l'API via AXIOS
             axios.delete(this.state.urlAPI + '/api/messages/new/preview?image=' + this.state.NewMessage.Npicture)
-            .then(res => {
-                commit("setNpicture", '');
+                .then(res => {
+                    commit("setNpicture", '');
 
-                // Completed
-                commit('setUploadFile', false);
-            })
-            .catch(err => {
-                commit('setsubFailure', true);
-                commit('setMSGfaillure',"Impossible de supprimer le preview (fichier introuvable)");
-            });
+                    // Completed
+                    commit('setUploadFile', false);
+                })
+                .catch(err => {
+                    commit('setsubFailure', true);
+                    commit('setMSGfaillure', "Impossible de supprimer le preview (fichier introuvable)");
+                });
         },
         PostPict({ commit, dispatch }) {
             commit('setLoading', true);
@@ -1193,26 +1193,26 @@ export default createStore({
 
                 // Initialisation de la promesse vers l'API via AXIOS
                 axios.post(this.state.urlAPI + '/api/messages/new/', formData)
-                .then(res => {
-                    // Sucess
-                    commit('setsubOkay', true);
+                    .then(res => {
+                        // Sucess
+                        commit('setsubOkay', true);
 
-                    // Completed
-                    document.getElementById("Join").checked = false;
-                    document.getElementById("Title").value = '';
-                    document.getElementById("Content").value = '';
-                    document.querySelector("#uploadFile").value = '';
-                    commit('setsubCompleted', true);
-                    dispatch("ResetNewMsgStats");
+                        // Completed
+                        document.getElementById("Join").checked = false;
+                        document.getElementById("Title").value = '';
+                        document.getElementById("Content").value = '';
+                        document.querySelector("#uploadFile").value = '';
+                        commit('setsubCompleted', true);
+                        dispatch("ResetNewMsgStats");
 
-                    $('#NewMessage').modal('hide');
-                    dispatch("WallLoad");
-                })
-                .catch(err => {
-                    console.log(err);
-                    commit('setsubFailure', true);
-                    document.getElementById("Join").checked = false;
-                });
+                        $('#NewMessage').modal('hide');
+                        dispatch("WallLoad");
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        commit('setsubFailure', true);
+                        document.getElementById("Join").checked = false;
+                    });
 
             } else {
                 console.log('NoAttatched');
@@ -1239,25 +1239,25 @@ export default createStore({
 
                 // Initialisation de la promesse vers l'API via AXIOS
                 axios.post(this.state.urlAPI + '/api/messages/new/', formData)
-                .then(res => {
-                    // Sucess
-                    commit('setsubOkay', true);
+                    .then(res => {
+                        // Sucess
+                        commit('setsubOkay', true);
 
-                    // Completed
-                    document.getElementById("Title").value = '';
-                    document.getElementById("Content").value = '';
-                    dispatch("ResetNewMsgStats");
+                        // Completed
+                        document.getElementById("Title").value = '';
+                        document.getElementById("Content").value = '';
+                        dispatch("ResetNewMsgStats");
 
-                    $('#NewMessage').modal('hide');
+                        $('#NewMessage').modal('hide');
 
-                    // Recharger le mur
-                    dispatch("WallLoad");
-                })
-                .catch(err => {
-                    console.log(err);
-                    commit('setsubFailure', true);
-                    commit('setLoading', false);
-                });
+                        // Recharger le mur
+                        dispatch("WallLoad");
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        commit('setsubFailure', true);
+                        commit('setLoading', false);
+                    });
 
             }
         },
@@ -1271,198 +1271,198 @@ export default createStore({
             document.getElementById("Join").checked = false;
             document.querySelector("#uploadFile").value = '';
 
-            commit('setNtitle','');
-            commit('setNcontent','');
+            commit('setNtitle', '');
+            commit('setNcontent', '');
             commit('setchkCompleted', false);
             commit('setsubFailure', false);
-            commit('setMSGfaillure',"");
+            commit('setMSGfaillure', "");
             commit('setUploadFile', false);
             commit('setsubOkay', false);
             commit('setsubCompleted', false);
-            commit('setLoading',false);
+            commit('setLoading', false);
         },
 
         // Edit Posts & attachment
-        VerifyEditPost({commit,dispatch}){
+        VerifyEditPost({ commit, dispatch }) {
             let CHKtitle = document.getElementById("TitleEdit").value;
             let CHKContent = document.getElementById("ContentEdit").value;
-      
-            if(CHKtitle.length > 2 && CHKContent.length > 4){
+
+            if (CHKtitle.length > 2 && CHKContent.length > 4) {
                 commit('setCurrentEtitle', CHKtitle);
                 commit('setCurrentEcontent', CHKContent);
                 dispatch("EditPost");
             } else {
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Veuillez vérifier le(s) champ(s) de formulaire");
+                commit('setMSGfaillure', "Veuillez vérifier le(s) champ(s) de formulaire");
                 commit('setchkEdit', false);
             }
         },
-        WallEditPost({commit},PostId){
-            commit('setLoading',true);
+        WallEditPost({ commit }, PostId) {
+            commit('setLoading', true);
             let Counter = 0;
-      
+
             // Chargement du post (Axios)
-            axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content,attachment")
-            .then(res =>{
-              commit('setCurrentPostId',PostId);
-              Counter = res.data.length;
-              for(let i=0; i < Counter; i++){
-                if(res.data[i].id == PostId){
-                    commit('setCurrentEtitle',res.data[i].title);
-                    commit('setCurrentEcontent',res.data[i].content);
-                    commit('setCurrentEattachment',res.data[i].attachment);
-                    commit('setEDeleteFile', false);
-                }
-              }
-              commit('setLoading',false);
-            })
-            .catch(err =>{
-                commit('setsubFailure', true);
-                commit('setMSGfaillure',"Le message est introuvable, impossible de le charger.");
-                commit('setLoading',false);
-            });
+            axios.get(this.state.urlAPI + "/api/messages/?fields=id,title,content,attachment")
+                .then(res => {
+                    commit('setCurrentPostId', PostId);
+                    Counter = res.data.length;
+                    for (let i = 0; i < Counter; i++) {
+                        if (res.data[i].id == PostId) {
+                            commit('setCurrentEtitle', res.data[i].title);
+                            commit('setCurrentEcontent', res.data[i].content);
+                            commit('setCurrentEattachment', res.data[i].attachment);
+                            commit('setEDeleteFile', false);
+                        }
+                    }
+                    commit('setLoading', false);
+                })
+                .catch(err => {
+                    commit('setsubFailure', true);
+                    commit('setMSGfaillure', "Le message est introuvable, impossible de le charger.");
+                    commit('setLoading', false);
+                });
         },
-        EditPost({commit, dispatch}){
+        EditPost({ commit, dispatch }) {
             // Initialisation du FormData
             let formData = new FormData();
             // Ajout des éléments au FormData ( title, content, attachment )
-            formData.append("title",this.state.EditModerate.Etitle);
-            formData.append("content",this.state.EditModerate.Econtent);
-            formData.append("attachment",this.state.EditModerate.Eattachment);
-            formData.append("deleted",JSON.parse(this.state.EditModerate.EDeleteFile));
-      
+            formData.append("title", this.state.EditModerate.Etitle);
+            formData.append("content", this.state.EditModerate.Econtent);
+            formData.append("attachment", this.state.EditModerate.Eattachment);
+            formData.append("deleted", JSON.parse(this.state.EditModerate.EDeleteFile));
+
             // Configuration de l'en-tete AXIOS (intégration du token)
             axios.interceptors.request.use(
-              config => {
-                config.headers = {
-                  'authorization': `Bearer ${this.state.profil.Token}`,
-                  'Accept': 'application/json',
-                  'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
+                config => {
+                    config.headers = {
+                        'authorization': `Bearer ${this.state.profil.Token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'multipart/form-data;boundary="WebKitFormBoundary"'
+                    }
+                    return config;
+                },
+                error => {
+                    return Promise.reject(error);
                 }
-                return config;
-              },
-              error => {
-                return Promise.reject(error);
-              }
             );
-      
-            // Initialisation de la promesse vers l'API via AXIOS
-            axios.put(this.state.urlAPI+'/api/messages/'+this.state.EditModerate.CurrentPostId,formData)
-            .then(res =>{
-                // Envoie des données en base
-        
-                //Sucess
-                document.getElementById('TitleEdit').value = '';
-                document.getElementById('ContentEdit').value = '';
 
-                commit('setNpicture','');
-                commit('setsubOkay', true);
-                commit('setsubCompleted', true);
-                commit('setLoading', false);
-      
-                // Completed
-                dispatch("ResetFields");
-                $('#EditModal').modal('hide');
-                dispatch("WallLoad");
-            })
-            .catch(err =>{
-                commit('setsubFailure', true);
-                commit('setMSGfaillure',"Echec de mise à jour du message.");
-                commit('setsubCompleted', true);
-                commit('setLoading', false);
-            });
+            // Initialisation de la promesse vers l'API via AXIOS
+            axios.put(this.state.urlAPI + '/api/messages/' + this.state.EditModerate.CurrentPostId, formData)
+                .then(res => {
+                    // Envoie des données en base
+
+                    //Sucess
+                    document.getElementById('TitleEdit').value = '';
+                    document.getElementById('ContentEdit').value = '';
+
+                    commit('setNpicture', '');
+                    commit('setsubOkay', true);
+                    commit('setsubCompleted', true);
+                    commit('setLoading', false);
+
+                    // Completed
+                    dispatch("ResetFields");
+                    $('#EditModal').modal('hide');
+                    dispatch("WallLoad");
+                })
+                .catch(err => {
+                    commit('setsubFailure', true);
+                    commit('setMSGfaillure', "Echec de mise à jour du message.");
+                    commit('setsubCompleted', true);
+                    commit('setLoading', false);
+                });
         },
-        EditUploadPreview({commit}){
+        EditUploadPreview({ commit }) {
             let CHKtitle = document.getElementById("TitleEdit").value;
             let CHKContent = document.getElementById("ContentEdit").value;
             commit('setCurrentEtitle', CHKtitle);
             commit('setCurrentEcontent', CHKContent);
-      
+
             let Status = document.getElementById("EditJoin").checked;
-            
-            if(Status){
-              commit('setUploadFile', true);
+
+            if (Status) {
+                commit('setUploadFile', true);
             }
 
             // Initialisation du FormData
             let formData = new FormData();
             // Ajout des éléments au FormData (image)
             let imageFile = document.querySelector("#EdituploadFile");
-            formData.append("image",imageFile.files[0]);
-      
-            // Configuration de l'en-tete AXIOS (intégration du token)
-            axios.interceptors.request.use(
-              config => {
-                  config.headers = {
-                    'authorization': `Bearer ${this.state.profil.Token}`,
-                    'Accept': 'application/json',
-                    'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
-                  }
-                  return config;
-              },
-              error => {
-                  return Promise.reject(error);
-              }
-            );
-      
-            // Initialisation de la promesse vers l'API via AXIOS
-            axios.post(this.state.urlAPI+'/api/messages/new/preview',formData)
-            .then(res =>{
-                commit('setCurrentEattachment',res.data);
-                commit('setNpicture',res.data);
-      
-                // Completed
-                console.log("Upload Preview Completed");
-            })
-            .catch(err =>{
-                commit('setsubFailure', true);
-                commit('setMSGfaillure',"Imposible de charger l'image sélectionnée (Formats supportés : jpg, jpeg, png)");
-            });
-        },
-        EditDeletePreview({commit}){
-            let CHKtitle = document.getElementById("TitleEdit").value;
-            let CHKContent = document.getElementById("ContentEdit").value;
-            commit('setCurrentEtitle', CHKtitle);
-            commit('setCurrentEcontent', CHKContent);
-        
-            let Status = document.getElementById("EditJoin").checked;
-            
-            if(!Status){
-                commit('setUploadFile', false);
-            }
-        
+            formData.append("image", imageFile.files[0]);
+
             // Configuration de l'en-tete AXIOS (intégration du token)
             axios.interceptors.request.use(
                 config => {
-                config.headers = {
-                    'authorization': `Bearer ${this.state.profil.Token}`,
-                }
-                return config;
+                    config.headers = {
+                        'authorization': `Bearer ${this.state.profil.Token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'multipart/form-data;boundary="WebKitFormBoundary"'
+                    }
+                    return config;
                 },
                 error => {
                     return Promise.reject(error);
                 }
             );
-        
-            // Initialisation de la promesse vers l'API via AXIOS
-            axios.delete(this.state.urlAPI+'/api/messages/new/preview?image='+this.state.NewMessage.Npicture)
-            .then(res =>{
-                commit("setNpicture",'');
-                commit('setCurrentEattachment','');
 
-                document.getElementById("EditJoin").checked = false;
-                document.querySelector("#EdituploadFile").value = '';
-        
-                // Completed
-                console.log("Delete Preview Completed");
-            })
-            .catch(err =>{
-                commit('setsubFailure', true);
-                commit('setMSGfaillure',"Impossible de supprimer le preview (fichier introuvable)");
-            });
+            // Initialisation de la promesse vers l'API via AXIOS
+            axios.post(this.state.urlAPI + '/api/messages/new/preview', formData)
+                .then(res => {
+                    commit('setCurrentEattachment', res.data);
+                    commit('setNpicture', res.data);
+
+                    // Completed
+                    console.log("Upload Preview Completed");
+                })
+                .catch(err => {
+                    commit('setsubFailure', true);
+                    commit('setMSGfaillure', "Imposible de charger l'image sélectionnée (Formats supportés : jpg, jpeg, png)");
+                });
         },
-        RemoveEAttachment({commit,dispatch}){
-            if(this.state.NewMessage.Npicture == ''){
+        EditDeletePreview({ commit }) {
+            let CHKtitle = document.getElementById("TitleEdit").value;
+            let CHKContent = document.getElementById("ContentEdit").value;
+            commit('setCurrentEtitle', CHKtitle);
+            commit('setCurrentEcontent', CHKContent);
+
+            let Status = document.getElementById("EditJoin").checked;
+
+            if (!Status) {
+                commit('setUploadFile', false);
+            }
+
+            // Configuration de l'en-tete AXIOS (intégration du token)
+            axios.interceptors.request.use(
+                config => {
+                    config.headers = {
+                        'authorization': `Bearer ${this.state.profil.Token}`,
+                    }
+                    return config;
+                },
+                error => {
+                    return Promise.reject(error);
+                }
+            );
+
+            // Initialisation de la promesse vers l'API via AXIOS
+            axios.delete(this.state.urlAPI + '/api/messages/new/preview?image=' + this.state.NewMessage.Npicture)
+                .then(res => {
+                    commit("setNpicture", '');
+                    commit('setCurrentEattachment', '');
+
+                    document.getElementById("EditJoin").checked = false;
+                    document.querySelector("#EdituploadFile").value = '';
+
+                    // Completed
+                    console.log("Delete Preview Completed");
+                })
+                .catch(err => {
+                    commit('setsubFailure', true);
+                    commit('setMSGfaillure', "Impossible de supprimer le preview (fichier introuvable)");
+                });
+        },
+        RemoveEAttachment({ commit, dispatch }) {
+            if (this.state.NewMessage.Npicture == '') {
                 commit('setEDeleteFile', true);
             } else {
                 dispatch('EditDeletePreview');
@@ -1470,124 +1470,124 @@ export default createStore({
         },
 
         // Moderate Posts & attachment
-        VerifyModeratePost({commit,dispatch}){
+        VerifyModeratePost({ commit, dispatch }) {
             let CHKtitle = document.getElementById("TitleMod").value;
             let CHKContent = document.getElementById("ContentMod").value;
-      
-            if(CHKtitle.length > 2 && CHKContent.length > 4){
+
+            if (CHKtitle.length > 2 && CHKContent.length > 4) {
                 commit('setCurrentMtitle', CHKtitle);
                 commit('setCurrentMcontent', CHKContent);
                 dispatch("ModeratePost");
             } else {
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Veuillez vérifier le(s) champ(s) de formulaire");
+                commit('setMSGfaillure', "Veuillez vérifier le(s) champ(s) de formulaire");
                 commit('setchkModerate', false);
             }
         },
-        WallModeratePost({commit},PostId){
-            commit('setLoading',true);
+        WallModeratePost({ commit }, PostId) {
+            commit('setLoading', true);
             let Counter = 0;
-      
+
             // Chargement du post (Axios)
-            axios.get(this.state.urlAPI+"/api/messages/?fields=id,title,content,attachment")
-            .then(res =>{
-                commit('setCurrentPostId',PostId);
-                Counter = res.data.length;
-                for(let i=0; i < Counter; i++){
-                    if(res.data[i].id == PostId){
-                        commit('setCurrentMtitle',res.data[i].title);
-                        commit('setCurrentMcontent',res.data[i].content);
-                        commit('setCurrentMattachment',res.data[i].attachment);
-                        commit('setMDeleteFile',false);
+            axios.get(this.state.urlAPI + "/api/messages/?fields=id,title,content,attachment")
+                .then(res => {
+                    commit('setCurrentPostId', PostId);
+                    Counter = res.data.length;
+                    for (let i = 0; i < Counter; i++) {
+                        if (res.data[i].id == PostId) {
+                            commit('setCurrentMtitle', res.data[i].title);
+                            commit('setCurrentMcontent', res.data[i].content);
+                            commit('setCurrentMattachment', res.data[i].attachment);
+                            commit('setMDeleteFile', false);
+                        }
+                        commit('setLoading', false);
                     }
-                    commit('setLoading',false);
-                }
-            })
-            .catch(err =>{
-                commit('setsubFailure', true);
-                commit('setMSGfaillure',"Le message est introuvable, impossible de le charger.");
-                commit('setLoading',false);
-            });
+                })
+                .catch(err => {
+                    commit('setsubFailure', true);
+                    commit('setMSGfaillure', "Le message est introuvable, impossible de le charger.");
+                    commit('setLoading', false);
+                });
         },
-        ModeratePost({commit, dispatch}){
+        ModeratePost({ commit, dispatch }) {
             // Initialisation du FormData
             let formData = new FormData();
             // Ajout des autres éléments au FormData ( title, content, attachment, delete )
-            formData.append("title",this.state.EditModerate.Mtitle);
-            formData.append("content",this.state.EditModerate.Mcontent);
-            formData.append("attachment",this.state.EditModerate.Mattachment);
-            formData.append("deleted",JSON.parse(this.state.EditModerate.MDeleteFile));
-      
+            formData.append("title", this.state.EditModerate.Mtitle);
+            formData.append("content", this.state.EditModerate.Mcontent);
+            formData.append("attachment", this.state.EditModerate.Mattachment);
+            formData.append("deleted", JSON.parse(this.state.EditModerate.MDeleteFile));
+
             // Configuration de l'en-tete AXIOS (intégration du token)
             axios.interceptors.request.use(
-              config => {
-                config.headers = {
-                  'authorization': `Bearer ${this.state.profil.Token}`,
-                  'Accept': 'application/json',
-                  'Content-Type':'multipart/form-data;boundary="WebKitFormBoundary"'
+                config => {
+                    config.headers = {
+                        'authorization': `Bearer ${this.state.profil.Token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'multipart/form-data;boundary="WebKitFormBoundary"'
+                    }
+                    return config;
+                },
+                error => {
+                    return Promise.reject(error);
                 }
-                return config;
-              },
-              error => {
-                return Promise.reject(error);
-              }
             );
-      
-            // Initialisation de la promesse vers l'API via AXIOS
-            if(this.state.profil.isAdmin){
-              axios.put(this.state.urlAPI+'/api/messages/'+this.state.EditModerate.CurrentPostId+'/moderate',formData)
-              .then(res =>{
-                // Envoie des données en base
-    
-                //Sucess
-                document.getElementById('TitleMod').value = '';
-                document.getElementById('ContentMod').value = '';
 
-                commit('setsubOkay', true);
-                commit('setsubCompleted', true);
-                commit('setLoading', false);
-    
-                // Completed
-                dispatch("ResetFields");
-    
-                $('#ModerateModal').modal('hide');
-                dispatch("WallLoad");
-              })
-              .catch(err =>{
-                    console.log(err);
-                    commit('setsubFailure', true);
-                    commit('setMSGfaillure',"Echec de mise à jour du message.");
-                    commit('setsubCompleted', true);
-                    commit('setLoading', false);
-              });
+            // Initialisation de la promesse vers l'API via AXIOS
+            if (this.state.profil.isAdmin) {
+                axios.put(this.state.urlAPI + '/api/messages/' + this.state.EditModerate.CurrentPostId + '/moderate', formData)
+                    .then(res => {
+                        // Envoie des données en base
+
+                        //Sucess
+                        document.getElementById('TitleMod').value = '';
+                        document.getElementById('ContentMod').value = '';
+
+                        commit('setsubOkay', true);
+                        commit('setsubCompleted', true);
+                        commit('setLoading', false);
+
+                        // Completed
+                        dispatch("ResetFields");
+
+                        $('#ModerateModal').modal('hide');
+                        dispatch("WallLoad");
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        commit('setsubFailure', true);
+                        commit('setMSGfaillure', "Echec de mise à jour du message.");
+                        commit('setsubCompleted', true);
+                        commit('setLoading', false);
+                    });
             } else {
                 commit('setsubFailure', true);
-                commit('setMSGfaillure',"Vous ne disposez pas des droits de modération.");
+                commit('setMSGfaillure', "Vous ne disposez pas des droits de modération.");
                 commit('setsubCompleted', true);
-                commit('setLoading',false);
+                commit('setLoading', false);
             }
         },
-        RemoveMAttachment({commit}){
+        RemoveMAttachment({ commit }) {
             commit('setMDeleteFile', true);
         },
 
-        ResetFields({commit,dispatch}){
-            if(this.state.NewMessage.Npicture != ''){
-              dispatch('EditDeletePreview');
+        ResetFields({ commit, dispatch }) {
+            if (this.state.NewMessage.Npicture != '') {
+                dispatch('EditDeletePreview');
             }
-      
+
             document.getElementById("EditJoin").checked = false;
             document.querySelector("#EdituploadFile").value = '';
-            commit('setCurrentEtitle','');
-            commit('setCurrentEcontent','');
-            commit('setCurrentEattachment','');
+            commit('setCurrentEtitle', '');
+            commit('setCurrentEcontent', '');
+            commit('setCurrentEattachment', '');
             commit('setEDeleteFile', false);
-            commit('setCurrentMtitle','');
-            commit('setCurrentMcontent','');
-            commit('setCurrentMattachment','');
-            commit('setMDeleteFile',false);
+            commit('setCurrentMtitle', '');
+            commit('setCurrentMcontent', '');
+            commit('setCurrentMattachment', '');
+            commit('setMDeleteFile', false);
             commit('setsubFailure', false);
-            commit('setMSGfaillure',"");
+            commit('setMSGfaillure', "");
             commit('setsubOkay', false);
             commit('setsubCompleted', false);
             commit('setUploadFile', false);
@@ -1608,28 +1608,28 @@ export default createStore({
             if (this.state.profil.isAdmin) {
                 // Initialisation de la promesse vers l'API via AXIOS
                 axios.delete(this.state.urlAPI + '/api/messages/' + PostId + '/moderate')
-                .then(res => {
-                    console.log('Post Deleted');
-                    // Rechargement du mur après opération
-                    dispatch("WallLoad");
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+                    .then(res => {
+                        console.log('Post Deleted');
+                        // Rechargement du mur après opération
+                        dispatch("WallLoad");
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
             } else {
                 // Initialisation de la promesse vers l'API via AXIOS
                 axios.delete(this.state.urlAPI + '/api/messages/' + PostId)
-                .then(res => {
-                    console.log('Post Deleted');
-                    // Rechargement du mur après opération
-                    dispatch("WallLoad");
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+                    .then(res => {
+                        console.log('Post Deleted');
+                        // Rechargement du mur après opération
+                        dispatch("WallLoad");
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
             }
         },
-        DeleteComment({dispatch},Comment){
+        DeleteComment({ dispatch }, Comment) {
             // Configuration de l'en-tete AXIOS (intégration du token)
             axios.interceptors.request.use(
                 config => {
@@ -1640,29 +1640,29 @@ export default createStore({
                     return Promise.reject(error);
                 }
             );
-            if(this.state.profil.isAdmin){
-              axios.delete(this.state.urlAPI+"/api/messages/comment/"+Comment.messageId+"/"+Comment.id+"/moderate/")
-              .then(res=>{
-                console.log('commentaire supprimé');
-      
-                // Rechargement du mur après opération
-                dispatch("WallLoad");
-              })
-              .catch(err =>{
-                console.log(err);
-              });
-      
+            if (this.state.profil.isAdmin) {
+                axios.delete(this.state.urlAPI + "/api/messages/comment/" + Comment.messageId + "/" + Comment.id + "/moderate/")
+                    .then(res => {
+                        console.log('commentaire supprimé');
+
+                        // Rechargement du mur après opération
+                        dispatch("WallLoad");
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+
             } else {
-              axios.delete(this.state.urlAPI+"/api/messages/comment/"+Comment.messageId+"/"+Comment.id)
-              .then(res=>{
-                console.log('commentaire supprimé');
-      
-                // Rechargement du mur après opération
-                dispatch("WallLoad");
-              })
-              .catch(err =>{
-                console.log(err);
-              });
+                axios.delete(this.state.urlAPI + "/api/messages/comment/" + Comment.messageId + "/" + Comment.id)
+                    .then(res => {
+                        console.log('commentaire supprimé');
+
+                        // Rechargement du mur après opération
+                        dispatch("WallLoad");
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
             }
         },
     }

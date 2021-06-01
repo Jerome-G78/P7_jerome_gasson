@@ -5,8 +5,7 @@
 let models = require('../models')
 let jwtUtils = require('../utils/jwt.utils');
 let asyncLib = require('async');
-
-// Constants
+let Promises = require('./Promises');
 
 // Routes
 
@@ -25,7 +24,27 @@ module.exports = {
         if (messageId <= 0) {
             return res.status(400).json({ 'error': 'invalid parameters' });
         }
+        
+        // ---------------------------------- //
+        // Promises
+        // ---------------------------------- //
+        /*
+        const User = Promises.UserExist(userId);
+        const Message = User.then(() => Promises.FindMessage(messageId));
+        const MessageUser = Message.then((messageFound)=> Promises.FindMessageUser(messageFound, messageId, userId));
+        const Compare = MessageUser.then((messageFound)=> Promises.CompareMessage(messageFound, userId));
 
+        Promise.all([User, Message, MessageUser, Compare ])
+            .then(newComment => {
+                // Like Message OK
+                return res.status(201).json(newComment);
+            })
+            .catch(err => {
+                // Le Like n'est pas passé.
+                return res.status(500).json(err);
+            });
+        
+        */
         asyncLib.waterfall([
             (done) => {
                 // Vérifier dans la BDD si le message existe (id du msg)
@@ -137,6 +156,26 @@ module.exports = {
             return res.status(400).json({ 'error': 'invalid parameters' });
         }
 
+        
+        // ---------------------------------- //
+        // Promises
+        // ---------------------------------- //
+        /*
+        const User = Promises.UserExist(userId);
+        const Message = User.then(() => Promises.FindMessage(messageId));
+        const MessageUser = Message.then((messageFound)=> Promises.FindMessageUser(messageFound, messageId, userId));
+        const Compare = MessageUser.then((messageFound)=> Promises.CompareMessage(messageFound, userId));
+
+        Promise.all([User, Message, MessageUser, Compare ])
+            .then(newComment => {
+                // Dislike Message OK
+                return res.status(201).json(newComment);
+            })
+            .catch(err => {
+                // Le Dislike n'est pas passé.
+                return res.status(500).json(err);
+            });
+        */
         asyncLib.waterfall([
             (done) => {
                 // Vérifier dans la BDD si le message existe (id du msg)
