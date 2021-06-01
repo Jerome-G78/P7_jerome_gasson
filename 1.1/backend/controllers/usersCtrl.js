@@ -68,6 +68,7 @@ module.exports = {
         return res.status(201).json({ 'message': 'Registration Completed' });
       })
       .catch(err => {
+        console.log(err);
         return res.status(err.status).json({ 'error': err.error });
       });
   },
@@ -97,9 +98,9 @@ module.exports = {
       .then(userFound => {
         return res.status(201).json(userFound[1]);
       })
-      .catch(Error => {
-        console.log(Error);
-        return res.status(Error.status).json({ 'error': 'cannot log on user' + Error });
+      .catch(err => {
+        console.log(err);
+        return res.status(err.status).json({ 'error': err.error });
       });
   },
 
@@ -127,6 +128,7 @@ module.exports = {
         }
       })
       .catch(err => {
+        console.log(err);
         res.status(500).json({ 'error': 'cannot fetch user' });
       });
   },
@@ -150,7 +152,7 @@ module.exports = {
 
     Promise.all([UserExist, UpdateBio])
       .then((userFound) => {
-        return res.status(201).json({ 'message': 'Registration Completed' });
+        return res.status(201).json({ 'message': 'Profil Successful Updated' });
       })
       .catch(err => {
         return res.status(err.status).json({ 'error': err.error });
@@ -165,136 +167,32 @@ module.exports = {
     // Vérifier que ce token est valide pour faire une requête en BDD
     let userId = jwtUtils.getUserId(headerAuth);
 
-    asyncLib.waterfall([
-      done => {
-        console.log(1 + ": Récupérer l'utilisateur dans la base de données");
-        // Récupérer l'utilisateur dans la base de données
-        models.User.findOne({
-          attributes: ['id', 'email', 'username'],
-          where: { id: userId },
-          include: [{
-            model: models.Comment,
-            model: models.like,
-            model: models.Message
-          }]
-        })
-          .then(userFound => {
-            console.log(2 + ": Verification des likes liées pour suppression...");
-            // Vérification des likes liés pour suppression
-            models.Like.findAll({
-              attributes: ['id', 'userId', 'messageId'],
-              where: {
-                userId,
-                isLike: 1
-              }
-            })
-              .then(isLiked => {
-                console.log(2 - 1 + ": Décrémentation des compteurs...");
-                // Décrémentation du compteur lié...
-                for (let likeFound in isLiked) {
-                  models.Message.findOne({
-                    where: { id: isLiked[likeFound].messageId }
-                  })
-                    .then(messageFound => {
-                      messageFound.update({
-                        likes: messageFound.likes - 1
-                      })
-                    })
-                  models.Like.destroy({
-                    where: { userId },
-                    cascade: true,
-                    include: [{
-                      model: models.Comment,
-                      model: models.like,
-                      model: models.Message
-                    }]
-                  })
-                }
-              })
-          })
-          .then(likeFound => {
-            console.log(3 + ": Verification des Comment liées pour suppression...");
-            // Vérification des Comment liés pour suppression
-            models.Comment.destroy({
-              where: { userId },
-              cascade: true,
-              include: [{
-                model: models.Comment,
-                model: models.like,
-                model: models.Message
-              }]
-            })
-            done(null);
-          })
-      },
+    // --------------------------
+    // Promises
+    // --------------------------
 
-      done => {
-        console.log(4 + ": Récupératon des messages de l'utilisateur...");
-        // Récupération de tous les messages de l'utilisateur...
-        models.Message.findAll({
-          attributes: ['id'],
-          where: { userId },
-        })
-          .then(messages => {
-            console.log(5 + ": Supression des likes & commentaires liés aux messages...");
-            for (let message in messages) {
-              models.Like.destroy({
-                where: { messageId: messages[message].id }
-              })
-              models.Comment.destroy({
-                where: { messageId: messages[message].id }
-              })
-            }
-            done(null);
-          })
-          .catch(err => {
-            return res.status(500).json({ 'error': 'faillure to delete Like, Comment or Mesage!' + err });
-          })
-      },
+    const UserExist = Promises.UserExist(userId);
+    const RemoveLikes = UserExist.then(Completed => UserPromises.RemoveLikes(userId));
+    const RemoveComments = RemoveLikes.then(Completed => UserPromises.RemoveComments(userId));
+    const RemoveOthersCommentsLikes = RemoveComments.then(Completed => UserPromises.RemoveOthersCommentsLikes(userId));
+    const RemoveMessages = RemoveOthersCommentsLikes.then(Completed => UserPromises.RemoveMessages(userId));
+    const RemoveAccount = RemoveMessages.then(Completed => UserPromises.RemoveAccount(userId));
 
-      done => {
-        models.Message.findAll({
-          where: { userId }
-        })
-          .then(messages => {
-            console.log(6 + ": Supression des attatchement des messages...");
-            for (let message in messages) {
-              let filename = messages[message].attachment.split('/images/')[1];
-              if (filename != null) {
-                fs.unlinkSync(`images/${filename}`);
-              }
-              models.Message.destroy({
-                where: { userId }
-              })
-            }
-            done(null);
-          })
-          .catch(err => {
-            return res.status(500).json({ 'error': 'faillure to delete Like, Comment or Mesage!' + err });
-          })
-      },
-
-      (completed, done) => {
-        console.log(8 + ": Suppression du compte de l'utilisateur");
-        // Suppression du compte de l'utilisateur
-        models.User.destroy({
-          where: { id: userId }
-        })
-          .then(() => {
-            return res.status(201).json({ 'message': 'unsubscribe sucess' });
-          })
-          .catch(err => {
-            return res.status(500).json({ 'error': 'faillure to unsubscribe!' + err });
-          });
-      }
-    ])
+    Promise.all([UserExist, RemoveLikes, RemoveComments, RemoveOthersCommentsLikes, RemoveMessages, RemoveAccount])
+      .then((userFound) => {
+        console.log(userFound);
+        return res.status(201).json({ 'message': 'unsubscribe sucess' });
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(err.status).json({ 'error': err.error });
+      });
   },
 
   getOneUserProfile: (req, res) => {
     // Récupération de l'en-tête d'autorisation
     let headerAuth = req.headers['authorization'];
     let Username = req.body.Username;
-    console.log(Username);
 
     // Vérifier que ce token est valide pour faire une requête en BDD
     let userId = jwtUtils.getUserId(headerAuth);
