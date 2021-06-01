@@ -201,67 +201,22 @@ module.exports = {
     if (userId < 0)
       return res.status(400).json({ 'error': 'wrong token' });
 
-    asyncLib.waterfall([
-      done => {
-        // Récupérer l'utilisateur dans la base de données
-        models.User.findOne({
-          where: { id: userId }
-        })
-          .then(userFound => {
-            // Si l'utilisateur est rouvé, le retourner
-            done(null, userFound);
-          })
-          .catch(err => {
-            // Sinon envoyer une erreur
-            return res.status(500).json({ 'error': 'unable to verify user' });
-          });
-      },
+    // --------------------------
+    // Promises
+    // --------------------------
 
-      (userFound, done) => {
-        // Vérifier si l'utilisateur dispose des droits admin
-        models.User.findOne({
-          attributes: ['isAdmin'],
-          where: { isAdmin: userFound.isAdmin }
-        })
-          .then(userFound => {
-            if (userFound.isAdmin == true) {
-              console.log(userFound.isAdmin);
-              done(null, userFound);
-            } else {
-              return res.status(403).json({ 'error': 'you do not have sufficient privileges' });
-            }
-          })
-          .catch(err => {
-            return res.status(500).json({ err });
-          });
-      },
+    const UserExist = Promises.UserExist(userId);
+    const UserIsAdmin = UserExist.then(UserFound => UserPromises.UserIsAdmin(UserFound));
+    const RequestUserInformation = UserIsAdmin.then(Complete => UserPromises.RequestUserInformation(Username));
 
-      done => {
-        // Si tout va bien, on fait un appel ORM(sequelize) pour récupérer les informations de l'utilisateur en BDD
-        models.User.findOne({
-          attributes: ['id', 'username', 'isAdmin'],
-          where: { username: Username }
-        })
-          .then(user => {
-            if (user) {
-              res.status(200).json(user);
-            } else {
-              res.status(404).json({ 'error': 'user not found' });
-            }
-          })
-          .catch(err => {
-            res.status(500).json({ 'error': 'cannot fetch user' });
-          });
-      }
-    ], done => {
-      if (done) {
-        // OK
-        return res.status(201).json({ 'message': 'user found' + done });
-      } else {
-        // Erreur.
-        return res.status(500).json({ 'error': 'cannot find user' });
-      }
-    })
+    Promise.all([UserExist, UserIsAdmin, RequestUserInformation])
+      .then(userFound => {
+        return res.status(201).json({ 'message': 'Found! -' + userFound[2] });
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(err.status).json({ 'error': err.error });
+      });
   },
 
   updateUserAddRights: (req, res) => {

@@ -273,6 +273,52 @@ const RemoveAccount = ((userId) => {
             });
     });
 });
+
+// ------------------------
+// MODERATION
+// ------------------------
+
+// Vérifier si l'utilisateur dispose des droits admin
+const UserIsAdmin = ((userFound) => {
+    return new Promise((resolve, reject) => {
+        models.User.findOne({
+            attributes: ['isAdmin'],
+            where: { isAdmin: userFound.isAdmin }
+        })
+            .then(userFound => {
+                if (userFound.isAdmin == true) {
+                    console.log(userFound.isAdmin);
+                    resolve(userFound);
+                } else {
+                    reject({ 'status': 403, 'error': 'you do not have sufficient privileges!' });
+                }
+            })
+            .catch(err => {
+                reject({ 'status': 500, 'error': err });
+            });
+    });
+});
+
+// Si tout va bien, on fait un appel ORM(sequelize) pour récupérer les informations de l'utilisateur en BDD
+const RequestUserInformation = ((Username) => {
+    return new Promise((resolve, reject) => {
+        models.User.findOne({
+            attributes: ['id', 'username', 'isAdmin'],
+            where: { username: Username }
+        })
+            .then(user => {
+                if (user) {
+                    resolve(user);
+                } else {
+                    reject({ 'status': 404, 'error': 'user not found' });
+                }
+            })
+            .catch(err => {
+                reject({ 'status': 500, 'error': err });
+            });
+    });
+});
+
 /*
 const Function = (()=>{
     return new Promise((resolve, reject)=>{
@@ -285,8 +331,10 @@ module.exports = {
     FindUser, FindMail, PassEncrypt, RegisterAccount,
     // LogIn
     UserExist, ComparePassword,
-    //Update Profil
+    // Update Profil
     UpdateBio,
     // Suppression du compte
-    RemoveLikes, RemoveComments, RemoveOthersCommentsLikes, RemoveMessages, RemoveAccount
+    RemoveLikes, RemoveComments, RemoveOthersCommentsLikes, RemoveMessages, RemoveAccount,
+    // ADMINISTRATION
+    UserIsAdmin, RequestUserInformation
 };
