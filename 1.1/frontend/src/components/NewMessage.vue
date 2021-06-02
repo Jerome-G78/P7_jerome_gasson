@@ -1,7 +1,7 @@
 <template>
     <div class="modal" id="NewMessage">
         <div class="modal-dialog">
-            <div class="modal-content"> 
+            <div class="modal-content">
         
                 <div class="modal-header Titlebackground">
                     <h4 class="modal-title"><i class="far fa-newspaper"></i> Poster un message </h4>
