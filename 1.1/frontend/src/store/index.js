@@ -3,8 +3,8 @@ import { createStore } from 'vuex'
 export default createStore({
     state: {
         // Paramètres généraux
-        // urlAPI: 'https://shadsoft.fr:3443',
-        urlAPI: 'http://localhost:3000',
+        urlAPI: 'https://shadsoft.fr:3443',
+        // urlAPI: 'http://localhost:3000',
         footer: 'Groupomania 2021 - Tout drois résérvés',
 
         // Déclaration des données du "store" de vue X
@@ -1087,12 +1087,16 @@ export default createStore({
         UploadPreview({ commit }) {
             let CHKtitle = document.getElementById("Title").value;
             let CHKContent = document.getElementById("Content").value;
+            let File = document.getElementById('uploadFile').value;
+            console.log(File);
+            
             commit('setNtitle', CHKtitle);
             commit('setNcontent', CHKContent);
 
-            let Status = document.getElementById("Join").checked;
+            let Status = File;
+            
 
-            if (Status) {
+            if (Status !='Aucun fichier choisi') {
                 commit('setUploadFile', true);
             }
 
@@ -1132,12 +1136,14 @@ export default createStore({
         DeletePreview({ commit }) {
             let CHKtitle = document.getElementById("Title").value;
             let CHKContent = document.getElementById("Content").value;
+            let File = document.getElementById('uploadFile').value;
+
             commit('setNtitle', CHKtitle);
             commit('setNcontent', CHKContent);
 
-            let Status = document.getElementById("Join").checked;
+            let Status = File;
 
-            if (!Status) {
+            if (Status !='Aucun fichier choisi') {
                 commit('setUploadFile', false);
             }
 
@@ -1206,7 +1212,6 @@ export default createStore({
                         commit('setsubOkay', true);
 
                         // Completed
-                        document.getElementById("Join").checked = false;
                         document.getElementById("Title").value = '';
                         document.getElementById("Content").value = '';
                         document.querySelector("#uploadFile").value = '';
@@ -1219,7 +1224,6 @@ export default createStore({
                     .catch(err => {
                         console.log(err);
                         commit('setsubFailure', true);
-                        document.getElementById("Join").checked = false;
                     });
 
             } else {
@@ -1276,7 +1280,6 @@ export default createStore({
 
             document.getElementById('Title').value = '';
             document.getElementById('Content').value = '';
-            document.getElementById("Join").checked = false;
             document.querySelector("#uploadFile").value = '';
 
             commit('setNtitle', '');
@@ -1383,12 +1386,15 @@ export default createStore({
         EditUploadPreview({ commit }) {
             let CHKtitle = document.getElementById("TitleEdit").value;
             let CHKContent = document.getElementById("ContentEdit").value;
+            let File = document.getElementById('EdituploadFile').value;
+            console.log(File);
+
             commit('setCurrentEtitle', CHKtitle);
             commit('setCurrentEcontent', CHKContent);
 
-            let Status = document.getElementById("EditJoin").checked;
+            let Status = File;
 
-            if (Status) {
+            if (Status !='Aucun fichier choisi') {
                 commit('setUploadFile', true);
             }
 
@@ -1430,12 +1436,15 @@ export default createStore({
         EditDeletePreview({ commit }) {
             let CHKtitle = document.getElementById("TitleEdit").value;
             let CHKContent = document.getElementById("ContentEdit").value;
+            let File = document.getElementById('EdituploadFile').value;
+            console.log(File);
+
             commit('setCurrentEtitle', CHKtitle);
             commit('setCurrentEcontent', CHKContent);
 
-            let Status = document.getElementById("EditJoin").checked;
+            let Status = File;
 
-            if (!Status) {
+            if (Status !='Aucun fichier choisi') {
                 commit('setUploadFile', false);
             }
 
@@ -1457,8 +1466,6 @@ export default createStore({
                 .then(res => {
                     commit("setNpicture", '');
                     commit('setCurrentEattachment', '');
-
-                    document.getElementById("EditJoin").checked = false;
                     document.querySelector("#EdituploadFile").value = '';
 
                     // Completed
@@ -1584,7 +1591,6 @@ export default createStore({
                 dispatch('EditDeletePreview');
             }
 
-            document.getElementById("EditJoin").checked = false;
             document.querySelector("#EdituploadFile").value = '';
             commit('setCurrentEtitle', '');
             commit('setCurrentEcontent', '');

@@ -131,7 +131,20 @@ const DeleteCommentAdmin = ((commentId, messageId) => {
     });
 });
 
+// --------------------------
+// Gestion des Like / Dislike
+// --------------------------
+
+
+/*
+const Function = (()=>{
+    return new Promise((resolve, reject)=>{
+
+    });
+});
+*/
+
 module.exports = {
-    UserExist, IsOwnMessage, SendComment, DeleteComment,
-    IsAdmin, DeleteCommentAdmin
+    UserExist, IsOwnMessage, IsAdmin,
+    SendComment, DeleteComment, DeleteCommentAdmin
 };

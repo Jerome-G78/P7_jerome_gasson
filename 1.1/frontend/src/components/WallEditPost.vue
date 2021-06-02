@@ -21,8 +21,7 @@
 
                     <div v-show="EditAttachment ==''">
                         <img v-if="uploadFile && Npicture !=''" class="col-12 justify-content-center rounded img-fluid d-flex" name="Picture" :src="Npicture"/>
-                        <input type="file" name="File" id="EdituploadFile"> <br/>
-                        <input @click="handleFileUpload" id="EditJoin" type="checkbox">joindre une image
+                        <input @change="handleFileUpload" type="file" name="File" id="EdituploadFile"> <br/>
                     </div>
 
                     <div class="labelsAlign form-group">
@@ -109,8 +108,8 @@
             },
 
             handleFileUpload(){
-                let Stat = document.getElementById("EditJoin").checked;
-                if(Stat){
+                let Stat = document.getElementById('EdituploadFile').value;
+                if(Stat !='Aucun fichier choisi'){
                     this.$store.dispatch("EditUploadPreview");
                 } else {
                     this.$store.dispatch("EditDeletePreview");

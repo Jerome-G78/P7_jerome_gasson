@@ -17,8 +17,8 @@
 
                     <div class="form-group">
                         <label for="File"> Image/Photo (Faclultatif) </label>
-                        <input v-show="!uploadFile" type="file" name="File" id="uploadFile"> <br/>
-                        <input @click="handleFileUpload" id="Join" type="checkbox"> joindre une image
+                        <input @change="handleFileUpload" v-show="!uploadFile" type="file" name="File" id="uploadFile"> <br/>
+                        <!-- <input @click="handleFileUpload" id="Join" type="checkbox"> joindre une image -->
                         <img v-if="uploadFile && Npicture !=''" class="col-12 justify-content-center rounded img-fluid d-flex" name="Picture" :src="Npicture"/>
                     </div>
 
@@ -95,7 +95,7 @@
             },
 
             handleFileUpload(){
-                let Stat = document.getElementById("Join").checked;
+                let Stat = document.getElementById('uploadFile').value;
                 if(Stat){
                     this.$store.dispatch("UploadPreview");
                 } else {
