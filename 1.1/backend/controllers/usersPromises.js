@@ -319,6 +319,64 @@ const RequestUserInformation = ((Username) => {
     });
 });
 
+// Ajouter les droits a l'utilisateur
+const AddRight = ((Username) => {
+    return new Promise((resolve, reject) => {
+        models.User.findOne({
+            attributes: ['id', 'username', 'isAdmin'],
+            where: { username: Username }
+        })
+            .then(userFound => {
+                console.log(userFound.isAdmin);
+                if (!userFound.isAdmin) {
+                    userFound.update({
+                        isAdmin: 1,
+                    })
+                        .then(userFound => {
+                            resolve(userFound);
+                        })
+                        .catch(err => {
+                            reject({ 'status': 500, 'error': 'Unable to modify Rights! ' + err });
+                        });
+                } else {
+                    reject({ 'status': 403, 'error': 'user is Already Moderator' });
+                }
+            })
+            .catch(err => {
+                reject({ 'status': 500, 'error': 'unable to add Admin Right! ' + err });
+            });
+    });
+});
+
+// Retirer les droits de l'utilisateur
+const RemoveRight = ((Username) => {
+    return new Promise((resolve, reject) => {
+        models.User.findOne({
+            attributes: ['id', 'username', 'isAdmin'],
+            where: { username: Username }
+        })
+            .then(userFound => {
+                console.log(userFound.isAdmin);
+                if (userFound.isAdmin) {
+                    userFound.update({
+                        isAdmin: 0,
+                    })
+                        .then(userFound => {
+                            resolve(userFound);
+                        })
+                        .catch(err => {
+                            reject({ 'status': 500, 'error': 'Unable to modify Rights! ' + err });
+                        });
+                } else {
+                    reject({ 'status': 403, 'error': 'user is not Moderator' });
+                }
+            })
+            .catch(err => {
+                reject({ 'status': 500, 'error': 'unable to Remove Admin Right! ' + err });
+            });
+    });
+});
+
 /*
 const Function = (()=>{
     return new Promise((resolve, reject)=>{
@@ -336,5 +394,5 @@ module.exports = {
     // Suppression du compte
     RemoveLikes, RemoveComments, RemoveOthersCommentsLikes, RemoveMessages, RemoveAccount,
     // ADMINISTRATION
-    UserIsAdmin, RequestUserInformation
+    UserIsAdmin, RequestUserInformation, AddRight, RemoveRight
 };

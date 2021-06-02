@@ -5,10 +5,10 @@
 // let bcrypt = require('bcrypt');
 let jwtUtils = require('../utils/jwt.utils');
 let models = require('../models');
-let asyncLib = require('async');
+// let asyncLib = require('async');
 let Promises = require('./Promises');
 let UserPromises = require('./usersPromises');
-let fs = require('fs');
+// let fs = require('fs');
 const { where } = require('sequelize');
 const { DataTypes } = require('sequelize');
 const { isDate } = require('util');
@@ -211,7 +211,7 @@ module.exports = {
 
     Promise.all([UserExist, UserIsAdmin, RequestUserInformation])
       .then(userFound => {
-        return res.status(201).json({ 'message': 'Found! -' + userFound[2] });
+        return res.status(201).json(userFound[2]);
       })
       .catch(err => {
         console.log(err);
@@ -231,77 +231,22 @@ module.exports = {
     if (userId < 0)
       return res.status(400).json({ 'error': 'wrong token' });
 
-    asyncLib.waterfall([
-      done => {
-        // Récupérer l'utilisateur dans la base de données
-        models.User.findOne({
-          where: { id: userId }
-        })
-          .then(userFound => {
-            // Si l'utilisateur est rouvé, le retourner
-            done(null, userFound);
-          })
-          .catch(err => {
-            // Sinon envoyer une erreur
-            return res.status(500).json({ 'error': 'unable to verify user' });
-          });
-      },
+    // --------------------------
+    // Promises
+    // --------------------------
 
-      (userFound, done) => {
-        // Vérifier que l'utilisateur dispose des droits admin
-        models.User.findOne({
-          attributes: ['isAdmin'],
-          where: { isAdmin: userFound.isAdmin }
-        })
-          .then(userFound => {
-            if (userFound.isAdmin == true) {
-              console.log(userFound.isAdmin);
-              done(null, userFound);
-            } else {
-              return res.status(403).json({ 'error': 'you do not have sufficient privileges' });
-            }
-          })
-          .catch(err => {
-            return res.status(500).json({ err });
-          });
-      },
+    const UserExist = Promises.UserExist(userId);
+    const UserIsAdmin = UserExist.then(UserFound => UserPromises.UserIsAdmin(UserFound));
+    const AddRight = UserIsAdmin.then(Complete => UserPromises.AddRight(Username));
 
-      (userFound, done) => {
-        // Si tout va bien, on fait un appel ORM(sequelize) pour récupérer les informations de l'utilisateur en BDD
-        models.User.findOne({
-          attributes: ['id', 'username', 'isAdmin'],
-          where: { username: Username }
-        })
-          .then(userFound => {
-            console.log(userFound.isAdmin);
-            if (!userFound.isAdmin) {
-              userFound.update({
-                isAdmin: 1,
-              })
-                .then(userFound => {
-                  done(userFound);
-                })
-                .catch(err => {
-                  return res.status(500).json({ 'error': 'Unable to modify Rights! ' + err });
-                });
-            } else {
-              res.status(403).json({ 'error': 'user is Already Moderator' });
-            }
-          })
-          .catch(err => {
-            return res.status(500).json({ 'error': 'unable to set Admin Right!' });
-          });
-      }
-
-    ], userFound => {
-      if (userFound) {
-        // Mise à jour effectuée
-        return res.status(201).json(userFound);
-      } else {
-        // Une erreur est survenue
-        return res.status(500).json({ 'error': 'Unable to modify Rights!' });
-      }
-    });
+    Promise.all([UserExist, UserIsAdmin, AddRight])
+      .then(userFound => {
+        return res.status(201).json({ 'message': 'Right Added -' + userFound[2] });
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(err.status).json({ 'error': err.error });
+      });
   },
 
   updateUserRemoveRights: (req, res) => {
@@ -316,76 +261,21 @@ module.exports = {
     if (userId < 0)
       return res.status(400).json({ 'error': 'wrong token' });
 
-    asyncLib.waterfall([
-      done => {
-        // Récupérer l'utilisateur dans la base de données
-        models.User.findOne({
-          where: { id: userId }
-        })
-          .then(userFound => {
-            // Si l'utilisateur est rouvé, le retourner
-            done(null, userFound);
-          })
-          .catch(err => {
-            // Sinon envoyer une erreur
-            return res.status(500).json({ 'error': 'unable to verify user' });
-          });
-      },
+    // --------------------------
+    // Promises
+    // --------------------------
 
-      (userFound, done) => {
-        // Vérifier si l'utilisateur dispose des droits admin
-        models.User.findOne({
-          attributes: ['isAdmin'],
-          where: { isAdmin: userFound.isAdmin }
-        })
-          .then(userFound => {
-            if (userFound.isAdmin == true) {
-              console.log(userFound.isAdmin);
-              done(null, userFound);
-            } else {
-              return res.status(403).json({ 'error': 'you do not have sufficient privileges' });
-            }
-          })
-          .catch(err => {
-            return res.status(500).json({ err });
-          });
-      },
+    const UserExist = Promises.UserExist(userId);
+    const UserIsAdmin = UserExist.then(UserFound => UserPromises.UserIsAdmin(UserFound));
+    const RemoveRight = UserIsAdmin.then(Complete => UserPromises.RemoveRight(Username));
 
-      (userFound, done) => {
-        // Si tout va bien, on fait un appel ORM(sequelize) pour récupérer les informations de l'utilisateur en BDD
-        models.User.findOne({
-          attributes: ['id', 'username', 'isAdmin'],
-          where: { username: Username }
-        })
-          .then(userFound => {
-            console.log(userFound.isAdmin);
-            if (userFound.isAdmin) {
-              userFound.update({
-                isAdmin: 0,
-              })
-                .then(userFound => {
-                  done(userFound);
-                })
-                .catch(err => {
-                  return res.status(500).json({ 'error': 'Unable to modify Rights! ' + err });
-                });
-            } else {
-              res.status(403).json({ 'error': 'user is not Moderator' });
-            }
-          })
-          .catch(err => {
-            return res.status(500).json({ 'error': 'unable to remove Admin Right!' });
-          });
-      }
-
-    ], userFound => {
-      if (userFound) {
-        // Mise à jour effectuée
-        return res.status(201).json(userFound);
-      } else {
-        // Une erreur est survenue
-        return res.status(500).json({ 'error': 'Unable to modify Rights!' });
-      }
-    });
+    Promise.all([UserExist, UserIsAdmin, RemoveRight])
+      .then(userFound => {
+        return res.status(201).json({ 'message': 'Right Removed -' + userFound[2] });
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(err.status).json({ 'error': err.error });
+      });
   }
 }

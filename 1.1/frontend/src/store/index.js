@@ -3,8 +3,8 @@ import { createStore } from 'vuex'
 export default createStore({
     state: {
         // Paramètres généraux
-        urlAPI: 'https://shadsoft.fr:3443',
-        // urlAPI: 'http://localhost:3000',
+        // urlAPI: 'https://shadsoft.fr:3443',
+        urlAPI: 'http://localhost:3000',
         footer: 'Groupomania 2021 - Tout drois résérvés',
 
         // Déclaration des données du "store" de vue X
@@ -901,7 +901,9 @@ export default createStore({
                 Username: searchName,
             })
                 .then(res => {
+                    console.log(res);
                     document.getElementById('Search').value = '';
+                    document.getElementById('AddRight').disabled = true;
 
                     commit('setRightAdded', true);
                     commit('setfindUser', false);
@@ -927,7 +929,10 @@ export default createStore({
                 Username: searchName,
             })
                 .then(res => {
+                    console.log(res);
                     document.getElementById('Search').value = '';
+                    document.getElementById('RemoveRight').disabled = true;
+
                     commit('setRightRemoved', true);
                     commit('setfindUser', false);
                 })
@@ -937,6 +942,9 @@ export default createStore({
         },
         // FindUser
         CheckNameExist({ commit }) {
+            commit('setfindUser', false);
+            commit('setRightAdded', false);
+            commit('setRightRemoved', false);
             let searchName = document.getElementById("Search").value;
 
             axios.interceptors.request.use(
