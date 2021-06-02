@@ -1,5 +1,5 @@
 // Activation du mode STRICT de Javascript
-"use strict";
+"use strict"; 
 
 // Imports
 let models = require('../models')
