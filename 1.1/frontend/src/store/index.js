@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
 
 export default createStore({
-    state: {
+    state: { 
         // Paramètres généraux
         urlAPI: 'https://shadsoft.fr:3443',
         // urlAPI: 'http://localhost:3000',

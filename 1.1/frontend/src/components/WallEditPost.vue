@@ -1,7 +1,7 @@
 <template>
     <div class="modal" id="EditModal">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content"> 
         
                 <div class="modal-header">
                     <h4 class="modal-title"><i class="fas fa-pen"></i> Edition de contenue</h4>
