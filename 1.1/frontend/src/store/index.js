@@ -3,8 +3,8 @@ import { createStore } from 'vuex'
 export default createStore({
     state: {
         // Paramètres généraux
-        urlAPI: 'https://shadsoft.fr:3443',
-        // urlAPI: 'http://localhost:3000',
+        // urlAPI: 'https://shadsoft.fr:3443',
+        urlAPI: 'http://localhost:3000',
         footer: 'Groupomania 2021 - Tout drois résérvés',
 
         // Déclaration des données du "store" de vue X

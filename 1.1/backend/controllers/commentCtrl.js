@@ -2,11 +2,11 @@
 "use strict";
 
 // Imports
-let models = require('../models');
 let jwtUtils = require('../utils/jwt.utils');
-// let asyncLib = require('async');
+let models = require('../models');
 let url = require('url');
-// Import du fichier de promises (externe)
+
+// Fichiers de promises (externes)
 let Promises = require('./Promises');
 
 // Routes

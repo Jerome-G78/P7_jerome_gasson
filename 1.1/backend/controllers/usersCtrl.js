@@ -2,16 +2,15 @@
 "use strict";
 
 // Imports
-// let bcrypt = require('bcrypt');
 let jwtUtils = require('../utils/jwt.utils');
 let models = require('../models');
-// let asyncLib = require('async');
-let Promises = require('./Promises');
-let UserPromises = require('./usersPromises');
-// let fs = require('fs');
 const { where } = require('sequelize');
 const { DataTypes } = require('sequelize');
 const { isDate } = require('util');
+
+// Fichiers de promises (externe)
+let Promises = require('./Promises');
+let UserPromises = require('./usersPromises');
 
 
 // Regex

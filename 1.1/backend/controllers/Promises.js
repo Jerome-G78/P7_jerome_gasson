@@ -1,8 +1,9 @@
 
 let models = require('../models');
-let fs = require('fs');
 
+// ------------------------
 // Générales
+// ------------------------
 
 // Récupérer l'utilisateur dans la base de données (correspondant au token)
 const UserExist = ((userId) => {
@@ -23,7 +24,6 @@ const UserExist = ((userId) => {
 
 // Verification des droits d'administration
 const IsAdmin = ((userFound) => {
-    console.log("IN IsAdmin");
     return new Promise((resolve, reject) => {
         if (userFound.isAdmin) {
             resolve(userFound);
@@ -33,7 +33,36 @@ const IsAdmin = ((userFound) => {
     });
 });
 
+// Verification de propriété
+const IsOwnMessage = ((userFound, messageId) => {
+    return new Promise((resolve, reject) => {
+        models.Message.findOne({
+            where: { id: messageId }
+        })
+            .then(messageFound => {
+                if (messageFound != null) {
+                    // Si trouvé, il est comparé a l'UserId
+                    if (messageFound.UserId == userFound.id) {
+                        resolve(messageFound.id);
+                    }
+                    // Echec, on retourne une erreur d'accès
+                    reject({ 'status': 403, 'error': 'this is not your message.' });
+
+                } else {
+                    // Sinon, le message l'existe pas
+                    reject({ 'status': 404, 'error': 'Message not found' });
+                }
+            })
+            .catch(err => {
+                // En cas d'erreur, on retourne une erreur serveur
+                reject({ 'status': 500, 'error': 'faillure - ' + err });
+            });
+    })
+});
+
+// ------------------------
 // Gestion des Commentaires
+// ------------------------
 
 // Envoyer un commentaire en base
 const SendComment = ((userFound, messageId, comment) => {
@@ -103,5 +132,6 @@ const DeleteCommentAdmin = ((commentId, messageId) => {
 });
 
 module.exports = {
-    UserExist, SendComment, DeleteComment, IsAdmin, DeleteCommentAdmin
+    UserExist, IsOwnMessage, SendComment, DeleteComment,
+    IsAdmin, DeleteCommentAdmin
 };
