@@ -59,7 +59,7 @@ module.exports = {
 
     const verifyUser = UserPromises.FindUser(username);
     const verifyMail = UserPromises.FindMail(email);
-    const passCrypt = verifyMail.then(() => UserPromises.PassEncrypt(password));
+    const passCrypt = verifyMail.then(Completed => UserPromises.PassEncrypt(password));
     const regAccount = passCrypt.then(BCRYPTED => UserPromises.RegisterAccount(email, username, BCRYPTED, bio));
 
     Promise.all([verifyUser, verifyMail, passCrypt, regAccount])
@@ -206,7 +206,7 @@ module.exports = {
 
     const UserExist = Promises.UserExist(userId);
     const UserIsAdmin = UserExist.then(UserFound => UserPromises.UserIsAdmin(UserFound));
-    const RequestUserInformation = UserIsAdmin.then(Complete => UserPromises.RequestUserInformation(Username));
+    const RequestUserInformation = UserIsAdmin.then(Completed => UserPromises.RequestUserInformation(Username));
 
     Promise.all([UserExist, UserIsAdmin, RequestUserInformation])
       .then(userFound => {
@@ -236,7 +236,7 @@ module.exports = {
 
     const UserExist = Promises.UserExist(userId);
     const UserIsAdmin = UserExist.then(UserFound => UserPromises.UserIsAdmin(UserFound));
-    const AddRight = UserIsAdmin.then(Complete => UserPromises.AddRight(Username));
+    const AddRight = UserIsAdmin.then(Completed => UserPromises.AddRight(Username));
 
     Promise.all([UserExist, UserIsAdmin, AddRight])
       .then(userFound => {
@@ -266,7 +266,7 @@ module.exports = {
 
     const UserExist = Promises.UserExist(userId);
     const UserIsAdmin = UserExist.then(UserFound => UserPromises.UserIsAdmin(UserFound));
-    const RemoveRight = UserIsAdmin.then(Complete => UserPromises.RemoveRight(Username));
+    const RemoveRight = UserIsAdmin.then(Completed => UserPromises.RemoveRight(Username));
 
     Promise.all([UserExist, UserIsAdmin, RemoveRight])
       .then(userFound => {

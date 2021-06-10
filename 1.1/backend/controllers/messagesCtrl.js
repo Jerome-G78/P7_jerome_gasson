@@ -202,7 +202,7 @@ module.exports = {
 
         const UserExist = Promises.UserExist(userId);
         const IsOwnMessage = UserExist.then(UserFound => Promises.IsOwnMessage(UserFound, messageId));
-        const EditMessage = IsOwnMessage.then(() => MessagesPromises.EditMessage(messageId, title, content, mediaUrl))
+        const EditMessage = IsOwnMessage.then(Completed => MessagesPromises.EditMessage(messageId, title, content, mediaUrl))
         Promise.all([UserExist, IsOwnMessage, EditMessage])
             .then((moderateMessage) => {
                 return res.status(201).json({ 'message': 'Edited message number ' + moderateMessage[2] });
@@ -229,10 +229,10 @@ module.exports = {
 
         const UserExist = Promises.UserExist(userId);
         const IsOwnMessage = UserExist.then(UserFound => Promises.IsOwnMessage(UserFound, messageId));
-        const RemovePictures = IsOwnMessage.then(() => MessagesPromises.RemovePictures(messageId));
-        const RemoveComments = RemovePictures.then(() => MessagesPromises.RemoveComments(messageId));
-        const RemoveLikes = RemoveComments.then(() => MessagesPromises.RemoveLikes(messageId));
-        const RemoveMessage = RemoveLikes.then(() => MessagesPromises.RemoveMessage(messageId));
+        const RemovePictures = IsOwnMessage.then(Completed => MessagesPromises.RemovePictures(messageId));
+        const RemoveComments = RemovePictures.then(Completed => MessagesPromises.RemoveComments(messageId));
+        const RemoveLikes = RemoveComments.then(Completed => MessagesPromises.RemoveLikes(messageId));
+        const RemoveMessage = RemoveLikes.then(Completed => MessagesPromises.RemoveMessage(messageId));
         Promise.all([UserExist, IsOwnMessage, RemovePictures, RemoveComments, RemoveLikes, RemoveMessage])
             .then((DeletedMessage) => {
                 return res.status(201).json({ 'message': 'Edited message number ' + DeletedMessage[5] });
@@ -278,7 +278,7 @@ module.exports = {
 
         const UserExist = Promises.UserExist(userId);
         const UserIsAdmin = UserExist.then(UserFound => Promises.IsAdmin(UserFound));
-        const EditMessage = UserIsAdmin.then(() => MessagesPromises.EditMessage(messageId, title, content, mediaUrl))
+        const EditMessage = UserIsAdmin.then(Completed => MessagesPromises.EditMessage(messageId, title, content, mediaUrl))
         Promise.all([UserExist, UserIsAdmin, EditMessage])
             .then((moderateMessage) => {
                 return res.status(201).json({ 'message': 'moderate message number ' + moderateMessage[2] });
@@ -305,10 +305,10 @@ module.exports = {
 
         const UserExist = Promises.UserExist(userId);
         const UserIsAdmin = UserExist.then(UserFound => Promises.IsAdmin(UserFound));
-        const RemovePictures = UserIsAdmin.then(() => MessagesPromises.RemovePictures(messageId));
-        const RemoveComments = RemovePictures.then(() => MessagesPromises.RemoveComments(messageId));
-        const RemoveLikes = RemoveComments.then(() => MessagesPromises.RemoveLikes(messageId));
-        const RemoveMessage = RemoveLikes.then(() => MessagesPromises.RemoveMessage(messageId));
+        const RemovePictures = UserIsAdmin.then(Completed => MessagesPromises.RemovePictures(messageId));
+        const RemoveComments = RemovePictures.then(Completed => MessagesPromises.RemoveComments(messageId));
+        const RemoveLikes = RemoveComments.then(Completed => MessagesPromises.RemoveLikes(messageId));
+        const RemoveMessage = RemoveLikes.then(Completed => MessagesPromises.RemoveMessage(messageId));
         Promise.all([UserExist, UserIsAdmin, RemovePictures, RemoveLikes, RemoveComments, RemoveMessage])
             .then((DeletedMessage) => {
                 return res.status(201).json({ 'message': 'Deleted message number ' + DeletedMessage[5] });

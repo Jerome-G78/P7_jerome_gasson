@@ -135,6 +135,111 @@ const DeleteCommentAdmin = ((commentId, messageId) => {
 // Gestion des Like / Dislike
 // --------------------------
 
+const FindMessage = (messageId => {
+    return new Promise((resolve, reject) => {
+        models.Message.findOne({
+            where: { id: messageId }
+        })
+            .then((messageFound) => {
+                // Si oui, continuer
+                resolve(messageFound);
+            })
+            .catch(err => {
+                // Sinon retourner une erreur
+                reject({ 'status': 500, 'error': 'unable to verify message' + err })
+            });
+    });
+});
+
+const FindMessageUser = ((messageFound, messageId, userId) => {
+    return new Promise((resolve, reject) => {
+        if (messageFound) {
+            // Rechercher si l'on trouve une entrée qui correspond à la fois à l'ID de l'utilisateur qui fait la requête
+            // Ainsi qu'au message concerné
+            models.Like.findOne({
+                where: {
+                    userId: userId,
+                    messageId: messageId
+                }
+            })
+                .then((isUserAlreadyLiked) => {
+                    console.log(isUserAlreadyLiked);
+                    if (isUserAlreadyLiked == null) {
+                        console.log('FindMessage - OK');
+                        resolve(LikeMessage(messageFound, messageId, userId));
+                    } else {
+                        console.log('FindMessage - AlreadyLiked !');
+                        resolve(DislikeMessage(messageFound, messageId, userId));
+                    }
+
+                })
+                .catch(err => {
+                    reject({ 'status': 500, 'error': 'unable to verify is user already liked' + err });
+                });
+
+        } else {
+            reject({ 'status': 404, 'error': 'Message not found' + err });
+        }
+    });
+});
+
+const LikeMessage = ((messageFound, messageId, userId) => {
+    return new Promise((resolve, reject) => {
+        // Ajouter la relation qui uni le message et l'utilisateur
+        models.Like.create({
+            messageId: messageId,
+            userId: userId,
+            isLike: 1
+        })
+            .then(Created => {
+                // Mise à jour de l'objet (le message), incrémente les likes de 1
+                messageFound.update({
+                    likes: messageFound.likes + 1,
+                })
+                    .then(() => {
+                        resolve(messageFound);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        reject({ 'status': 500, 'error': 'cannot message like counter' + err });
+                    });
+
+            })
+            .catch(err => {
+                console.log(err);
+                reject({ 'status': 500, 'error': 'unable to set user reaction' + err });
+            });
+    });
+});
+
+const DislikeMessage = ((messageFound, messageId, userId) => {
+    return new Promise((resolve, reject) => {
+        models.Like.destroy({
+            where: {
+                userId: userId,
+                messageId: messageId
+            }
+        })
+            .then(alreadyLikeFound => {
+                console.log(alreadyLikeFound);
+                // Mise à jour de l'objet (le message), décrémenter les likes de 1
+                messageFound.update({
+                    likes: messageFound.likes - 1,
+                })
+                    .then(() => {
+                        resolve(messageFound);
+                    })
+                    .catch(err => {
+                        reject({ 'status': 500, 'error': 'cannot mesage dislike counter' + err });
+                    });
+
+            })
+            .catch(err => {
+                console.log(err);
+                reject({ 'status': 500, 'error': 'unable to set user reaction' + err });
+            });
+    });
+});
 
 /*
 const Function = (()=>{
@@ -146,5 +251,6 @@ const Function = (()=>{
 
 module.exports = {
     UserExist, IsOwnMessage, IsAdmin,
-    SendComment, DeleteComment, DeleteCommentAdmin
+    SendComment, DeleteComment, DeleteCommentAdmin,
+    FindMessage, FindMessageUser, LikeMessage, DislikeMessage
 };

@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
 
 export default createStore({
-    state: { 
+    state: {
         // Paramètres généraux
         urlAPI: 'https://shadsoft.fr:3443',
         // urlAPI: 'http://localhost:3000',
@@ -858,10 +858,10 @@ export default createStore({
                 }
             );
 
-            axios.post(this.state.urlAPI + "/api/messages/" + PostId + "/vote/like")
+            axios.post(this.state.urlAPI + "/api/messages/" + PostId + "/vote/")
                 .then(res => {
                     // Like le post
-                    console.log('Liked');
+                    console.log('Voted!');
                     commit('setLiked', true);
                     commit('setLikes', this.state.PostComments.LikeCounter += 1);
 
@@ -869,16 +869,7 @@ export default createStore({
                     dispatch("WallLoad");
                 })
                 .catch(err => {
-                    axios.post(this.state.urlAPI + "/api/messages/" + PostId + "/vote/dislike")
-                        .then(res => {
-                            // Dislike le post
-                            console.log('Disliked');
-                            commit('setLiked', false);
-                            commit('setLikes', this.state.PostComments.LikeCounter -= 1);
-
-                            // Rechargement du mur après opération
-                            dispatch("WallLoad");
-                        })
+                    console.log(err);
                 });
 
         },
@@ -1089,14 +1080,14 @@ export default createStore({
             let CHKContent = document.getElementById("Content").value;
             let File = document.getElementById('uploadFile').value;
             console.log(File);
-            
+
             commit('setNtitle', CHKtitle);
             commit('setNcontent', CHKContent);
 
             let Status = File;
-            
 
-            if (Status !='Aucun fichier choisi') {
+
+            if (Status != 'Aucun fichier choisi') {
                 commit('setUploadFile', true);
             }
 
@@ -1143,7 +1134,7 @@ export default createStore({
 
             let Status = File;
 
-            if (Status !='Aucun fichier choisi') {
+            if (Status != 'Aucun fichier choisi') {
                 commit('setUploadFile', false);
             }
 
@@ -1394,7 +1385,7 @@ export default createStore({
 
             let Status = File;
 
-            if (Status !='Aucun fichier choisi') {
+            if (Status != 'Aucun fichier choisi') {
                 commit('setUploadFile', true);
             }
 
@@ -1444,7 +1435,7 @@ export default createStore({
 
             let Status = File;
 
-            if (Status !='Aucun fichier choisi') {
+            if (Status != 'Aucun fichier choisi') {
                 commit('setUploadFile', false);
             }
 

@@ -44,8 +44,7 @@ exports.router = (function(){
     apiRouter.delete('/messages/comment/:messageId/:commentId/moderate/', multer, commentCtrl.deleteComment);
 
     // Likes routes
-    apiRouter.post('/messages/:messageId/vote/like', likesCtrl.likePost);
-    apiRouter.post('/messages/:messageId/vote/dislike', likesCtrl.dislikePost);
+    apiRouter.post('/messages/:messageId/vote/', likesCtrl.VotePost);
 
     // Administration routes
     apiRouter.post('/users/', usersCtrl.getOneUserProfile);
