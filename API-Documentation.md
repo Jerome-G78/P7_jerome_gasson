@@ -20,8 +20,7 @@
 
 ## III - LIKE/DISLIKE
 
-	1.	POST /api/messages/:messageId/vote/like/ -------: Permet d'aimer un message du mur
-	2.	POST /api/messages/:messageId/vote/dislike/ ----: Permet d'annuler (dislike) un message du mur
+	1.	POST /api/messages/:messageId/vote/ -------: Permet d'aimer/annuler un message du mur
 
 ## IV - COMMENTAIRES
 
@@ -200,26 +199,15 @@
 ---------------------------
 
 ## [LIKE/DISLIKE]
-1.	POST /api/messages/:messageId/vote/like/
-> POST http://NomDuSite.com/api/messages/:messageId/vote/like/
-- Permet d'aimer un message du mur
+1.	POST /api/messages/:messageId/vote/
+> POST http://NomDuSite.com/api/messages/:messageId/vote/
+- Permet d'aimer/annuler un message du mur
 
 - Attendu : 
     > Headers 
     - Authorization : Bearer TOKEN
 
-- Réponse JSON : ` | "id" | "title" | "content" | "attachment" | "likes" | "createdAt" | "updatedAt" | "UserId" | `
----------------------------
-
-2.	POST /api/messages/:messageId/vote/dislike/
-> POST http://NomDuSite.com/api/messages/:messageId/vote/dislike/
-- Permet d'annuler (dislike) un message du mur
-
-- Attendu :
-    > Headers 
-    - Authorization : Bearer TOKEN
-
-- Réponse JSON : ` | "id" | "title" | "content" | "attachment" | "likes" | "createdAt" | "updatedAt" | "UserId" | `
+- Réponse JSON : `|"likes" |`
 ---------------------------
 
 ## [COMMENTAIRES]
